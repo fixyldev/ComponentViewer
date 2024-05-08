@@ -13,6 +13,7 @@
 		"sources": "https://github.com/fixyldev/ComponentViewer"
 	},
 	"license": "MIT",
+	"icon": "assets/componentviewer/icon.png",
 	"environment": "client",
 	"entrypoints": {
 		"client": [
