@@ -22,9 +22,8 @@
     - Tap `SHIFT` + `ALT` to switch to the previous component value.
 
 ## 🚀 Examples
-### Food
 ![Food](images/food.webp?raw=true)
-### Block Entity Data
+
 ![Block Entity Data](images/block_entity_data.webp?raw=true)
 
 ## 🔍 Useful Resources
