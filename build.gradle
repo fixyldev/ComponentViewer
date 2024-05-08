@@ -64,6 +64,10 @@ jar {
 
 sourcesJar {
 	from("LICENSE")
+
+	filesMatching("fabric.mod.json") {
+		expand "version": project.version
+	}
 }
 
 // configure the maven publication
