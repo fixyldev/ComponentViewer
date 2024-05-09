@@ -26,6 +26,8 @@
 
 ![Block Entity Data](images/block_entity_data.webp?raw=true)
 
+![Entity Data](images/entity_data.webp?raw=true)
+
 ## 🔍 Useful Resources
 - 🐛 [**Issues**](https://github.com/fixyldev/ComponentViewer/issues): For reporting bugs or suggesting features.
 - 📝 [**Changelog**](https://modrinth.com/mod/component-viewer/changelog): Keep track of all notable changes made to the mod.
