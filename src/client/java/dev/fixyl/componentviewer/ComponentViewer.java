@@ -40,13 +40,12 @@ import java.util.Comparator;
 import java.util.List;
 
 public class ComponentViewer implements ClientModInitializer {
-	final static int INITIAL_COMPONENT_LIST_CAPACITY = 16;
-	final static int INITIAL_FORMAT_LINES_CAPACITY = 16;
-	final static int INITIAL_FORMAT_LINE_CAPACITY = 16;
-	final static int INDENTATION = 4;
+	final private static int INITIAL_COMPONENT_LIST_CAPACITY = 16;
+	final private static int INDENTATION = 4;
 
 	private static int componentIndex = 0;
 	private static boolean previousAltDown = false;
+	private static ComponentFormatter componentFormatter = new ComponentFormatter(INDENTATION);
 
 	@Override
 	public void onInitializeClient() {
@@ -65,26 +64,26 @@ public class ComponentViewer implements ClientModInitializer {
 			return;
 		}
 
-		List<Component<?>> componentList = new ArrayList<Component<?>>(INITIAL_COMPONENT_LIST_CAPACITY);
+		List<Component<?>> componentList = new ArrayList<Component<?>>(ComponentViewer.INITIAL_COMPONENT_LIST_CAPACITY);
 		for (Component<?> component : componentMap)
 			componentList.add(component);
 		componentList.sort(Comparator.comparing(component -> component.type().toString()));
 
 		if (!Screen.hasAltDown())
-			previousAltDown = false;
+			ComponentViewer.previousAltDown = false;
 
-		if (!previousAltDown && Screen.hasAltDown()) {
+		if (!ComponentViewer.previousAltDown && Screen.hasAltDown()) {
 			if (Screen.hasShiftDown())
-				componentIndex--;
+				ComponentViewer.componentIndex--;
 			else
-				componentIndex++;
-			previousAltDown = true;
+				ComponentViewer.componentIndex++;
+				ComponentViewer.previousAltDown = true;
 		}
 
-		if (componentIndex >= componentMap.size())
-			componentIndex = 0;
-		else if (componentIndex < 0)
-			componentIndex = componentMap.size() - 1;
+		if (ComponentViewer.componentIndex >= componentMap.size())
+			ComponentViewer.componentIndex = 0;
+		else if (ComponentViewer.componentIndex < 0)
+			ComponentViewer.componentIndex = componentMap.size() - 1;
 
 		lines.add((Text)Text.empty());
 		lines.add((Text)Text.translatable("componentviewer.tooltips.components.header").formatted(Formatting.GRAY));
@@ -93,7 +92,7 @@ public class ComponentViewer implements ClientModInitializer {
 			String componentType = componentList.get(index).type().toString();
 
 			Text line;
-			if (index == componentIndex)
+			if (index == ComponentViewer.componentIndex)
 				line = (Text)Text.literal("  " + componentType).formatted(Formatting.DARK_GREEN);
 			else
 				line = (Text)Text.literal(" " + componentType).formatted(Formatting.DARK_GRAY);
@@ -104,75 +103,9 @@ public class ComponentViewer implements ClientModInitializer {
 		lines.add((Text)Text.empty());
 		lines.add((Text)Text.translatable("componentviewer.tooltips.components.value").formatted(Formatting.GRAY));
 
-		String componentValue = componentList.get(componentIndex).value().toString();
-		for (String componentValuePart : formatComponentValue(componentValue)) {
+		String componentValue = componentList.get(ComponentViewer.componentIndex).value().toString();
+		for (String componentValuePart : ComponentViewer.componentFormatter.format(componentValue)) {
 			lines.add((Text)Text.literal(" " + componentValuePart).formatted(Formatting.DARK_GRAY));
 		}
-	}
-
-	private static List<String> formatComponentValue(String componentValue) {
-		List<String> lines = new ArrayList<String>(INITIAL_FORMAT_LINES_CAPACITY);
-		StringBuilder line = new StringBuilder(INITIAL_FORMAT_LINE_CAPACITY);
-		int indent = 0;
-		char closingBracket = ' ';
-		boolean emptyBrackets = false;
-		boolean trim = false;
-		char inString = ' ';
-
-		for (int index = 0; index < componentValue.length(); index++) {
-			char character = componentValue.charAt(index);
-
-			if (emptyBrackets) {
-				line.append(character);
-				emptyBrackets = false;
-				continue;
-			}
-
-			if (trim && character == ' ') 
-				continue;
-			trim = false;
-
-			if (inString == ' ' && (character == ',' || character == ';')) {
-				lines.add(line.toString() + character);
-				line.setLength(0);
-			} else if (inString == ' ' && (character == '[' || character == '{')) {
-				if (index + 1 < componentValue.length() && (componentValue.charAt(index + 1) == ']' || componentValue.charAt(index + 1) == '}')) {
-					line.append(character);
-					emptyBrackets = true;
-					continue;
-				}
-				indent++;
-				lines.add(line.toString() + character);
-				line.setLength(0);
-			} else if (inString == ' ' && (character == ']' || character == '}')) {
-				indent--;
-				closingBracket = character;
-				lines.add(line.toString());
-				line.setLength(0);
-			} else if (character == '"' || character == '\'') {
-				if (inString == ' ')
-					inString = character;
-				else if (character == inString && componentValue.charAt(index - 1) != '\\')
-					inString = ' ';
-				line.append(character);
-			} else
-				line.append(character);
-
-			if (line.length() == 0) {
-				line.append(" ".repeat(Math.max(0, indent * INDENTATION)));
-
-				if (closingBracket != ' ') {
-					line.append(closingBracket);
-					closingBracket = ' ';
-				}
-
-				trim = true;
-			}
-		}
-
-		if (line.length() != 0)
-			lines.add(line.toString());
-
-		return lines;
 	}
 }
