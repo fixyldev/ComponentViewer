@@ -37,6 +37,18 @@ public class ComponentFormatter {
     private String indent;
 	private Map<Integer, String> indentCache = new HashMap<>();
 
+	private String componentValue;
+	private List<String> lines;
+	private StringBuilder line;
+	private int indentLevel;
+	private int currentIndex;
+	private char currentChar;
+	private boolean leftTrim;
+	private char closingBracket;
+	private char closingQuote;
+	private boolean inEmptyBrackets;
+	private boolean inString;
+
     public ComponentFormatter(int indentSize) {
         this.indentSize = indentSize;
 
@@ -62,69 +74,118 @@ public class ComponentFormatter {
 		return this.indentCache.put(indentLevel, indent.repeat(indentLevel));
 	}
 
-    public List<String> format(String componentValue) {
-		List<String> lines = new ArrayList<String>(ComponentFormatter.INITIAL_LINES_CAPACITY);
-		StringBuilder line = new StringBuilder(ComponentFormatter.INITIAL_LINE_CAPACITY);
-		int indent = 0;
-		char closingBracket = ' ';
-		boolean emptyBrackets = false;
-		boolean trim = false;
-		char inString = ' ';
+    public List<String> formatComponentValue(String componentValue) {
+		this.componentValue = componentValue;
+		this.lines = new ArrayList<String>(ComponentFormatter.INITIAL_LINES_CAPACITY);
+		this.line = new StringBuilder(ComponentFormatter.INITIAL_LINE_CAPACITY);
+		this.indentLevel = 0;
+		this.leftTrim = false;
+		this.closingBracket = ' ';
+		this.closingQuote = ' ';
+		this.inEmptyBrackets = false;
+		this.inString = false;
 
-		for (int index = 0; index < componentValue.length(); index++) {
-			char character = componentValue.charAt(index);
+		for (this.currentIndex = 0; this.currentIndex < componentValue.length(); this.currentIndex++) {
+			this.currentChar = this.componentValue.charAt(this.currentIndex);
 
-			if (emptyBrackets) {
-				line.append(character);
-				emptyBrackets = false;
-				continue;
-			}
-
-			if (trim && character == ' ') 
-				continue;
-			trim = false;
-
-			if (inString == ' ' && (character == ',' || character == ';')) {
-				lines.add(line.toString() + character);
-				line.setLength(0);
-			} else if (inString == ' ' && (character == '[' || character == '{')) {
-				if (index + 1 < componentValue.length() && (componentValue.charAt(index + 1) == ']' || componentValue.charAt(index + 1) == '}')) {
-					line.append(character);
-					emptyBrackets = true;
-					continue;
-				}
-				indent++;
-				lines.add(line.toString() + character);
-				line.setLength(0);
-			} else if (inString == ' ' && (character == ']' || character == '}')) {
-				indent--;
-				closingBracket = character;
-				lines.add(line.toString());
-				line.setLength(0);
-			} else if (character == '"' || character == '\'') {
-				if (inString == ' ')
-					inString = character;
-				else if (character == inString && componentValue.charAt(index - 1) != '\\')
-					inString = ' ';
-				line.append(character);
-			} else
-				line.append(character);
-
-			if (line.length() == 0) {
-				line.append(this.getIndentFromLevel(indent));
-
-				if (closingBracket != ' ') {
-					line.append(closingBracket);
-					closingBracket = ' ';
-				}
-
-				trim = true;
-			}
+			this.processCharacter();
 		}
 
-		if (line.length() != 0)
-			lines.add(line.toString());
-
-		return lines;
+		if (this.line.length() != 0)
+			this.lines.add(this.line.toString());
+		
+		return this.lines;
     }
+
+	private void processCharacter() {
+		if (this.inEmptyBrackets) {
+			this.appendCurrentCharacter();
+			this.inEmptyBrackets = false;
+			return;
+		}
+
+		if (this.leftTrim && this.currentChar == ' ')
+			return;
+		this.leftTrim = false;
+
+		if (this.inString)
+			this.formatInsideOfString();
+		else
+			this.formatOutsideOfString();
+		
+		this.onNewLine();
+	}
+
+	private void formatInsideOfString() {
+		switch (this.currentChar) {
+			case '"', '\'' -> this.processQuote();
+			default -> this.appendCurrentCharacter();
+		}
+	}
+
+	private void formatOutsideOfString() {
+		switch (this.currentChar) {
+			case ',', ';' -> this.processComma();
+			case '{', '[' -> this.processOpeningBracket();
+			case '}', ']' -> this.processClosingBracket();
+			case '"', '\'' -> this.processQuote();
+			default -> this.appendCurrentCharacter();
+		}
+	}
+
+	private void processComma() {
+		this.appendCurrentCharacter();
+		this.prepareNewLine();
+	}
+
+	private void processOpeningBracket() {
+		if (this.currentIndex + 1 < this.componentValue.length() && (this.componentValue.charAt(this.currentIndex + 1) == '}' || this.componentValue.charAt(this.currentIndex + 1) == ']')) {
+			this.appendCurrentCharacter();
+			this.inEmptyBrackets = true;
+			return;
+		}
+
+		this.indentLevel++;
+		this.appendCurrentCharacter();
+		this.prepareNewLine();
+	}
+
+	private void processClosingBracket() {
+		this.indentLevel--;
+		this.closingBracket = this.currentChar;
+		this.prepareNewLine();
+	}
+
+	private void processQuote() {
+		if (!this.inString) {
+			this.inString = true;
+			this.closingQuote = this.currentChar;
+		} else if (this.currentChar == this.closingQuote && this.componentValue.charAt(this.currentIndex - 1) != '\\')
+			this.inString = false;
+
+		this.appendCurrentCharacter();
+	}
+
+	private void appendCurrentCharacter() {
+		this.line.append(this.currentChar);
+	}
+
+	private void prepareNewLine() {
+		this.lines.add(this.line.toString());
+		this.line.setLength(0);
+	}
+
+	private void onNewLine() {
+		if (this.line.length() != 0)
+			return;
+		
+		line.append(this.getIndentFromLevel(this.indentLevel));
+
+		if (this.closingBracket != ' ') {
+			line.append(this.closingBracket);
+			this.closingBracket = ' ';
+		}
+
+		this.leftTrim = true;
+	}
 }

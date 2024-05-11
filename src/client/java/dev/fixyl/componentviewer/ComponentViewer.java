@@ -104,7 +104,7 @@ public class ComponentViewer implements ClientModInitializer {
 		lines.add((Text)Text.translatable("componentviewer.tooltips.components.value").formatted(Formatting.GRAY));
 
 		String componentValue = componentList.get(ComponentViewer.componentIndex).value().toString();
-		for (String componentValuePart : ComponentViewer.componentFormatter.format(componentValue)) {
+		for (String componentValuePart : ComponentViewer.componentFormatter.formatComponentValue(componentValue)) {
 			lines.add((Text)Text.literal(" " + componentValuePart).formatted(Formatting.DARK_GRAY));
 		}
 	}
