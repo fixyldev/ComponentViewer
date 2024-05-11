@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ComponentFormatter {
+	final private static int PRE_CACHE_INDENT_LEVEL = 8;
     final private static int INITIAL_LINES_CAPACITY = 16;
     final private static int INITIAL_LINE_CAPACITY = 16;
 
@@ -49,11 +50,19 @@ public class ComponentFormatter {
 	private boolean inEmptyBrackets;
 	private boolean inString;
 
-    public ComponentFormatter(int indentSize) {
+    public ComponentFormatter(int indentSize, int preCacheIndentLevel) {
+		if (indentSize < 0)
+			throw new IllegalArgumentException();
+
         this.indentSize = indentSize;
 
         this.calculateIndent();
+		this.preCacheIndent(preCacheIndentLevel);
     }
+
+	public ComponentFormatter(int indentSize) {
+		this(indentSize, ComponentFormatter.PRE_CACHE_INDENT_LEVEL);
+	}
 
     private void calculateIndent() {
         StringBuilder indentBuilder = new StringBuilder(this.indentSize);
@@ -63,6 +72,16 @@ public class ComponentFormatter {
 
         this.indent = indentBuilder.toString();
     }
+
+	public void preCacheIndent(int preCacheIndentLevel) {
+		if (preCacheIndentLevel < 0)
+			throw new IllegalArgumentException();
+
+		for (int indentLevel = 1; indentLevel <= preCacheIndentLevel; indentLevel++) {
+			if (!this.indentCache.containsKey(indentLevel))
+				this.indentCache.put(indentLevel, indent.repeat(indentLevel));
+		}
+	}
 
 	private String getIndentFromLevel(int indentLevel) {
 		if (indentLevel <= 0)

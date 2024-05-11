@@ -41,11 +41,11 @@ import java.util.List;
 
 public class ComponentViewer implements ClientModInitializer {
 	final private static int INITIAL_COMPONENT_LIST_CAPACITY = 16;
-	final private static int INDENTATION = 4;
+	final private static int INDENT_SIZE = 4;
 
 	private static int componentIndex = 0;
 	private static boolean previousAltDown = false;
-	private static ComponentFormatter componentFormatter = new ComponentFormatter(INDENTATION);
+	private static ComponentFormatter componentFormatter = new ComponentFormatter(INDENT_SIZE);
 
 	@Override
 	public void onInitializeClient() {
