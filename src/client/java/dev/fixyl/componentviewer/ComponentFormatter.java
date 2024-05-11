@@ -1,18 +1,18 @@
-/* 
+/*
  * MIT License
- * 
+ *
  * Copyright (c) 2024 fixyldev
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -36,7 +36,7 @@ public class ComponentFormatter {
 
     private int indentSize;
     private String indent;
-	private Map<Integer, String> indentCache = new HashMap<>();
+	private Map<Integer, String> indentCache = new HashMap<Integer, String>();
 
 	private String componentValue;
 	private List<String> lines;
@@ -112,7 +112,7 @@ public class ComponentFormatter {
 
 		if (this.line.length() != 0)
 			this.lines.add(this.line.toString());
-		
+
 		return this.lines;
     }
 
@@ -131,7 +131,7 @@ public class ComponentFormatter {
 			this.formatInsideOfString();
 		else
 			this.formatOutsideOfString();
-		
+
 		this.onNewLine();
 	}
 
@@ -197,7 +197,7 @@ public class ComponentFormatter {
 	private void onNewLine() {
 		if (this.line.length() != 0)
 			return;
-		
+
 		line.append(this.getIndentFromLevel(this.indentLevel));
 
 		if (this.closingBracket != ' ') {
