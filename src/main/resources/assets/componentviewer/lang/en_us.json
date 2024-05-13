@@ -1,4 +1,5 @@
 {
+    "componentviewer.formatter.error": "A formatting error occurred: Displaying non-formatted component value.",
     "componentviewer.tooltips.components.empty": "No Components",
     "componentviewer.tooltips.components.header": "Components:",
     "componentviewer.tooltips.components.value": "Value:"

@@ -41,11 +41,10 @@ import java.util.List;
 
 public class ComponentViewer implements ClientModInitializer {
 	final private static int INITIAL_COMPONENT_LIST_CAPACITY = 16;
-	final private static int INDENT_SIZE = 4;
 
 	private static int componentIndex = 0;
 	private static boolean previousAltDown = false;
-	private static ComponentFormatter componentFormatter = new ComponentFormatter(INDENT_SIZE);
+	private static ComponentFormatter componentFormatter = new ComponentFormatter(ComponentFormatter.DEFAULT_INDENT_SIZE, ComponentFormatter.DEFAULT_PRE_CACHE_INDENT_LEVEL);
 
 	@Override
 	public void onInitializeClient() {
@@ -107,5 +106,8 @@ public class ComponentViewer implements ClientModInitializer {
 		for (String componentValuePart : ComponentViewer.componentFormatter.formatComponentValue(componentValue)) {
 			lines.add((Text)Text.literal(" " + componentValuePart).formatted(Formatting.DARK_GRAY));
 		}
+
+		if (ComponentViewer.componentFormatter.isFormattingError())
+			lines.add((Text)Text.translatable("componentviewer.formatter.error").formatted(Formatting.GRAY));
 	}
 }

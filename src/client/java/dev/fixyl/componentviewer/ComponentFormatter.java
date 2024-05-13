@@ -30,9 +30,17 @@ import java.util.List;
 import java.util.Map;
 
 public class ComponentFormatter {
-	final private static int PRE_CACHE_INDENT_LEVEL = 8;
+	final public static int DEFAULT_INDENT_SIZE = 4;
+	final public static int DEFAULT_PRE_CACHE_INDENT_LEVEL = 8;
+
+	final private static int INITIAL_BRACKET_HISTORY_CAPACITY = 12;
     final private static int INITIAL_LINES_CAPACITY = 16;
     final private static int INITIAL_LINE_CAPACITY = 16;
+
+	final private static Map<Character, Character> BRACKET_PAIR = Map.of(
+		'{', '}',
+		'[', ']'
+	);
 
     private int indentSize;
     private String indent;
@@ -45,24 +53,24 @@ public class ComponentFormatter {
 	private int currentIndex;
 	private char currentChar;
 	private boolean leftTrim;
+	private List<Character> bracketHistory;
 	private char closingBracket;
 	private char closingQuote;
 	private boolean inEmptyBrackets;
 	private boolean inString;
+	private boolean inCurlyBracketString;
+	private boolean formattingError;
 
     public ComponentFormatter(int indentSize, int preCacheIndentLevel) {
 		if (indentSize < 0)
 			throw new IllegalArgumentException(String.format("Invalid 'indentSize' argument being '%s' when constructing '%s' object.", indentSize, this.getClass().getName()));
 
         this.indentSize = indentSize;
+		this.formattingError = false;
 
         this.calculateIndent();
 		this.preCacheIndent(preCacheIndentLevel);
     }
-
-	public ComponentFormatter(int indentSize) {
-		this(indentSize, ComponentFormatter.PRE_CACHE_INDENT_LEVEL);
-	}
 
     private void calculateIndent() {
         StringBuilder indentBuilder = new StringBuilder(this.indentSize);
@@ -94,15 +102,7 @@ public class ComponentFormatter {
 	}
 
     public List<String> formatComponentValue(String componentValue) {
-		this.componentValue = componentValue;
-		this.lines = new ArrayList<String>(ComponentFormatter.INITIAL_LINES_CAPACITY);
-		this.line = new StringBuilder(ComponentFormatter.INITIAL_LINE_CAPACITY);
-		this.indentLevel = 0;
-		this.leftTrim = false;
-		this.closingBracket = ' ';
-		this.closingQuote = ' ';
-		this.inEmptyBrackets = false;
-		this.inString = false;
+		this.initializeFormattingVariables(componentValue);
 
 		for (this.currentIndex = 0; this.currentIndex < componentValue.length(); this.currentIndex++) {
 			this.currentChar = this.componentValue.charAt(this.currentIndex);
@@ -113,13 +113,35 @@ public class ComponentFormatter {
 		if (this.line.length() != 0)
 			this.lines.add(this.line.toString());
 
+		if (this.formattingError || this.indentLevel != 0 || this.inString || this.inCurlyBracketString) {
+			this.formattingError = true;
+			this.lines.clear();
+			this.lines.add(this.componentValue);
+		}
+
 		return this.lines;
     }
+
+	private void initializeFormattingVariables(String componentValue) {
+		this.componentValue = componentValue;
+		this.lines = new ArrayList<String>(ComponentFormatter.INITIAL_LINES_CAPACITY);
+		this.line = new StringBuilder(ComponentFormatter.INITIAL_LINE_CAPACITY);
+		this.indentLevel = 0;
+		this.leftTrim = false;
+		this.bracketHistory = new ArrayList<Character>(ComponentFormatter.INITIAL_BRACKET_HISTORY_CAPACITY);
+		this.closingBracket = ' ';
+		this.closingQuote = ' ';
+		this.inEmptyBrackets = false;
+		this.inString = false;
+		this.inCurlyBracketString = false;
+		this.formattingError = false;
+	}
 
 	private void processCharacter() {
 		if (this.inEmptyBrackets) {
 			this.appendCurrentCharacter();
 			this.inEmptyBrackets = false;
+			this.inCurlyBracketString = false;
 			return;
 		}
 
@@ -129,6 +151,8 @@ public class ComponentFormatter {
 
 		if (this.inString)
 			this.formatInsideOfString();
+		else if (this.inCurlyBracketString)
+			this.formatInsideOfCurlyBracketString();
 		else
 			this.formatOutsideOfString();
 
@@ -142,12 +166,21 @@ public class ComponentFormatter {
 		}
 	}
 
+	private void formatInsideOfCurlyBracketString() {
+		switch (this.currentChar) {
+			case '}' -> this.processCurlyBracketStringEnd();
+			default -> this.appendCurrentCharacter();
+		}
+	}
+
 	private void formatOutsideOfString() {
 		switch (this.currentChar) {
 			case ',', ';' -> this.processComma();
 			case '{', '[' -> this.processOpeningBracket();
 			case '}', ']' -> this.processClosingBracket();
 			case '"', '\'' -> this.processQuote();
+			case 'l' -> this.processCurlyBracketStringBegin("literal");
+			case 'k' -> this.processCurlyBracketStringBegin("keybind");
 			default -> this.appendCurrentCharacter();
 		}
 	}
@@ -158,18 +191,28 @@ public class ComponentFormatter {
 	}
 
 	private void processOpeningBracket() {
-		if (this.currentIndex + 1 < this.componentValue.length() && (this.componentValue.charAt(this.currentIndex + 1) == '}' || this.componentValue.charAt(this.currentIndex + 1) == ']')) {
+		if (this.currentIndex + 1 < this.componentValue.length() && (ComponentFormatter.BRACKET_PAIR.get(this.currentChar) == this.componentValue.charAt(this.currentIndex + 1))) {
 			this.appendCurrentCharacter();
 			this.inEmptyBrackets = true;
 			return;
 		}
 
+		this.bracketHistory.add(this.currentChar);
 		this.indentLevel++;
 		this.appendCurrentCharacter();
 		this.prepareNewLine();
 	}
 
 	private void processClosingBracket() {
+		if (!this.bracketHistory.isEmpty()) {
+			if (this.currentChar != ComponentFormatter.BRACKET_PAIR.get(this.bracketHistory.getLast())) {
+				this.formattingError = true;
+				this.appendCurrentCharacter();
+				return;
+			}
+			this.bracketHistory.removeLast();
+		}
+
 		this.indentLevel--;
 		this.closingBracket = this.currentChar;
 		this.prepareNewLine();
@@ -183,6 +226,35 @@ public class ComponentFormatter {
 			this.inString = false;
 
 		this.appendCurrentCharacter();
+	}
+
+	private void processCurlyBracketStringBegin(String beginSequence) {
+		int beginSequenceLength = beginSequence.length();
+
+		if (this.currentIndex + beginSequenceLength >= this.componentValue.length()) {
+			this.appendCurrentCharacter();
+			return;
+		}
+
+		String subSequence = this.componentValue.substring(this.currentIndex, this.currentIndex + beginSequenceLength + 1);
+
+		if (!(beginSequence + '{').equals(subSequence)) {
+			this.appendCurrentCharacter();
+			return;
+		}
+
+		this.line.append(beginSequence);
+		this.currentIndex += beginSequenceLength;
+		this.inCurlyBracketString = true;
+
+		this.currentChar = '{';
+		this.processOpeningBracket();
+	}
+
+	private void processCurlyBracketStringEnd() {
+		this.inCurlyBracketString = false;
+
+		this.processClosingBracket();
 	}
 
 	private void appendCurrentCharacter() {
@@ -206,5 +278,9 @@ public class ComponentFormatter {
 		}
 
 		this.leftTrim = true;
+	}
+
+	public boolean isFormattingError() {
+		return this.formattingError;
 	}
 }
