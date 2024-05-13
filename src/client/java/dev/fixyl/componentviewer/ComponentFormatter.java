@@ -52,7 +52,7 @@ public class ComponentFormatter {
 
     public ComponentFormatter(int indentSize, int preCacheIndentLevel) {
 		if (indentSize < 0)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(String.format("Invalid 'indentSize' argument being '%s' when constructing '%s' object.", indentSize, this.getClass().getName()));
 
         this.indentSize = indentSize;
 
@@ -75,7 +75,7 @@ public class ComponentFormatter {
 
 	public void preCacheIndent(int preCacheIndentLevel) {
 		if (preCacheIndentLevel < 0)
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException(String.format("Invalid 'preCacheIndentLevel' argument being '%s' when calling 'preCacheIndent' of class '%s'.", preCacheIndentLevel, this.getClass().getName()));
 
 		for (int indentLevel = 1; indentLevel <= preCacheIndentLevel; indentLevel++) {
 			if (!this.indentCache.containsKey(indentLevel))
