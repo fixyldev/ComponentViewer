@@ -10,7 +10,7 @@
 "Component Viewer" is a mod for Minecraft Java Edition that adds functionality to view components on item stacks. If the component value is extensively large, overflowing the screen width or height, it is recommended to use a mod like [Tooltip Scroll](https://modrinth.com/mod/tooltip-scroll) or similar mods.
 
 ## ✨ Features
-- Client-side only
+- Client-side only.
 - Displays all components of an item stack in the tooltips.
 - Components are sorted in alphabetical order.
 - Nicely formatted component values.
@@ -27,6 +27,9 @@
 ![Block Entity Data](images/block_entity_data.webp?raw=true)
 
 ![Entity Data](images/entity_data.webp?raw=true)
+
+## 🌍 Languages
+"Component Viewer" only supports **English**. Additional languages can be added using custom resourcepacks with language files. You can find language file templates [here](https://github.com/fixyldev/ComponentViewer/tree/main/assets/lang).
 
 ## 🔍 Useful Resources
 - 🐛 [**Issues**](https://github.com/fixyldev/ComponentViewer/issues): For reporting bugs or suggesting features.
