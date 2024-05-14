@@ -108,6 +108,6 @@ public class ComponentViewer implements ClientModInitializer {
 		}
 
 		if (ComponentViewer.componentFormatter.isFormattingError())
-			lines.add((Text)Text.translatable("componentviewer.formatter.error").formatted(Formatting.GRAY));
+			lines.add((Text)Text.translatable("componentviewer.tooltips.formatter.error").formatted(Formatting.GRAY));
 	}
 }
