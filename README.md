@@ -28,6 +28,9 @@
 
 ![Entity Data](images/entity_data.webp?raw=true)
 
+## 🌍 Languages
+"Component Viewer" only supports **English**. Additional languages can be added using custom resourcepacks with language files. You can find language file templates [here](https://github.com/fixyldev/ComponentViewer/tree/main/assets/lang).
+
 ## 🔍 Useful Resources
 - 🐛 [**Issues**](https://github.com/fixyldev/ComponentViewer/issues): For reporting bugs or suggesting features.
 - 📝 [**Changelog**](https://modrinth.com/mod/component-viewer/changelog): Keep track of all notable changes made to the mod.
