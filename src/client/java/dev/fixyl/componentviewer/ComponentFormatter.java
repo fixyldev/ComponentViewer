@@ -181,6 +181,7 @@ public class ComponentFormatter {
 			case '"', '\'' -> this.processQuote();
 			case 'l' -> this.processCurlyBracketStringBegin("literal");
 			case 'k' -> this.processCurlyBracketStringBegin("keybind");
+			case 'p' -> this.processCurlyBracketStringBegin("pattern");
 			default -> this.appendCurrentCharacter();
 		}
 	}
