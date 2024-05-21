@@ -18,6 +18,9 @@
 	"entrypoints": {
 		"client": [
 			"dev.fixyl.componentviewer.ComponentViewer"
+		],
+		"modmenu": [
+			"dev.fixyl.componentviewer.modmenu.ModMenu"
 		]
 	},
 	"depends": {

@@ -22,13 +22,17 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer;
+package dev.fixyl.componentviewer.component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+@Environment(EnvType.CLIENT)
 public class ComponentFormatter {
 	final public static int DEFAULT_INDENT_SIZE = 4;
 	final public static int DEFAULT_PRE_CACHE_INDENT_LEVEL = 8;
