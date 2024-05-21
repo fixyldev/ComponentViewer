@@ -27,7 +27,8 @@ package dev.fixyl.componentviewer.config;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-import dev.fixyl.componentviewer.option.*;
+import dev.fixyl.componentviewer.option.DisplayOption;
+import dev.fixyl.componentviewer.option.ModeOption;
 
 @Environment(EnvType.CLIENT)
 public class ConfigJson {

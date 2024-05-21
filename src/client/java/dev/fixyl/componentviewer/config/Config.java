@@ -27,8 +27,13 @@ package dev.fixyl.componentviewer.config;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 
-import dev.fixyl.componentviewer.config.type.*;
-import dev.fixyl.componentviewer.option.*;
+import dev.fixyl.componentviewer.config.type.AbstractConfig;
+import dev.fixyl.componentviewer.config.type.BooleanConfig;
+import dev.fixyl.componentviewer.config.type.DisplayConfig;
+import dev.fixyl.componentviewer.config.type.IntegerConfig;
+import dev.fixyl.componentviewer.config.type.ModeConfig;
+import dev.fixyl.componentviewer.option.DisplayOption;
+import dev.fixyl.componentviewer.option.ModeOption;
 
 @Environment(EnvType.CLIENT)
 public class Config {

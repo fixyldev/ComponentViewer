@@ -51,6 +51,7 @@ public class ConfigScreen extends SimpleOptionsScreen {
     @Override
     public void close() {
         ComponentViewer.CONFIG_MANAGER.writeConfigFile();
+
         super.close();
     }
 }
