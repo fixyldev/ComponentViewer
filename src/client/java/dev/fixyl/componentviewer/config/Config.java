@@ -24,9 +24,6 @@
 
 package dev.fixyl.componentviewer.config;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 import dev.fixyl.componentviewer.config.type.AbstractConfig;
 import dev.fixyl.componentviewer.config.type.BooleanConfig;
 import dev.fixyl.componentviewer.config.type.DisplayConfig;
@@ -35,12 +32,10 @@ import dev.fixyl.componentviewer.config.type.ModeConfig;
 import dev.fixyl.componentviewer.option.DisplayOption;
 import dev.fixyl.componentviewer.option.ModeOption;
 
-@Environment(EnvType.CLIENT)
 public class Config {
     public static final AbstractConfig<ModeOption> MODE = new ModeConfig(ModeOption.NBT, "componentviewer.config.mode", "componentviewer.config.mode.tooltip");
     public static final AbstractConfig<DisplayOption> DISPLAY = new DisplayConfig(DisplayOption.HOLD, "componentviewer.config.display", "componentviewer.config.display.tooltip");
     public static final AbstractConfig<Integer> INDENT_SIZE = new IntegerConfig(4, 0, 8, "componentviewer.config.indent_size", "componentviewer.config.indent_size.tooltip", "componentviewer.config.indent_size.value", "componentviewer.config.indent_size.off");
-    public static final AbstractConfig<Boolean> CHANGED_COMPONENTS = new BooleanConfig(false, "componentviewer.config.changed_components", "componentviewer.config.changed_components.tooltip");
+    public static final AbstractConfig<Boolean> COMPONENT_CHANGES = new BooleanConfig(false, "componentviewer.config.component_changes", "componentviewer.config.component_changes.tooltip");
     public static final AbstractConfig<Boolean> ADVANCED_TOOLTIPS = new BooleanConfig(false, "componentviewer.config.advanced_tooltips", "componentviewer.config.advanced_tooltips.tooltip");
-    public static final AbstractConfig<Boolean> IGNORE_ERRORS = new BooleanConfig(false, "componentviewer.config.ignore_errors", "componentviewer.config.ignore_errors.tooltip");
 }

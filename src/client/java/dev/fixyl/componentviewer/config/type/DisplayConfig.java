@@ -28,15 +28,11 @@ import java.util.Arrays;
 
 import com.mojang.serialization.Codec;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
 
 import dev.fixyl.componentviewer.option.DisplayOption;
 
-@Environment(EnvType.CLIENT)
 public class DisplayConfig extends AbstractConfig<DisplayOption> {
     public DisplayConfig(DisplayOption defaultValue, String translationKey, String tooltipTranslationKey) {
         super(defaultValue, translationKey, tooltipTranslationKey);

@@ -22,31 +22,46 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.screen;
+package dev.fixyl.componentviewer.component.formatter;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.option.SimpleOptionsScreen;
-import net.minecraft.client.option.SimpleOption;
-import net.minecraft.text.Text;
-
-import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Config;
+import net.minecraft.util.Formatting;
 
-public class ConfigScreen extends SimpleOptionsScreen {
-    public ConfigScreen(Screen parentScreen) {
-        super(parentScreen, ComponentViewer.minecraftClient.options, (Text)Text.translatable("componentviewer.config.title"), new SimpleOption[] {
-            Config.MODE.getSimpleOption(),
-            Config.DISPLAY.getSimpleOption(),
-            Config.INDENT_SIZE.getSimpleOption(),
-            Config.COMPONENT_CHANGES.getSimpleOption(),
-            Config.ADVANCED_TOOLTIPS.getSimpleOption()
-        });
+public abstract class AbstractFormatter {
+    public static final int INITIAL_TEXT_LIST_CAPACITY = 16;
+    protected static final Formatting GENERAL_FORMATTING = Formatting.DARK_GRAY;
+
+    private static boolean formattingError;
+
+    private Integer indentSize;
+    private String indentPrefix;
+
+    public AbstractFormatter() {
+        AbstractFormatter.setFormattingError(false);
+        this.setIndentSize(Config.INDENT_SIZE.getValue());
     }
 
-    @Override
-    public void close() {
-        ComponentViewer.configManager.writeConfigFile();
+    public void setIndentSize(Integer indentSize) {
+        if (indentSize < 0)
+            indentSize = 0;
 
-        super.close();
+        this.indentSize = indentSize;
+        this.indentPrefix = " ".repeat(indentSize);
+    }
+
+    public Integer getIndentSize() {
+        return this.indentSize;
+    }
+
+    public String getIndentPrefix() {
+        return this.indentPrefix;
+    }
+
+    protected static void setFormattingError(boolean isFormattingError) {
+        AbstractFormatter.formattingError = isFormattingError;
+    }
+
+    public static boolean isFormattingError() {
+        return AbstractFormatter.formattingError;
     }
 }

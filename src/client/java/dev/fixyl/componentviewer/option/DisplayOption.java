@@ -26,13 +26,9 @@ package dev.fixyl.componentviewer.option;
 
 import java.util.function.IntFunction;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 import net.minecraft.util.TranslatableOption;
 import net.minecraft.util.function.ValueLists;
 
-@Environment(EnvType.CLIENT)
 public enum DisplayOption implements TranslatableOption {
     NEVER(0, "componentviewer.config.display.never"),
     HOLD(1, "componentviewer.config.display.hold"),

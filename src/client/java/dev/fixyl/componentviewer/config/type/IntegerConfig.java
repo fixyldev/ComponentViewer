@@ -26,13 +26,9 @@ package dev.fixyl.componentviewer.config.type;
 
 import com.mojang.serialization.Codec;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
 
-@Environment(EnvType.CLIENT)
 public class IntegerConfig extends AbstractConfig<Integer> {
     private final Integer minValue;
     private final Integer maxValue;

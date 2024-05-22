@@ -24,28 +24,22 @@
 
 package dev.fixyl.componentviewer.config;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 import dev.fixyl.componentviewer.option.DisplayOption;
 import dev.fixyl.componentviewer.option.ModeOption;
 
-@Environment(EnvType.CLIENT)
 public class ConfigJson {
     public ModeOption mode;
     public DisplayOption display;
-    public Integer indent_size;
-    public Boolean changed_components;
-    public Boolean advanced_tooltips;
-    public Boolean ignore_errors;
+    public Integer indentSize;
+    public Boolean componentChanges;
+    public Boolean advancedTooltips;
 
     public void setConfigValues() {
         Config.MODE.setValue(this.mode);
         Config.DISPLAY.setValue(this.display);
-        Config.INDENT_SIZE.setValue(this.indent_size);
-        Config.CHANGED_COMPONENTS.setValue(this.changed_components);
-        Config.ADVANCED_TOOLTIPS.setValue(this.advanced_tooltips);
-        Config.IGNORE_ERRORS.setValue(this.ignore_errors);
+        Config.INDENT_SIZE.setValue(this.indentSize);
+        Config.COMPONENT_CHANGES.setValue(this.componentChanges);
+        Config.ADVANCED_TOOLTIPS.setValue(this.advancedTooltips);
     }
 
     public static ConfigJson getConfigValues() {
@@ -53,10 +47,9 @@ public class ConfigJson {
 
         configJson.mode = Config.MODE.getValue();
         configJson.display = Config.DISPLAY.getValue();
-        configJson.indent_size = Config.INDENT_SIZE.getValue();
-        configJson.changed_components = Config.CHANGED_COMPONENTS.getValue();
-        configJson.advanced_tooltips = Config.ADVANCED_TOOLTIPS.getValue();
-        configJson.ignore_errors = Config.IGNORE_ERRORS.getValue();
+        configJson.indentSize = Config.INDENT_SIZE.getValue();
+        configJson.componentChanges = Config.COMPONENT_CHANGES.getValue();
+        configJson.advancedTooltips = Config.ADVANCED_TOOLTIPS.getValue();
 
         return configJson;
     }

@@ -28,15 +28,11 @@ import java.util.Arrays;
 
 import com.mojang.serialization.Codec;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
 
 import dev.fixyl.componentviewer.option.ModeOption;
 
-@Environment(EnvType.CLIENT)
 public class ModeConfig extends AbstractConfig<ModeOption> {
     public ModeConfig(ModeOption defaultValue, String translationKey, String tooltipTranslationKey) {
         super(defaultValue, translationKey, tooltipTranslationKey);

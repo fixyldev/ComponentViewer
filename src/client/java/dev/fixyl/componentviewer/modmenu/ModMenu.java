@@ -27,12 +27,8 @@ package dev.fixyl.componentviewer.modmenu;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 import dev.fixyl.componentviewer.screen.ConfigScreen;
 
-@Environment(EnvType.CLIENT)
 public class ModMenu implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {

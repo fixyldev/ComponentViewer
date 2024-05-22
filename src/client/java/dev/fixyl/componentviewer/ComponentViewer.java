@@ -25,89 +25,41 @@
 package dev.fixyl.componentviewer;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.item.TooltipType;
-import net.minecraft.component.Component;
-import net.minecraft.component.ComponentMap;
-import net.minecraft.item.Item.TooltipContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.fabricmc.loader.api.FabricLoader;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import net.minecraft.client.MinecraftClient;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import dev.fixyl.componentviewer.component.ComponentManager;
+import dev.fixyl.componentviewer.config.ConfigManager;
+import dev.fixyl.componentviewer.keybind.KeyBindings;
+import dev.fixyl.componentviewer.screen.ConfigScreen;
 
 public class ComponentViewer implements ClientModInitializer {
-	final private static int INITIAL_COMPONENT_LIST_CAPACITY = 16;
+	public static final MinecraftClient minecraftClient = MinecraftClient.getInstance();
+	public static final FabricLoader fabricLoader = FabricLoader.getInstance();
 
-	private static int componentIndex = 0;
-	private static boolean previousAltDown = false;
-	private static ComponentFormatter componentFormatter = new ComponentFormatter(ComponentFormatter.DEFAULT_INDENT_SIZE, ComponentFormatter.DEFAULT_PRE_CACHE_INDENT_LEVEL);
+	public static final Logger logger = LoggerFactory.getLogger("ComponentViewer");
+
+	public static final ConfigManager configManager = new ConfigManager();
+	public static final ComponentManager componentManager = new ComponentManager();
+
+	public static final KeyBindings keyBindings = new KeyBindings();
 
 	@Override
 	public void onInitializeClient() {
-		ItemTooltipCallback.EVENT.register(ComponentViewer::addComponentsTooltip);
-	}
+		ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipType, tooltipLines) -> {
+			ComponentViewer.componentManager.itemTooltipCallbackListener(itemStack, tooltipContext, tooltipType, tooltipLines);
+		});
 
-	private static void addComponentsTooltip(ItemStack itemStack, TooltipContext tooltipContext, TooltipType tooltipType, List<Text> lines) {
-		if (!Screen.hasControlDown())
-			return;
-
-		ComponentMap componentMap = itemStack.getComponents();
-
-		if (componentMap.size() == 0) {
-			lines.add((Text)Text.empty());
-			lines.add((Text)Text.translatable("componentviewer.tooltips.components.empty").formatted(Formatting.GRAY));
-			return;
-		}
-
-		List<Component<?>> componentList = new ArrayList<Component<?>>(ComponentViewer.INITIAL_COMPONENT_LIST_CAPACITY);
-		for (Component<?> component : componentMap)
-			componentList.add(component);
-		componentList.sort(Comparator.comparing(component -> component.type().toString()));
-
-		if (!Screen.hasAltDown())
-			ComponentViewer.previousAltDown = false;
-
-		if (!ComponentViewer.previousAltDown && Screen.hasAltDown()) {
-			if (Screen.hasShiftDown())
-				ComponentViewer.componentIndex--;
-			else
-				ComponentViewer.componentIndex++;
-				ComponentViewer.previousAltDown = true;
-		}
-
-		if (ComponentViewer.componentIndex >= componentMap.size())
-			ComponentViewer.componentIndex = 0;
-		else if (ComponentViewer.componentIndex < 0)
-			ComponentViewer.componentIndex = componentMap.size() - 1;
-
-		lines.add((Text)Text.empty());
-		lines.add((Text)Text.translatable("componentviewer.tooltips.components.header").formatted(Formatting.GRAY));
-
-		for (int index = 0; index < componentList.size(); index++) {
-			String componentType = componentList.get(index).type().toString();
-
-			Text line;
-			if (index == ComponentViewer.componentIndex)
-				line = (Text)Text.literal("  " + componentType).formatted(Formatting.DARK_GREEN);
-			else
-				line = (Text)Text.literal(" " + componentType).formatted(Formatting.DARK_GRAY);
-
-			lines.add(line);
-		}
-
-		lines.add((Text)Text.empty());
-		lines.add((Text)Text.translatable("componentviewer.tooltips.components.value").formatted(Formatting.GRAY));
-
-		String componentValue = componentList.get(ComponentViewer.componentIndex).value().toString();
-		for (String componentValuePart : ComponentViewer.componentFormatter.formatComponentValue(componentValue)) {
-			lines.add((Text)Text.literal(" " + componentValuePart).formatted(Formatting.DARK_GRAY));
-		}
-
-		if (ComponentViewer.componentFormatter.isFormattingError())
-			lines.add((Text)Text.translatable("componentviewer.tooltips.formatter.error").formatted(Formatting.GRAY));
+		ClientTickEvents.END_CLIENT_TICK.register(minecraftClient -> {
+			if (ComponentViewer.keyBindings.CONFIG_KEY.isPressed()) {
+				minecraftClient.setScreen(new ConfigScreen(null));
+			}
+		});
 	}
 }

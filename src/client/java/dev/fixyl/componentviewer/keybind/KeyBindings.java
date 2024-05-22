@@ -22,31 +22,18 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.screen;
+package dev.fixyl.componentviewer.keybind;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.option.SimpleOptionsScreen;
-import net.minecraft.client.option.SimpleOption;
-import net.minecraft.text.Text;
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
-import dev.fixyl.componentviewer.ComponentViewer;
-import dev.fixyl.componentviewer.config.Config;
+import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.util.InputUtil;
 
-public class ConfigScreen extends SimpleOptionsScreen {
-    public ConfigScreen(Screen parentScreen) {
-        super(parentScreen, ComponentViewer.minecraftClient.options, (Text)Text.translatable("componentviewer.config.title"), new SimpleOption[] {
-            Config.MODE.getSimpleOption(),
-            Config.DISPLAY.getSimpleOption(),
-            Config.INDENT_SIZE.getSimpleOption(),
-            Config.COMPONENT_CHANGES.getSimpleOption(),
-            Config.ADVANCED_TOOLTIPS.getSimpleOption()
-        });
-    }
-
-    @Override
-    public void close() {
-        ComponentViewer.configManager.writeConfigFile();
-
-        super.close();
-    }
+public class KeyBindings {
+    public final KeyBinding CONFIG_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+        "componentviewer.keybind.config",
+        InputUtil.Type.KEYSYM,
+        InputUtil.GLFW_KEY_J,
+        "componentviewer.keybind.category"
+    ));
 }

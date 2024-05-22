@@ -24,12 +24,8 @@
 
 package dev.fixyl.componentviewer.config.type;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 import net.minecraft.client.option.SimpleOption;
 
-@Environment(EnvType.CLIENT)
 public abstract class AbstractConfig<T> {
     protected SimpleOption<T> simpleOption;
     protected final T defaultValue;

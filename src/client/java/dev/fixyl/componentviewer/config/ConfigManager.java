@@ -29,16 +29,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonParseException;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 import dev.fixyl.componentviewer.ComponentViewer;
 
-@Environment(EnvType.CLIENT)
 public class ConfigManager {
     private static final String CONFIG_FILENAME = "componentviewer-config.json";
 
@@ -46,13 +43,15 @@ public class ConfigManager {
     private final File configFile;
 
     public ConfigManager() {
-        this.gson = new GsonBuilder().setPrettyPrinting().create();
-        this.configFile = ComponentViewer.FABRIC_LOADER.getConfigDir().resolve(ConfigManager.CONFIG_FILENAME).toFile();
+        this.gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().create();
+        this.configFile = ComponentViewer.fabricLoader.getConfigDir().resolve(ConfigManager.CONFIG_FILENAME).toFile();
+
+        this.readConfigFile();
     }
 
     public void readConfigFile() {
         if (!this.configFile.exists()) {
-            ComponentViewer.LOGGER.info("No config file present! Creating new config file.");
+            ComponentViewer.logger.info("No config file present! Creating new config file.");
             this.writeConfigFile();
             return;
         }
@@ -66,7 +65,7 @@ public class ConfigManager {
 
             configJson.setConfigValues();
         } catch (IOException | JsonParseException e) {
-            ComponentViewer.LOGGER.error("Error when reading/parsing config file! Re-creating config file.", e);
+            ComponentViewer.logger.error("Error when reading/parsing config file! Re-creating config file.", e);
             this.writeConfigFile();
         }
     }
@@ -75,7 +74,7 @@ public class ConfigManager {
         try (FileWriter configFileWriter = new FileWriter(this.configFile)) {
             this.gson.toJson(ConfigJson.getConfigValues(), configFileWriter);
         } catch (IOException | JsonParseException e) {
-            ComponentViewer.LOGGER.error("Error when writing config file! Config will no be saved across sessions!", e);
+            ComponentViewer.logger.error("Error when writing config file! Config will no be saved across sessions!", e);
         }
     }
 }

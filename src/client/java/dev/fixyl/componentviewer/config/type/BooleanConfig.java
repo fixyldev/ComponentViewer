@@ -24,13 +24,9 @@
 
 package dev.fixyl.componentviewer.config.type;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
 
-@Environment(EnvType.CLIENT)
 public class BooleanConfig extends AbstractConfig<Boolean> {
     public BooleanConfig(Boolean defaultValue, String translationKey, String tooltipTranslationKey) {
         super(defaultValue, translationKey, tooltipTranslationKey);
