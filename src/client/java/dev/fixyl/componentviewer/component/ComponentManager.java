@@ -39,7 +39,7 @@ import net.minecraft.util.Formatting;
 
 import dev.fixyl.componentviewer.component.formatter.AbstractFormatter;
 import dev.fixyl.componentviewer.component.formatter.ClassFormatter;
-import dev.fixyl.componentviewer.component.formatter.NbtFormatter;
+import dev.fixyl.componentviewer.component.formatter.SnbtFormatter;
 import dev.fixyl.componentviewer.config.Config;
 import dev.fixyl.componentviewer.option.DisplayOption;
 import dev.fixyl.componentviewer.option.ModeOption;
@@ -48,7 +48,7 @@ public class ComponentManager {
     private static final int INITIAL_COMPONENT_LIST_CAPACITY = 16;
     private static final Formatting CONTRAST_FORMATTING = Formatting.GRAY;
 
-    private final NbtFormatter nbtFormatter;
+    private final SnbtFormatter snbtFormatter;
     private final ClassFormatter classFormatter;
 
     private int componentIndex;
@@ -58,7 +58,7 @@ public class ComponentManager {
     private List<Text> tooltipLines;
 
     public ComponentManager() {
-        this.nbtFormatter = new NbtFormatter();
+        this.snbtFormatter = new SnbtFormatter();
         this.classFormatter = new ClassFormatter();
 
         this.componentIndex = 0;
@@ -83,7 +83,7 @@ public class ComponentManager {
 
         if (componentList.isEmpty()) {
             this.tooltipLines.add((Text)Text.empty());
-			this.tooltipLines.add((Text)Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.empty.changed" : "componentviewer.tooltips.components.empty.general").formatted(ComponentManager.CONTRAST_FORMATTING));
+			this.tooltipLines.add((Text)Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.empty.changes" : "componentviewer.tooltips.components.empty.general").formatted(ComponentManager.CONTRAST_FORMATTING));
 			return;
         }
 
@@ -134,14 +134,14 @@ public class ComponentManager {
 
     private void displayComponentTypes() {
 		this.tooltipLines.add((Text)Text.empty());
-		this.tooltipLines.add((Text)Text.translatable("componentviewer.tooltips.components.header").formatted(ComponentManager.CONTRAST_FORMATTING));
+		this.tooltipLines.add((Text)Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.header.changes" : "componentviewer.tooltips.components.header.general").formatted(ComponentManager.CONTRAST_FORMATTING));
 
 		for (int index = 0; index < this.componentList.size(); index++) {
 			String componentType = this.componentList.get(index).type().toString();
 
 			Text line;
 			if (index == this.componentIndex)
-				line = (Text)Text.literal("  " + componentType).formatted(Formatting.DARK_GREEN);
+				line = (Text)Text.literal((this.componentList.size() == 1 ? " " : "  ") + componentType).formatted(Formatting.DARK_GREEN);
 			else
 				line = (Text)Text.literal(" " + componentType).formatted(Formatting.DARK_GRAY);
 
@@ -153,14 +153,14 @@ public class ComponentManager {
         Component<?> component = this.componentList.get(this.componentIndex);
         List<Text> textList = new ArrayList<Text>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
 
-        if (Config.MODE.getValue() == ModeOption.NBT) {
+        if (Config.MODE.getValue() == ModeOption.SNBT) {
             if (component.type().getCodec() == null) {
                 this.tooltipLines.add((Text)Text.empty());
                 this.tooltipLines.add((Text)Text.translatable("componentviewer.tooltips.components.error.no_codec").formatted(ComponentManager.CONTRAST_FORMATTING));
                 return;
             }
 
-            textList = this.nbtFormatter.formatGeneral(component);
+            textList = this.snbtFormatter.formatGeneral(component);
         } else {
             textList = this.classFormatter.formatGeneral(component);
         }

@@ -30,7 +30,7 @@ import net.minecraft.util.TranslatableOption;
 import net.minecraft.util.function.ValueLists;
 
 public enum ModeOption implements TranslatableOption {
-    NBT(0, "componentviewer.config.mode.nbt"),
+    SNBT(0, "componentviewer.config.mode.snbt"),
     CLASS(1, "componentviewer.config.mode.class");
 
     private static final IntFunction<ModeOption> BY_ID;

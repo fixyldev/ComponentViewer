@@ -38,10 +38,10 @@ import net.minecraft.text.Text;
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Config;
 
-public class NbtFormatter extends AbstractFormatter {
+public class SnbtFormatter extends AbstractFormatter {
     private NbtOrderedStringFormatter generalFormatter;
 
-    public NbtFormatter() {
+    public SnbtFormatter() {
         this.initializeNewFormatter();
     }
 
