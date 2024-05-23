@@ -32,22 +32,23 @@ import java.util.Map;
 import net.minecraft.component.Component;
 import net.minecraft.text.Text;
 
+import dev.fixyl.componentviewer.component.ComponentDisplay;
 import dev.fixyl.componentviewer.config.Config;
 
 public class ClassFormatter extends AbstractFormatter {
-	private static final int INITIAL_BRACKET_HISTORY_CAPACITY = 12;
 	private static final int INITIAL_INDENT_CACHE_CAPACITY = 12;
     private static final int INITIAL_LINE_CAPACITY = 16;
+	private static final int INITIAL_BRACKET_HISTORY_CAPACITY = 12;
+
 	private static final Map<Character, Character> BRACKET_PAIR = Map.of(
 		'{', '}',
 		'[', ']'
 	);
 
-	private Map<Integer, String> indentCache = new HashMap<Integer, String>(ClassFormatter.INITIAL_INDENT_CACHE_CAPACITY);
-	private String componentValue;
+	private final Map<Integer, String> indentCache;
 
+	private String componentValue;
 	private StringBuilder line;
-	private List<Text> textList;
 
 	private int indentLevel;
 	private int currentIndex;
@@ -59,6 +60,12 @@ public class ClassFormatter extends AbstractFormatter {
 	private boolean inEmptyBrackets;
 	private boolean inString;
 	private boolean inCurlyBracketString;
+
+	private boolean formattingError;
+
+	public ClassFormatter() {
+		this.indentCache = new HashMap<Integer, String>(ClassFormatter.INITIAL_INDENT_CACHE_CAPACITY);
+	}
 
     @Override
     public void setIndentSize(Integer indentSize) {
@@ -73,17 +80,15 @@ public class ClassFormatter extends AbstractFormatter {
 
 	private String getIndentPrefixFromLevel(int indentLevel) {
 		if (indentLevel <= 0)
-			return " ";
+			return ComponentDisplay.GENERAL_INDENT_PREFIX;
 
 		if (this.indentCache.containsKey(indentLevel))
 			return this.indentCache.get(indentLevel);
 
-		System.out.println("ADDED INDENT CHANGE LEVEL: " + indentLevel);
-		return this.indentCache.put(indentLevel, " " + this.getIndentPrefix().repeat(indentLevel));
+		return this.indentCache.put(indentLevel, ComponentDisplay.GENERAL_INDENT_PREFIX + this.getIndentPrefix().repeat(indentLevel));
 	}
 
     public List<Text> formatGeneral(Component<?> component) {
-		AbstractFormatter.setFormattingError(false);
 		this.setIndentSize(Config.INDENT_SIZE.getValue());
 
 		this.initializeFormattingVariables(component);
@@ -92,7 +97,7 @@ public class ClassFormatter extends AbstractFormatter {
 
 		if (Config.INDENT_SIZE.getValue() == 0) {
 			this.line.append(this.componentValue);
-			this.textList.add((Text)Text.literal(this.line.toString()).formatted(AbstractFormatter.GENERAL_FORMATTING));
+			this.textList.add((Text)Text.literal(this.line.toString()).formatted(ComponentDisplay.GENERAL_FORMATTING));
 
 			return this.textList;
 		}
@@ -104,12 +109,13 @@ public class ClassFormatter extends AbstractFormatter {
 		}
 
 		if (this.line.length() != 0)
-			this.textList.add((Text)Text.literal(this.line.toString()).formatted(AbstractFormatter.GENERAL_FORMATTING));
+			this.textList.add((Text)Text.literal(this.line.toString()).formatted(ComponentDisplay.GENERAL_FORMATTING));
 
-		if (AbstractFormatter.isFormattingError() || this.indentLevel != 0 || this.inString || this.inCurlyBracketString) {
-			AbstractFormatter.setFormattingError(true);
+		if (this.formattingError || this.indentLevel != 0 || this.inString || this.inCurlyBracketString) {
 			this.textList.clear();
-			this.textList.add((Text)Text.literal(this.getIndentPrefixFromLevel(0) + this.componentValue).formatted(AbstractFormatter.GENERAL_FORMATTING));
+			this.textList.add((Text)Text.literal(this.getIndentPrefixFromLevel(0) + this.componentValue).formatted(ComponentDisplay.GENERAL_FORMATTING));
+			this.textList.add((Text)Text.empty());
+			this.textList.add((Text)Text.translatable("componentviewer.tooltips.components.error.class_formatting").formatted(ComponentDisplay.HEADER_FORMATTING));
 		}
 
 		return this.textList;
@@ -129,6 +135,8 @@ public class ClassFormatter extends AbstractFormatter {
 		this.inEmptyBrackets = false;
 		this.inString = false;
 		this.inCurlyBracketString = false;
+
+		this.formattingError = false;
 	}
 
 	private void processCharacter() {
@@ -201,7 +209,7 @@ public class ClassFormatter extends AbstractFormatter {
 	private void processClosingBracket() {
 		if (!this.bracketHistory.isEmpty()) {
 			if (this.currentChar != ClassFormatter.BRACKET_PAIR.get(this.bracketHistory.getLast())) {
-				AbstractFormatter.setFormattingError(true);
+				this.formattingError = true;
 				this.appendCurrentCharacter();
 				return;
 			}
@@ -257,7 +265,7 @@ public class ClassFormatter extends AbstractFormatter {
 	}
 
 	private void prepareNewLine() {
-		this.textList.add((Text)Text.literal(this.line.toString()).formatted(AbstractFormatter.GENERAL_FORMATTING));
+		this.textList.add((Text)Text.literal(this.line.toString()).formatted(ComponentDisplay.GENERAL_FORMATTING));
 		this.line.setLength(0);
 	}
 

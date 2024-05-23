@@ -26,27 +26,33 @@ package dev.fixyl.componentviewer.component.formatter;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.google.common.collect.Lists;
+import java.util.Optional;
 
 import net.minecraft.component.Component;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.visitor.NbtOrderedStringFormatter;
+import net.minecraft.nbt.visitor.NbtTextFormatter;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.text.MutableText;
 
 import dev.fixyl.componentviewer.ComponentViewer;
+import dev.fixyl.componentviewer.component.ComponentDisplay;
 import dev.fixyl.componentviewer.config.Config;
 
 public class SnbtFormatter extends AbstractFormatter {
-    private NbtOrderedStringFormatter generalFormatter;
+    private NbtTextFormatter nbtTextFormatter;
+
+    private MutableText textPart;
+
+    private boolean colored;
 
     public SnbtFormatter() {
         this.initializeNewFormatter();
     }
 
     private void initializeNewFormatter() {
-        this.generalFormatter = new NbtOrderedStringFormatter(this.getIndentPrefix(), 0, Lists.newArrayList());
+        this.nbtTextFormatter = new NbtTextFormatter(this.getIndentPrefix());
     }
 
     @Override
@@ -59,19 +65,38 @@ public class SnbtFormatter extends AbstractFormatter {
         this.initializeNewFormatter();
     }
 
-    public List<Text> formatGeneral(Component<?> component) {
-        AbstractFormatter.setFormattingError(false);
+    public List<Text> formatComponent(Component<?> component, boolean colored) {
+        this.colored = colored;
+
         this.setIndentSize(Config.INDENT_SIZE.getValue());
 
-        List<Text> textList = new ArrayList<Text>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
-
         NbtElement nbtElement = component.encode(ComponentViewer.minecraftClient.player.getRegistryManager().getOps(NbtOps.INSTANCE)).getOrThrow();
-        String[] lineArray = this.generalFormatter.apply(nbtElement).split("\n");
+        Text text = this.nbtTextFormatter.apply(nbtElement);
 
-        for (String line : lineArray) {
-            textList.add((Text)Text.literal(" " + line).formatted(AbstractFormatter.GENERAL_FORMATTING));
+        return this.processText(text);
+    }
+
+    private List<Text> processText(Text text) {
+        this.textList = new ArrayList<Text>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
+
+        this.textPart = Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX);
+        text.visit((style, string) -> this.processSegment(style, string), Style.EMPTY);
+
+        this.textList.add((Text)this.textPart);
+
+        return this.textList;
+    }
+
+    private Optional<Object> processSegment(Style style, String string) {
+        if (string.equals("\n")) {
+            this.textList.add((Text)this.textPart);
+            this.textPart = Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX);
+
+            return Optional.empty();
         }
 
-        return textList;
+        this.textPart.append((Text)Text.literal(string).setStyle(this.colored ? style : Style.EMPTY.withFormatting(ComponentDisplay.GENERAL_FORMATTING)));
+
+        return Optional.empty();
     }
 }

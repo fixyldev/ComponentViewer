@@ -35,31 +35,26 @@ import net.minecraft.component.ComponentMap;
 import net.minecraft.item.Item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
-import dev.fixyl.componentviewer.component.formatter.AbstractFormatter;
-import dev.fixyl.componentviewer.component.formatter.ClassFormatter;
-import dev.fixyl.componentviewer.component.formatter.SnbtFormatter;
 import dev.fixyl.componentviewer.config.Config;
 import dev.fixyl.componentviewer.option.DisplayOption;
-import dev.fixyl.componentviewer.option.ModeOption;
 
 public class ComponentManager {
     private static final int INITIAL_COMPONENT_LIST_CAPACITY = 16;
-    private static final Formatting CONTRAST_FORMATTING = Formatting.GRAY;
 
-    private final SnbtFormatter snbtFormatter;
-    private final ClassFormatter classFormatter;
+    private final ComponentDisplay componentDisplay;
+
+    private final List<Component<?>> componentList;
+    private final List<Component<?>> defaultComponentList;
 
     private int componentIndex;
 	private boolean previousAltDown;
 
-    private List<Component<?>> componentList;
-    private List<Text> tooltipLines;
-
     public ComponentManager() {
-        this.snbtFormatter = new SnbtFormatter();
-        this.classFormatter = new ClassFormatter();
+        this.componentDisplay = new ComponentDisplay();
+
+        this.componentList = new ArrayList<Component<?>>(ComponentManager.INITIAL_COMPONENT_LIST_CAPACITY);
+        this.defaultComponentList = new ArrayList<Component<?>>(ComponentManager.INITIAL_COMPONENT_LIST_CAPACITY);
 
         this.componentIndex = 0;
         this.previousAltDown = false;
@@ -75,43 +70,39 @@ public class ComponentManager {
             case DisplayOption.HOLD:
                 if (!Screen.hasControlDown())
                     return;
+            case DisplayOption.ALWAYS:
+                break;
             default:
+                throw new IllegalArgumentException("Illegal DisplayOption enum value: " + Config.DISPLAY.getValue());
         }
 
-        this.componentList = this.getComponents(itemStack);
-        this.tooltipLines = tooltipLines;
-
-        if (componentList.isEmpty()) {
-            this.tooltipLines.add((Text)Text.empty());
-			this.tooltipLines.add((Text)Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.empty.changes" : "componentviewer.tooltips.components.empty.general").formatted(ComponentManager.CONTRAST_FORMATTING));
-			return;
-        }
+        this.getComponents(itemStack);
 
         this.swapComponentIndex();
 
-        this.displayComponentTypes();
-        this.displayComponentValue();
+        if (!this.componentDisplay.displayComponentTypes(this.componentList, this.componentIndex, tooltipLines))
+            return;
+        this.componentDisplay.displayComponentValue(this.componentList, this.componentIndex, tooltipLines);;
     }
 
-    private List<Component<?>> getComponents(ItemStack itemStack) {
-        List<Component<?>> componentList = new ArrayList<Component<?>>(ComponentManager.INITIAL_COMPONENT_LIST_CAPACITY);
+    private void getComponents(ItemStack itemStack) {
+        this.componentList.clear();
         ComponentMap componentMap = itemStack.getComponents();
 
         for (Component<?> component : componentMap)
-            componentList.add(component);
-        componentList.sort(Comparator.comparing(component -> component.type().toString()));
+            this.componentList.add(component);
+        this.componentList.sort(Comparator.comparing(component -> component.type().toString()));
 
-        if (Config.COMPONENT_CHANGES.getValue()) {
-            List<Component<?>> defaultComponentList = new ArrayList<Component<?>>(ComponentManager.INITIAL_COMPONENT_LIST_CAPACITY);
-            ComponentMap defaultComponentMap = itemStack.getDefaultComponents();
+        if (!Config.COMPONENT_CHANGES.getValue())
+            return;
 
-            for (Component<?> defaultComponent : defaultComponentMap)
-                defaultComponentList.add(defaultComponent);
+        this.defaultComponentList.clear();
+        ComponentMap defaultComponentMap = itemStack.getDefaultComponents();
 
-            componentList.removeAll(defaultComponentList);
-        }
+        for (Component<?> defaultComponent : defaultComponentMap)
+            this.defaultComponentList.add(defaultComponent);
 
-        return componentList;
+        this.componentList.removeAll(defaultComponentList);
     }
 
     private void swapComponentIndex() {
@@ -130,47 +121,5 @@ public class ComponentManager {
             this.componentIndex = 0;
 		else if (this.componentIndex < 0)
             this.componentIndex = this.componentList.size() - 1;
-    }
-
-    private void displayComponentTypes() {
-		this.tooltipLines.add((Text)Text.empty());
-		this.tooltipLines.add((Text)Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.header.changes" : "componentviewer.tooltips.components.header.general").formatted(ComponentManager.CONTRAST_FORMATTING));
-
-		for (int index = 0; index < this.componentList.size(); index++) {
-			String componentType = this.componentList.get(index).type().toString();
-
-			Text line;
-			if (index == this.componentIndex)
-				line = (Text)Text.literal((this.componentList.size() == 1 ? " " : "  ") + componentType).formatted(Formatting.DARK_GREEN);
-			else
-				line = (Text)Text.literal(" " + componentType).formatted(Formatting.DARK_GRAY);
-
-			this.tooltipLines.add(line);
-		}
-    }
-
-    private void displayComponentValue() {
-        Component<?> component = this.componentList.get(this.componentIndex);
-        List<Text> textList = new ArrayList<Text>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
-
-        if (Config.MODE.getValue() == ModeOption.SNBT) {
-            if (component.type().getCodec() == null) {
-                this.tooltipLines.add((Text)Text.empty());
-                this.tooltipLines.add((Text)Text.translatable("componentviewer.tooltips.components.error.no_codec").formatted(ComponentManager.CONTRAST_FORMATTING));
-                return;
-            }
-
-            textList = this.snbtFormatter.formatGeneral(component);
-        } else {
-            textList = this.classFormatter.formatGeneral(component);
-        }
-
-        this.tooltipLines.add((Text)Text.empty());
-		this.tooltipLines.add((Text)Text.translatable("componentviewer.tooltips.components.value").formatted(ComponentManager.CONTRAST_FORMATTING));
-
-        this.tooltipLines.addAll(textList);
-
-        if (AbstractFormatter.isFormattingError())
-            this.tooltipLines.add((Text)Text.translatable("componentviewer.tooltips.components.error.formatting").formatted(ComponentManager.CONTRAST_FORMATTING));
     }
 }

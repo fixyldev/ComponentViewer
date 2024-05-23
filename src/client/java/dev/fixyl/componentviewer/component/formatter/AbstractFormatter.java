@@ -24,21 +24,25 @@
 
 package dev.fixyl.componentviewer.component.formatter;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.text.Text;
+
 import dev.fixyl.componentviewer.config.Config;
-import net.minecraft.util.Formatting;
 
 public abstract class AbstractFormatter {
     public static final int INITIAL_TEXT_LIST_CAPACITY = 16;
-    protected static final Formatting GENERAL_FORMATTING = Formatting.DARK_GRAY;
-
-    private static boolean formattingError;
 
     private Integer indentSize;
     private String indentPrefix;
 
+    protected List<Text> textList;
+
     public AbstractFormatter() {
-        AbstractFormatter.setFormattingError(false);
         this.setIndentSize(Config.INDENT_SIZE.getValue());
+
+        this.textList = new ArrayList<Text>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
     }
 
     public void setIndentSize(Integer indentSize) {
@@ -55,13 +59,5 @@ public abstract class AbstractFormatter {
 
     public String getIndentPrefix() {
         return this.indentPrefix;
-    }
-
-    protected static void setFormattingError(boolean isFormattingError) {
-        AbstractFormatter.formattingError = isFormattingError;
-    }
-
-    public static boolean isFormattingError() {
-        return AbstractFormatter.formattingError;
     }
 }

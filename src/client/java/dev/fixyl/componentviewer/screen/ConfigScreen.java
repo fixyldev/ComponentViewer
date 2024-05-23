@@ -38,6 +38,7 @@ public class ConfigScreen extends SimpleOptionsScreen {
             Config.MODE.getSimpleOption(),
             Config.DISPLAY.getSimpleOption(),
             Config.INDENT_SIZE.getSimpleOption(),
+            Config.COLORED_SNBT.getSimpleOption(),
             Config.COMPONENT_CHANGES.getSimpleOption(),
             Config.ADVANCED_TOOLTIPS.getSimpleOption()
         });
