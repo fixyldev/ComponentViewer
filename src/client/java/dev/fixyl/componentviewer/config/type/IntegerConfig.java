@@ -29,6 +29,8 @@ import com.mojang.serialization.Codec;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
 
+import dev.fixyl.componentviewer.ComponentViewer;
+
 public class IntegerConfig extends AbstractConfig<Integer> {
     private final Integer minValue;
     private final Integer maxValue;
@@ -54,7 +56,7 @@ public class IntegerConfig extends AbstractConfig<Integer> {
             new SimpleOption.ValidatingIntSliderCallbacks(this.minValue, this.maxValue),
             Codec.intRange(this.minValue, this.maxValue),
             this.defaultValue,
-            value -> {}
+            value -> ComponentViewer.configManager.writeConfigFile()
         );
     }
 

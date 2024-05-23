@@ -42,11 +42,4 @@ public class ConfigScreen extends SimpleOptionsScreen {
             Config.ADVANCED_TOOLTIPS.getSimpleOption()
         });
     }
-
-    @Override
-    public void close() {
-        ComponentViewer.configManager.writeConfigFile();
-
-        super.close();
-    }
 }

@@ -27,10 +27,17 @@ package dev.fixyl.componentviewer.config.type;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
 
+import dev.fixyl.componentviewer.ComponentViewer;
+
 public class BooleanConfig extends AbstractConfig<Boolean> {
     public BooleanConfig(Boolean defaultValue, String translationKey, String tooltipTranslationKey) {
         super(defaultValue, translationKey, tooltipTranslationKey);
 
-        this.simpleOption = SimpleOption.ofBoolean(this.translationKey, SimpleOption.constantTooltip((Text)Text.translatable(this.tooltipTranslationKey)), this.defaultValue);
+        this.simpleOption = SimpleOption.ofBoolean(
+            this.translationKey,
+            SimpleOption.constantTooltip((Text)Text.translatable(this.tooltipTranslationKey)),
+            this.defaultValue,
+            value -> ComponentViewer.configManager.writeConfigFile()
+        );
     }
 }

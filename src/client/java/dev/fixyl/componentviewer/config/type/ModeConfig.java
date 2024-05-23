@@ -31,12 +31,20 @@ import com.mojang.serialization.Codec;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
 
+import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.option.ModeOption;
 
 public class ModeConfig extends AbstractConfig<ModeOption> {
     public ModeConfig(ModeOption defaultValue, String translationKey, String tooltipTranslationKey) {
         super(defaultValue, translationKey, tooltipTranslationKey);
 
-        this.simpleOption = new SimpleOption<ModeOption>(this.translationKey, SimpleOption.constantTooltip((Text)Text.translatable(this.tooltipTranslationKey)), SimpleOption.enumValueText(), new SimpleOption.PotentialValuesBasedCallbacks<ModeOption>(Arrays.asList(ModeOption.values()), Codec.INT.xmap(ModeOption::byId, ModeOption::getId)), this.defaultValue, value -> {});
+        this.simpleOption = new SimpleOption<ModeOption>(
+            this.translationKey,
+            SimpleOption.constantTooltip((Text)Text.translatable(this.tooltipTranslationKey)),
+            SimpleOption.enumValueText(),
+            new SimpleOption.PotentialValuesBasedCallbacks<ModeOption>(Arrays.asList(ModeOption.values()), Codec.INT.xmap(ModeOption::byId, ModeOption::getId)),
+            this.defaultValue,
+            value -> ComponentViewer.configManager.writeConfigFile()
+        );
     }
 }
