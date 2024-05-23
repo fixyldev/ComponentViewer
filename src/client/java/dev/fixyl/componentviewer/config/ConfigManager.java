@@ -51,7 +51,7 @@ public class ConfigManager {
 
     public void readConfigFile() {
         if (!this.configFile.exists()) {
-            ComponentViewer.logger.info("No config file present! Creating new config file.");
+            ComponentViewer.logger.info("No \"Component Viewer\" config file present! Creating new config file.");
             this.writeConfigFile();
             return;
         }
@@ -60,12 +60,12 @@ public class ConfigManager {
             ConfigJson configJson = this.gson.fromJson(configFileReader, ConfigJson.class);
 
             if (configJson == null) {
-                throw new JsonParseException("Config file is presumably empty!");
+                throw new JsonParseException("File is presumably empty!");
             }
 
             configJson.setConfigValues();
         } catch (IOException | JsonParseException e) {
-            ComponentViewer.logger.error("Error when reading/parsing config file! Re-creating config file.", e);
+            ComponentViewer.logger.error("Error when reading/parsing \"Component Viewer\" config file! Re-creating config file.", e);
             this.writeConfigFile();
         }
     }
@@ -74,7 +74,7 @@ public class ConfigManager {
         try (FileWriter configFileWriter = new FileWriter(this.configFile)) {
             this.gson.toJson(ConfigJson.getConfigValues(), configFileWriter);
         } catch (IOException | JsonParseException e) {
-            ComponentViewer.logger.error("Error when writing config file! Config will no be saved across sessions!", e);
+            ComponentViewer.logger.error("Error when writing \"Component Viewer\" config file! Config will no be saved across sessions!", e);
         }
     }
 }
