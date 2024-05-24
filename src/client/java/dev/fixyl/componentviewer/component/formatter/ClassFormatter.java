@@ -22,33 +22,34 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer;
+package dev.fixyl.componentviewer.component.formatter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ComponentFormatter {
-	final public static int DEFAULT_INDENT_SIZE = 4;
-	final public static int DEFAULT_PRE_CACHE_INDENT_LEVEL = 8;
+import net.minecraft.component.Component;
+import net.minecraft.text.Text;
 
-	final private static int INITIAL_BRACKET_HISTORY_CAPACITY = 12;
-    final private static int INITIAL_LINES_CAPACITY = 16;
-    final private static int INITIAL_LINE_CAPACITY = 16;
+import dev.fixyl.componentviewer.component.ComponentDisplay;
+import dev.fixyl.componentviewer.config.Config;
 
-	final private static Map<Character, Character> BRACKET_PAIR = Map.of(
+public class ClassFormatter extends AbstractFormatter {
+	private static final int INITIAL_INDENT_CACHE_CAPACITY = 12;
+    private static final int INITIAL_LINE_CAPACITY = 16;
+	private static final int INITIAL_BRACKET_HISTORY_CAPACITY = 12;
+
+	private static final Map<Character, Character> BRACKET_PAIR = Map.of(
 		'{', '}',
 		'[', ']'
 	);
 
-    private int indentSize;
-    private String indent;
-	private Map<Integer, String> indentCache = new HashMap<Integer, String>();
+	private final Map<Integer, String> indentCache;
 
 	private String componentValue;
-	private List<String> lines;
 	private StringBuilder line;
+
 	private int indentLevel;
 	private int currentIndex;
 	private char currentChar;
@@ -59,50 +60,47 @@ public class ComponentFormatter {
 	private boolean inEmptyBrackets;
 	private boolean inString;
 	private boolean inCurlyBracketString;
+
 	private boolean formattingError;
 
-    public ComponentFormatter(int indentSize, int preCacheIndentLevel) {
-		if (indentSize < 0)
-			throw new IllegalArgumentException(String.format("Invalid 'indentSize' argument being '%s' when constructing '%s' object.", indentSize, this.getClass().getName()));
-
-        this.indentSize = indentSize;
-		this.formattingError = false;
-
-        this.calculateIndent();
-		this.preCacheIndent(preCacheIndentLevel);
-    }
-
-    private void calculateIndent() {
-        StringBuilder indentBuilder = new StringBuilder(this.indentSize);
-
-        for (int i = 0; i < this.indentSize; i++)
-        indentBuilder.append(' ');
-
-        this.indent = indentBuilder.toString();
-    }
-
-	public void preCacheIndent(int preCacheIndentLevel) {
-		if (preCacheIndentLevel < 0)
-			throw new IllegalArgumentException(String.format("Invalid 'preCacheIndentLevel' argument being '%s' when calling 'preCacheIndent' of class '%s'.", preCacheIndentLevel, this.getClass().getName()));
-
-		for (int indentLevel = 1; indentLevel <= preCacheIndentLevel; indentLevel++) {
-			if (!this.indentCache.containsKey(indentLevel))
-				this.indentCache.put(indentLevel, indent.repeat(indentLevel));
-		}
+	public ClassFormatter() {
+		this.indentCache = new HashMap<Integer, String>(ClassFormatter.INITIAL_INDENT_CACHE_CAPACITY);
 	}
 
-	private String getIndentFromLevel(int indentLevel) {
+    @Override
+    public void setIndentSize(Integer indentSize) {
+        if (this.getIndentSize() == indentSize)
+            return;
+
+		super.setIndentSize(indentSize);
+
+		if (this.indentCache != null)
+			this.indentCache.clear();
+	}
+
+	private String getIndentPrefixFromLevel(int indentLevel) {
 		if (indentLevel <= 0)
-			return "";
+			return ComponentDisplay.GENERAL_INDENT_PREFIX;
 
 		if (this.indentCache.containsKey(indentLevel))
 			return this.indentCache.get(indentLevel);
 
-		return this.indentCache.put(indentLevel, indent.repeat(indentLevel));
+		return this.indentCache.put(indentLevel, ComponentDisplay.GENERAL_INDENT_PREFIX + this.getIndentPrefix().repeat(indentLevel));
 	}
 
-    public List<String> formatComponentValue(String componentValue) {
-		this.initializeFormattingVariables(componentValue);
+    public List<Text> formatGeneral(Component<?> component) {
+		this.setIndentSize(Config.INDENT_SIZE.getValue());
+
+		this.initializeFormattingVariables(component);
+
+		this.line.append(this.getIndentPrefixFromLevel(this.indentLevel));
+
+		if (Config.INDENT_SIZE.getValue() == 0) {
+			this.line.append(this.componentValue);
+			this.textList.add((Text)Text.literal(this.line.toString()).formatted(ComponentDisplay.GENERAL_FORMATTING));
+
+			return this.textList;
+		}
 
 		for (this.currentIndex = 0; this.currentIndex < componentValue.length(); this.currentIndex++) {
 			this.currentChar = this.componentValue.charAt(this.currentIndex);
@@ -111,29 +109,33 @@ public class ComponentFormatter {
 		}
 
 		if (this.line.length() != 0)
-			this.lines.add(this.line.toString());
+			this.textList.add((Text)Text.literal(this.line.toString()).formatted(ComponentDisplay.GENERAL_FORMATTING));
 
 		if (this.formattingError || this.indentLevel != 0 || this.inString || this.inCurlyBracketString) {
-			this.formattingError = true;
-			this.lines.clear();
-			this.lines.add(this.componentValue);
+			this.textList.clear();
+			this.textList.add((Text)Text.literal(this.getIndentPrefixFromLevel(0) + this.componentValue).formatted(ComponentDisplay.GENERAL_FORMATTING));
+			this.textList.add((Text)Text.empty());
+			this.textList.add((Text)Text.translatable("componentviewer.tooltips.components.error.class_formatting").formatted(ComponentDisplay.HEADER_FORMATTING));
 		}
 
-		return this.lines;
+		return this.textList;
     }
 
-	private void initializeFormattingVariables(String componentValue) {
-		this.componentValue = componentValue;
-		this.lines = new ArrayList<String>(ComponentFormatter.INITIAL_LINES_CAPACITY);
-		this.line = new StringBuilder(ComponentFormatter.INITIAL_LINE_CAPACITY);
+	private void initializeFormattingVariables(Component<?> component) {
+		this.componentValue = component.value().toString();
+
+		this.line = new StringBuilder(ClassFormatter.INITIAL_LINE_CAPACITY);
+		this.textList = new ArrayList<Text>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
+
 		this.indentLevel = 0;
 		this.leftTrim = false;
-		this.bracketHistory = new ArrayList<Character>(ComponentFormatter.INITIAL_BRACKET_HISTORY_CAPACITY);
+		this.bracketHistory = new ArrayList<Character>(ClassFormatter.INITIAL_BRACKET_HISTORY_CAPACITY);
 		this.closingBracket = ' ';
 		this.closingQuote = ' ';
 		this.inEmptyBrackets = false;
 		this.inString = false;
 		this.inCurlyBracketString = false;
+
 		this.formattingError = false;
 	}
 
@@ -181,6 +183,7 @@ public class ComponentFormatter {
 			case '"', '\'' -> this.processQuote();
 			case 'l' -> this.processCurlyBracketStringBegin("literal");
 			case 'k' -> this.processCurlyBracketStringBegin("keybind");
+			case 'p' -> this.processCurlyBracketStringBegin("pattern");
 			default -> this.appendCurrentCharacter();
 		}
 	}
@@ -191,7 +194,7 @@ public class ComponentFormatter {
 	}
 
 	private void processOpeningBracket() {
-		if (this.currentIndex + 1 < this.componentValue.length() && (ComponentFormatter.BRACKET_PAIR.get(this.currentChar) == this.componentValue.charAt(this.currentIndex + 1))) {
+		if (this.currentIndex + 1 < this.componentValue.length() && (ClassFormatter.BRACKET_PAIR.get(this.currentChar) == this.componentValue.charAt(this.currentIndex + 1))) {
 			this.appendCurrentCharacter();
 			this.inEmptyBrackets = true;
 			return;
@@ -205,7 +208,7 @@ public class ComponentFormatter {
 
 	private void processClosingBracket() {
 		if (!this.bracketHistory.isEmpty()) {
-			if (this.currentChar != ComponentFormatter.BRACKET_PAIR.get(this.bracketHistory.getLast())) {
+			if (this.currentChar != ClassFormatter.BRACKET_PAIR.get(this.bracketHistory.getLast())) {
 				this.formattingError = true;
 				this.appendCurrentCharacter();
 				return;
@@ -262,7 +265,7 @@ public class ComponentFormatter {
 	}
 
 	private void prepareNewLine() {
-		this.lines.add(this.line.toString());
+		this.textList.add((Text)Text.literal(this.line.toString()).formatted(ComponentDisplay.GENERAL_FORMATTING));
 		this.line.setLength(0);
 	}
 
@@ -270,7 +273,7 @@ public class ComponentFormatter {
 		if (this.line.length() != 0)
 			return;
 
-		line.append(this.getIndentFromLevel(this.indentLevel));
+		line.append(this.getIndentPrefixFromLevel(this.indentLevel));
 
 		if (this.closingBracket != ' ') {
 			line.append(this.closingBracket);
@@ -278,9 +281,5 @@ public class ComponentFormatter {
 		}
 
 		this.leftTrim = true;
-	}
-
-	public boolean isFormattingError() {
-		return this.formattingError;
 	}
 }
