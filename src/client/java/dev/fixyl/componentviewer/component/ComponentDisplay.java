@@ -66,7 +66,7 @@ public class ComponentDisplay {
 		for (int index = 0; index < componentList.size(); index++) {
 			String componentType = componentList.get(index).type().toString();
 
-			if (index == componentIndex)
+			if (index == componentIndex && Config.COMPONENT_VALUES.getValue())
                 tooltipLines.add((Text)Text.literal((componentList.size() == 1 ? ComponentDisplay.GENERAL_INDENT_PREFIX : ComponentDisplay.GENERAL_INDENT_PREFIX.repeat(2)) + componentType).formatted(ComponentDisplay.HIGHLIGHTED_FORMATTING));
 			else
                 tooltipLines.add((Text)Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX + componentType).formatted(ComponentDisplay.GENERAL_FORMATTING));

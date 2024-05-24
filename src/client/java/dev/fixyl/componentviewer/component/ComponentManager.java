@@ -82,6 +82,10 @@ public class ComponentManager {
 
         if (!this.componentDisplay.displayComponentTypes(this.componentList, this.componentIndex, tooltipLines))
             return;
+
+        if (!Config.COMPONENT_VALUES.getValue())
+            return;
+
         this.componentDisplay.displayComponentValue(this.componentList, this.componentIndex, tooltipLines);;
     }
 
@@ -106,6 +110,9 @@ public class ComponentManager {
     }
 
     private void swapComponentIndex() {
+        if (!Config.COMPONENT_VALUES.getValue())
+            return;
+
         if (!Screen.hasAltDown())
 			this.previousAltDown = false;
 

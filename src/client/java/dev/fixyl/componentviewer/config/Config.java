@@ -38,5 +38,6 @@ public class Config {
     public static final AbstractConfig<Integer> INDENT_SIZE = new IntegerConfig(4, 0, 8, "componentviewer.config.indent_size", "componentviewer.config.indent_size.tooltip", "componentviewer.config.indent_size.value", "componentviewer.config.indent_size.off");
     public static final AbstractConfig<Boolean> COLORED_SNBT = new BooleanConfig(false, "componentviewer.config.colored_snbt", "componentviewer.config.colored_snbt.tooltip");
     public static final AbstractConfig<Boolean> COMPONENT_CHANGES = new BooleanConfig(false, "componentviewer.config.component_changes", "componentviewer.config.component_changes.tooltip");
+    public static final AbstractConfig<Boolean> COMPONENT_VALUES = new BooleanConfig(true, "componentviewer.config.component_values", "componentviewer.config.component_values.tooltip");
     public static final AbstractConfig<Boolean> ADVANCED_TOOLTIPS = new BooleanConfig(false, "componentviewer.config.advanced_tooltips", "componentviewer.config.advanced_tooltips.tooltip");
 }

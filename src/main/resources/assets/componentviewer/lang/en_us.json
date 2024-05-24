@@ -5,6 +5,8 @@
     "componentviewer.config.colored_snbt.tooltip": "Colored SNBT values just like \"/data get\".",
     "componentviewer.config.component_changes": "Component Changes",
     "componentviewer.config.component_changes.tooltip": "Only non-default components will be displayed.",
+    "componentviewer.config.component_values": "Component Values",
+    "componentviewer.config.component_values.tooltip": "Component values will be displayed in addition to component types.",
     "componentviewer.config.display": "Display",
     "componentviewer.config.display.always": "Always",
     "componentviewer.config.display.hold": "Hold",

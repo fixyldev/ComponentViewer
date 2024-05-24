@@ -33,6 +33,7 @@ public class ConfigJson {
     public Integer indentSize;
     public Boolean coloredSnbt;
     public Boolean componentChanges;
+    public Boolean componentValues;
     public Boolean advancedTooltips;
 
     public void setConfigValues() {
@@ -41,6 +42,7 @@ public class ConfigJson {
         Config.INDENT_SIZE.setValue(this.indentSize);
         Config.COLORED_SNBT.setValue(this.coloredSnbt);
         Config.COMPONENT_CHANGES.setValue(this.componentChanges);
+        Config.COMPONENT_VALUES.setValue(this.componentValues);
         Config.ADVANCED_TOOLTIPS.setValue(this.advancedTooltips);
     }
 
@@ -52,6 +54,7 @@ public class ConfigJson {
         configJson.indentSize = Config.INDENT_SIZE.getValue();
         configJson.coloredSnbt = Config.COLORED_SNBT.getValue();
         configJson.componentChanges = Config.COMPONENT_CHANGES.getValue();
+        configJson.componentValues = Config.COMPONENT_VALUES.getValue();
         configJson.advancedTooltips = Config.ADVANCED_TOOLTIPS.getValue();
 
         return configJson;
