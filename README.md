@@ -13,9 +13,7 @@
 - Client-side only.
 - Displays all components of an item stack in the tooltips.
 - Components are sorted in alphabetical order.
-- Nicely formatted component values:
-  - SNBT: Just like using `/data get`.
-  - Class: Java's built-in representation.
+- Nicely formatted component values.
 - Configurable without needing to install additional mods.
 
 ## ⌨️ Controls
@@ -25,15 +23,21 @@
   - Tap `SHIFT` + `ALT` to switch to the previous component value.
 - Press `J` to open the config screen.
 
+## ⚙️ Configs
+- Mode: `SNBT` or `Class`
+- Display: `Never`, `Hold` or `Always`
+- Indent Size: `0-8`
+- Colored SNBT
+- Component Changes
+- Component Values
+- Advanced Tooltips
+
 ## 🚀 Examples
-### SNBT Representation (Colored):
-![SNBT (Colored)](images/snbt_colored.webp?raw=true)
+### SNBT Mode:
+![SNBT Mode](images/snbt.webp?raw=true)
 
-### SNBT Representation (Default):
-![SNBT (Default)](images/snbt_default.webp?raw=true)
-
-### Class Representation:
-![Class](images/class.webp?raw=true)
+### Class Mode:
+![Class Mode](images/class.webp?raw=true)
 
 ## 🌍 Languages
 "Component Viewer" only supports **English**. Additional languages can be added using custom resourcepacks with language files. You can find language file templates [here](https://github.com/fixyldev/ComponentViewer/tree/main/assets/lang).
