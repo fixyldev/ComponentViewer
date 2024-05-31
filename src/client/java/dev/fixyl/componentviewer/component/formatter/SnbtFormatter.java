@@ -51,10 +51,6 @@ public class SnbtFormatter extends AbstractFormatter {
         this.initializeNewFormatter();
     }
 
-    private void initializeNewFormatter() {
-        this.nbtTextFormatter = new NbtTextFormatter(this.getIndentPrefix());
-    }
-
     @Override
     public void setIndentSize(Integer indentSize) {
         if (this.getIndentSize() == indentSize)
@@ -74,6 +70,10 @@ public class SnbtFormatter extends AbstractFormatter {
         Text text = this.nbtTextFormatter.apply(nbtElement);
 
         return this.processText(text);
+    }
+
+    private void initializeNewFormatter() {
+        this.nbtTextFormatter = new NbtTextFormatter(this.getIndentPrefix());
     }
 
     private List<Text> processText(Text text) {

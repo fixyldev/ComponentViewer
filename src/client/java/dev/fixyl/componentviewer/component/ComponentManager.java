@@ -39,7 +39,9 @@ import net.minecraft.text.Text;
 import dev.fixyl.componentviewer.config.Config;
 import dev.fixyl.componentviewer.option.DisplayOption;
 
-public class ComponentManager {
+public final class ComponentManager {
+    private static ComponentManager instance;
+
     private static final int INITIAL_COMPONENT_LIST_CAPACITY = 16;
 
     private final ComponentDisplay componentDisplay;
@@ -50,14 +52,21 @@ public class ComponentManager {
     private int componentIndex;
 	private boolean previousAltDown;
 
-    public ComponentManager() {
-        this.componentDisplay = new ComponentDisplay();
+    private ComponentManager() {
+        this.componentDisplay = ComponentDisplay.getInstance();
 
         this.componentList = new ArrayList<>(ComponentManager.INITIAL_COMPONENT_LIST_CAPACITY);
         this.defaultComponentList = new ArrayList<>(ComponentManager.INITIAL_COMPONENT_LIST_CAPACITY);
 
         this.componentIndex = 0;
         this.previousAltDown = false;
+    }
+
+    public static ComponentManager getInstance() {
+        if (ComponentManager.instance == null)
+            ComponentManager.instance = new ComponentManager();
+
+        return ComponentManager.instance;
     }
 
     public void itemTooltipCallbackListener(ItemStack itemStack, TooltipContext tooltipContext, TooltipType tooltipType, List<Text> tooltipLines) {

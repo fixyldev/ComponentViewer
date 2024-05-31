@@ -45,8 +45,8 @@ public class ComponentViewer implements ClientModInitializer {
 
 	public static final Logger logger = LoggerFactory.getLogger("ComponentViewer");
 
-	public static final ConfigManager configManager = new ConfigManager();
-	public static final ComponentManager componentManager = new ComponentManager();
+	public static final ConfigManager configManager = ConfigManager.getInstance();
+	public static final ComponentManager componentManager = ComponentManager.getInstance();
 
 	public static final KeyBindings keyBindings = new KeyBindings();
 
@@ -55,9 +55,8 @@ public class ComponentViewer implements ClientModInitializer {
 		ItemTooltipCallback.EVENT.register(ComponentViewer.componentManager::itemTooltipCallbackListener);
 
 		ClientTickEvents.END_CLIENT_TICK.register(minecraftClient -> {
-			if (ComponentViewer.keyBindings.CONFIG_KEY.isPressed()) {
+			if (ComponentViewer.keyBindings.CONFIG_KEY.isPressed())
 				minecraftClient.setScreen(new ConfigScreen(null));
-			}
 		});
 	}
 }

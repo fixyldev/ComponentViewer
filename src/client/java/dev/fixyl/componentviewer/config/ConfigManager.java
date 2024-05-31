@@ -36,17 +36,26 @@ import com.google.gson.JsonParseException;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 
-public class ConfigManager {
+public final class ConfigManager {
+    private static ConfigManager instance;
+
     private static final String CONFIG_FILENAME = "componentviewer-config.json";
 
     private final Gson gson;
     private final File configFile;
 
-    public ConfigManager() {
+    private ConfigManager() {
         this.gson = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().create();
         this.configFile = ComponentViewer.fabricLoader.getConfigDir().resolve(ConfigManager.CONFIG_FILENAME).toFile();
 
         this.readConfigFile();
+    }
+
+    public static ConfigManager getInstance() {
+        if (ConfigManager.instance == null)
+            ConfigManager.instance = new ConfigManager();
+
+        return ConfigManager.instance;
     }
 
     public void readConfigFile() {

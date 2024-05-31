@@ -36,7 +36,9 @@ import dev.fixyl.componentviewer.component.formatter.SnbtFormatter;
 import dev.fixyl.componentviewer.config.Config;
 import dev.fixyl.componentviewer.option.ModeOption;
 
-public class ComponentDisplay {
+public final class ComponentDisplay {
+    private static ComponentDisplay instance;
+
     public static final String GENERAL_INDENT_PREFIX = " ";
 
     public static final Formatting HEADER_FORMATTING = Formatting.GRAY;
@@ -46,9 +48,16 @@ public class ComponentDisplay {
     private final SnbtFormatter snbtFormatter;
     private final ClassFormatter classFormatter;
 
-    public ComponentDisplay() {
+    private ComponentDisplay() {
         this.snbtFormatter = new SnbtFormatter();
         this.classFormatter = new ClassFormatter();
+    }
+
+    public static ComponentDisplay getInstance() {
+        if (ComponentDisplay.instance == null)
+            ComponentDisplay.instance = new ComponentDisplay();
+
+        return ComponentDisplay.instance;
     }
 
     public boolean displayComponentTypes(List<Component<?>> componentList, int componentIndex, List<Text> tooltipLines) {

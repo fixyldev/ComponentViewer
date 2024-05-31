@@ -78,17 +78,7 @@ public class ClassFormatter extends AbstractFormatter {
 			this.indentCache.clear();
 	}
 
-	private String getIndentPrefixFromLevel(int indentLevel) {
-		if (indentLevel <= 0)
-			return ComponentDisplay.GENERAL_INDENT_PREFIX;
-
-		if (this.indentCache.containsKey(indentLevel))
-			return this.indentCache.get(indentLevel);
-
-		return this.indentCache.put(indentLevel, ComponentDisplay.GENERAL_INDENT_PREFIX + this.getIndentPrefix().repeat(indentLevel));
-	}
-
-    public List<Text> formatComponent(Component<?> component) {
+	public List<Text> formatComponent(Component<?> component) {
 		this.setIndentSize(Config.INDENT_SIZE.getValue());
 
 		this.initializeFormattingVariables(component);
@@ -120,6 +110,16 @@ public class ClassFormatter extends AbstractFormatter {
 
 		return this.textList;
     }
+
+	private String getIndentPrefixFromLevel(int indentLevel) {
+		if (indentLevel <= 0)
+			return ComponentDisplay.GENERAL_INDENT_PREFIX;
+
+		if (this.indentCache.containsKey(indentLevel))
+			return this.indentCache.get(indentLevel);
+
+		return this.indentCache.put(indentLevel, ComponentDisplay.GENERAL_INDENT_PREFIX + this.getIndentPrefix().repeat(indentLevel));
+	}
 
 	private void initializeFormattingVariables(Component<?> component) {
 		this.componentValue = component.value().toString();

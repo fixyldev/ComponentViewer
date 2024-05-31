@@ -32,7 +32,9 @@ import dev.fixyl.componentviewer.config.type.ModeConfig;
 import dev.fixyl.componentviewer.option.DisplayOption;
 import dev.fixyl.componentviewer.option.ModeOption;
 
-public class Config {
+public final class Config {
+    private Config() {}
+
     public static final AbstractConfig<ModeOption> MODE = new ModeConfig(ModeOption.SNBT, "componentviewer.config.mode", "componentviewer.config.mode.tooltip");
     public static final AbstractConfig<DisplayOption> DISPLAY = new DisplayConfig(DisplayOption.HOLD, "componentviewer.config.display", "componentviewer.config.display.tooltip");
     public static final AbstractConfig<Integer> INDENT_SIZE = new IntegerConfig(4, 0, 8, "componentviewer.config.indent_size", "componentviewer.config.indent_size.tooltip", "componentviewer.config.indent_size.value", "componentviewer.config.indent_size.off");
