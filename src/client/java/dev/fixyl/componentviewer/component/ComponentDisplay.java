@@ -24,7 +24,6 @@
 
 package dev.fixyl.componentviewer.component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.component.Component;
@@ -32,7 +31,6 @@ import net.minecraft.component.type.NbtComponent;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import dev.fixyl.componentviewer.component.formatter.AbstractFormatter;
 import dev.fixyl.componentviewer.component.formatter.ClassFormatter;
 import dev.fixyl.componentviewer.component.formatter.SnbtFormatter;
 import dev.fixyl.componentviewer.config.Config;
@@ -75,11 +73,10 @@ public class ComponentDisplay {
         return true;
     }
 
-    public void displayComponentValue(List<Component<?>> componentList, int componentIndex, List<Text> tooltipLines) {
-        Component<?> component = componentList.get(componentIndex);
-        List<Text> textList = new ArrayList<Text>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
-
+    public void displayComponentValue(Component<?> component, List<Text> tooltipLines) {
         tooltipLines.add((Text)Text.empty());
+
+        List<Text> textList;
 
         switch (Config.MODE.getValue()) {
             case ModeOption.SNBT -> {
@@ -95,7 +92,7 @@ public class ComponentDisplay {
                 if (component.value() instanceof NbtComponent)
                     textList = this.snbtFormatter.formatComponent(component, false);
                 else
-                    textList = this.classFormatter.formatGeneral(component);
+                    textList = this.classFormatter.formatComponent(component);
             }
 
             default -> throw new IllegalArgumentException("Illegal ModeOption enum value: " + Config.MODE.getValue());

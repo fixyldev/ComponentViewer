@@ -32,7 +32,7 @@ public abstract class AbstractConfig<T> {
     protected final String translationKey;
     protected final String tooltipTranslationKey;
 
-    public AbstractConfig(T defaultValue, String translationKey, String tooltipTranslationKey) {
+    protected AbstractConfig(T defaultValue, String translationKey, String tooltipTranslationKey) {
         this.defaultValue = defaultValue;
         this.translationKey = translationKey;
         this.tooltipTranslationKey = tooltipTranslationKey;

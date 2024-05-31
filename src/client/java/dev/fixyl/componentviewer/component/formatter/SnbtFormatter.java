@@ -80,7 +80,7 @@ public class SnbtFormatter extends AbstractFormatter {
         this.textList = new ArrayList<Text>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
 
         this.textPart = Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX);
-        text.visit((style, string) -> this.processSegment(style, string), Style.EMPTY);
+        text.visit(this::processSegment, Style.EMPTY);
 
         this.textList.add((Text)this.textPart);
 

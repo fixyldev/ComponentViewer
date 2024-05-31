@@ -39,10 +39,10 @@ public abstract class AbstractFormatter {
 
     protected List<Text> textList;
 
-    public AbstractFormatter() {
+    protected AbstractFormatter() {
         this.setIndentSize(Config.INDENT_SIZE.getValue());
 
-        this.textList = new ArrayList<Text>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
+        this.textList = new ArrayList<>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
     }
 
     public void setIndentSize(Integer indentSize) {

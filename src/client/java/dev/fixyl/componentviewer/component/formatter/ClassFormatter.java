@@ -64,7 +64,7 @@ public class ClassFormatter extends AbstractFormatter {
 	private boolean formattingError;
 
 	public ClassFormatter() {
-		this.indentCache = new HashMap<Integer, String>(ClassFormatter.INITIAL_INDENT_CACHE_CAPACITY);
+		this.indentCache = new HashMap<>(ClassFormatter.INITIAL_INDENT_CACHE_CAPACITY);
 	}
 
     @Override
@@ -88,7 +88,7 @@ public class ClassFormatter extends AbstractFormatter {
 		return this.indentCache.put(indentLevel, ComponentDisplay.GENERAL_INDENT_PREFIX + this.getIndentPrefix().repeat(indentLevel));
 	}
 
-    public List<Text> formatGeneral(Component<?> component) {
+    public List<Text> formatComponent(Component<?> component) {
 		this.setIndentSize(Config.INDENT_SIZE.getValue());
 
 		this.initializeFormattingVariables(component);
@@ -129,7 +129,7 @@ public class ClassFormatter extends AbstractFormatter {
 
 		this.indentLevel = 0;
 		this.leftTrim = false;
-		this.bracketHistory = new ArrayList<Character>(ClassFormatter.INITIAL_BRACKET_HISTORY_CAPACITY);
+		this.bracketHistory = new ArrayList<>(ClassFormatter.INITIAL_BRACKET_HISTORY_CAPACITY);
 		this.closingBracket = ' ';
 		this.closingQuote = ' ';
 		this.inEmptyBrackets = false;

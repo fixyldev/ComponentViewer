@@ -53,8 +53,8 @@ public class ComponentManager {
     public ComponentManager() {
         this.componentDisplay = new ComponentDisplay();
 
-        this.componentList = new ArrayList<Component<?>>(ComponentManager.INITIAL_COMPONENT_LIST_CAPACITY);
-        this.defaultComponentList = new ArrayList<Component<?>>(ComponentManager.INITIAL_COMPONENT_LIST_CAPACITY);
+        this.componentList = new ArrayList<>(ComponentManager.INITIAL_COMPONENT_LIST_CAPACITY);
+        this.defaultComponentList = new ArrayList<>(ComponentManager.INITIAL_COMPONENT_LIST_CAPACITY);
 
         this.componentIndex = 0;
         this.previousAltDown = false;
@@ -86,7 +86,7 @@ public class ComponentManager {
         if (!Config.COMPONENT_VALUES.getValue())
             return;
 
-        this.componentDisplay.displayComponentValue(this.componentList, this.componentIndex, tooltipLines);;
+        this.componentDisplay.displayComponentValue(this.componentList.get(this.componentIndex), tooltipLines);
     }
 
     private void getComponents(ItemStack itemStack) {
