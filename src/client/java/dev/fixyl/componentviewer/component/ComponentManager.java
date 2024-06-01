@@ -36,6 +36,7 @@ import net.minecraft.item.Item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
+import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Config;
 import dev.fixyl.componentviewer.option.DisplayOption;
 
@@ -61,6 +62,9 @@ public class ComponentManager {
     }
 
     public void itemTooltipCallbackListener(ItemStack itemStack, TooltipContext tooltipContext, TooltipType tooltipType, List<Text> tooltipLines) {
+        if (ComponentViewer.minecraftClient.player == null)
+            return;
+
         if (Config.ADVANCED_TOOLTIPS.getValue() && !tooltipType.isAdvanced())
             return;
 
