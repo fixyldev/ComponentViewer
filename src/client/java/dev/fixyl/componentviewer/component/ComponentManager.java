@@ -32,7 +32,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.component.Component;
 import net.minecraft.component.ComponentMap;
 import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.item.Item;
+import net.minecraft.item.Item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
@@ -69,7 +69,7 @@ public final class ComponentManager {
         return ComponentManager.instance;
     }
 
-    public void itemTooltipCallbackListener(ItemStack itemStack, Item.TooltipContext tooltipContext, TooltipType tooltipType, List<Text> tooltipLines) {
+    public void itemTooltipCallbackListener(ItemStack itemStack, TooltipContext tooltipContext, TooltipType tooltipType, List<Text> tooltipLines) {
         if (Config.ADVANCED_TOOLTIPS.getValue() && !tooltipType.isAdvanced())
             return;
 
