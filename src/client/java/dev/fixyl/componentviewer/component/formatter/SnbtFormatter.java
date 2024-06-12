@@ -47,7 +47,7 @@ public class SnbtFormatter extends AbstractFormatter {
 
     @Override
     public void setIndentSize(Integer indentSize) {
-        if (this.getIndentSize() == indentSize)
+        if (this.getIndentSize().equals(indentSize))
             return;
 
         super.setIndentSize(indentSize);
@@ -72,7 +72,7 @@ public class SnbtFormatter extends AbstractFormatter {
         this.textPart = Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX);
         text.visit(this::processSegment, Style.EMPTY);
 
-        this.textList.add((Text)this.textPart);
+        this.textList.add(this.textPart);
 
         return this.textList;
     }
@@ -82,12 +82,12 @@ public class SnbtFormatter extends AbstractFormatter {
 
         for (String stringPart : stringArray) {
             if (stringPart.equals("\n")) {
-                this.textList.add((Text)this.textPart);
+                this.textList.add(this.textPart);
                 this.textPart = Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX);
                 continue;
             }
 
-            this.textPart.append((Text)Text.literal(stringPart).setStyle(this.colored ? style : Style.EMPTY.withFormatting(ComponentDisplay.GENERAL_FORMATTING)));
+            this.textPart.append(Text.literal(stringPart).setStyle(this.colored ? style : Style.EMPTY.withFormatting(ComponentDisplay.GENERAL_FORMATTING)));
         }
 
         return Optional.empty();

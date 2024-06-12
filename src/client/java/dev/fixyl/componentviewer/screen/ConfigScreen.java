@@ -33,7 +33,7 @@ import dev.fixyl.componentviewer.config.Config;
 
 public class ConfigScreen extends GameOptionsScreen {
     public ConfigScreen(Screen parentScreen) {
-        super(parentScreen, ComponentViewer.minecraftClient.options, (Text)Text.translatable("componentviewer.config.title"));
+        super(parentScreen, ComponentViewer.minecraftClient.options, Text.translatable("componentviewer.config.title"));
     }
 
     @Override

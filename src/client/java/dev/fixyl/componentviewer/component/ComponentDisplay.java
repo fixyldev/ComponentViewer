@@ -61,36 +61,36 @@ public final class ComponentDisplay {
     }
 
     public boolean displayComponentTypes(List<Component<?>> componentList, int componentIndex, List<Text> tooltipLines) {
-        tooltipLines.add((Text)Text.empty());
+        tooltipLines.add(Text.empty());
 
         if (componentList.isEmpty()) {
-			tooltipLines.add((Text)Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.empty.changes" : "componentviewer.tooltips.components.empty.general").formatted(ComponentDisplay.HEADER_FORMATTING));
-			return false;
+            tooltipLines.add(Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.empty.changes" : "componentviewer.tooltips.components.empty.general").formatted(ComponentDisplay.HEADER_FORMATTING));
+            return false;
         }
 
-		tooltipLines.add((Text)Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.header.changes" : "componentviewer.tooltips.components.header.general").formatted(ComponentDisplay.HEADER_FORMATTING));
+        tooltipLines.add(Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.header.changes" : "componentviewer.tooltips.components.header.general").formatted(ComponentDisplay.HEADER_FORMATTING));
 
-		for (int index = 0; index < componentList.size(); index++) {
-			String componentType = componentList.get(index).type().toString();
+        for (int index = 0; index < componentList.size(); index++) {
+            String componentType = componentList.get(index).type().toString();
 
-			if (index == componentIndex && Config.COMPONENT_VALUES.getValue())
-                tooltipLines.add((Text)Text.literal((componentList.size() == 1 ? ComponentDisplay.GENERAL_INDENT_PREFIX : ComponentDisplay.GENERAL_INDENT_PREFIX.repeat(2)) + componentType).formatted(ComponentDisplay.HIGHLIGHTED_FORMATTING));
-			else
-                tooltipLines.add((Text)Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX + componentType).formatted(ComponentDisplay.GENERAL_FORMATTING));
-		}
+            if (index == componentIndex && Config.COMPONENT_VALUES.getValue())
+                tooltipLines.add(Text.literal((componentList.size() == 1 ? ComponentDisplay.GENERAL_INDENT_PREFIX : ComponentDisplay.GENERAL_INDENT_PREFIX.repeat(2)) + componentType).formatted(ComponentDisplay.HIGHLIGHTED_FORMATTING));
+            else
+                tooltipLines.add(Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX + componentType).formatted(ComponentDisplay.GENERAL_FORMATTING));
+        }
 
         return true;
     }
 
     public void displayComponentValue(Component<?> component, List<Text> tooltipLines) {
-        tooltipLines.add((Text)Text.empty());
+        tooltipLines.add(Text.empty());
 
         List<Text> textList;
 
         switch (Config.MODE.getValue()) {
             case ModeOption.SNBT -> {
                 if (component.type().getCodec() == null) {
-                    tooltipLines.add((Text)Text.translatable("componentviewer.tooltips.components.error.no_codec").formatted(ComponentDisplay.HEADER_FORMATTING));
+                    tooltipLines.add(Text.translatable("componentviewer.tooltips.components.error.no_codec").formatted(ComponentDisplay.HEADER_FORMATTING));
                     return;
                 }
 
@@ -107,7 +107,7 @@ public final class ComponentDisplay {
             default -> throw new IllegalArgumentException("Illegal ModeOption enum value: " + Config.MODE.getValue());
         }
 
-		tooltipLines.add((Text)Text.translatable("componentviewer.tooltips.components.value").formatted(ComponentDisplay.HEADER_FORMATTING));
+        tooltipLines.add(Text.translatable("componentviewer.tooltips.components.value").formatted(ComponentDisplay.HEADER_FORMATTING));
         tooltipLines.addAll(textList);
     }
 }

@@ -50,7 +50,7 @@ public final class ComponentManager {
     private final List<Component<?>> defaultComponentList;
 
     private int componentIndex;
-	private boolean previousAltDown;
+    private boolean previousAltDown;
 
     private ComponentManager() {
         this.componentDisplay = ComponentDisplay.getInstance();
@@ -123,19 +123,19 @@ public final class ComponentManager {
             return;
 
         if (!Screen.hasAltDown())
-			this.previousAltDown = false;
+            this.previousAltDown = false;
 
-		if (!this.previousAltDown && Screen.hasAltDown()) {
-			if (Screen.hasShiftDown())
+        if (!this.previousAltDown && Screen.hasAltDown()) {
+            if (Screen.hasShiftDown())
                 this.componentIndex--;
-			else
+            else
                 this.componentIndex++;
             this.previousAltDown = true;
-		}
+        }
 
-		if (this.componentIndex >= this.componentList.size())
+        if (this.componentIndex >= this.componentList.size())
             this.componentIndex = 0;
-		else if (this.componentIndex < 0)
+        else if (this.componentIndex < 0)
             this.componentIndex = this.componentList.size() - 1;
     }
 }
