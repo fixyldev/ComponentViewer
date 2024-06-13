@@ -24,14 +24,10 @@
 
 package dev.fixyl.componentviewer.component;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.item.TooltipType;
-import net.minecraft.component.Component;
-import net.minecraft.component.ComponentMap;
+import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.item.Item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
@@ -40,25 +36,27 @@ import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Config;
 import dev.fixyl.componentviewer.option.DisplayOption;
 
-public class ComponentManager {
-    private static final int INITIAL_COMPONENT_LIST_CAPACITY = 16;
+public final class ComponentManager {
+    private static ComponentManager instance;
 
     private final ComponentDisplay componentDisplay;
 
-    private final List<Component<?>> componentList;
-    private final List<Component<?>> defaultComponentList;
-
+    private Components components;
     private int componentIndex;
-	private boolean previousAltDown;
+    private boolean previousAltDown;
 
-    public ComponentManager() {
-        this.componentDisplay = new ComponentDisplay();
-
-        this.componentList = new ArrayList<Component<?>>(ComponentManager.INITIAL_COMPONENT_LIST_CAPACITY);
-        this.defaultComponentList = new ArrayList<Component<?>>(ComponentManager.INITIAL_COMPONENT_LIST_CAPACITY);
+    private ComponentManager() {
+        this.componentDisplay = ComponentDisplay.getInstance();
 
         this.componentIndex = 0;
         this.previousAltDown = false;
+    }
+
+    public static ComponentManager getInstance() {
+        if (ComponentManager.instance == null)
+            ComponentManager.instance = new ComponentManager();
+
+        return ComponentManager.instance;
     }
 
     public void itemTooltipCallbackListener(ItemStack itemStack, TooltipContext tooltipContext, TooltipType tooltipType, List<Text> tooltipLines) {
@@ -80,37 +78,18 @@ public class ComponentManager {
                 throw new IllegalArgumentException("Illegal DisplayOption enum value: " + Config.DISPLAY.getValue());
         }
 
-        this.getComponents(itemStack);
+        this.components = Components.getComponents(itemStack);
 
         this.swapComponentIndex();
 
-        if (!this.componentDisplay.displayComponentTypes(this.componentList, this.componentIndex, tooltipLines))
+        if (!this.componentDisplay.displayComponentTypes(this.components, this.componentIndex, tooltipLines))
             return;
 
         if (!Config.COMPONENT_VALUES.getValue())
             return;
 
-        this.componentDisplay.displayComponentValue(this.componentList, this.componentIndex, tooltipLines);;
-    }
-
-    private void getComponents(ItemStack itemStack) {
-        this.componentList.clear();
-        ComponentMap componentMap = itemStack.getComponents();
-
-        for (Component<?> component : componentMap)
-            this.componentList.add(component);
-        this.componentList.sort(Comparator.comparing(component -> component.type().toString()));
-
-        if (!Config.COMPONENT_CHANGES.getValue())
-            return;
-
-        this.defaultComponentList.clear();
-        ComponentMap defaultComponentMap = itemStack.getDefaultComponents();
-
-        for (Component<?> defaultComponent : defaultComponentMap)
-            this.defaultComponentList.add(defaultComponent);
-
-        this.componentList.removeAll(defaultComponentList);
+        if (!this.components.modifiedComponents().isEmpty())
+            this.componentDisplay.displayComponentValue(this.components.modifiedComponents().get(this.componentIndex), tooltipLines);
     }
 
     private void swapComponentIndex() {
@@ -118,19 +97,19 @@ public class ComponentManager {
             return;
 
         if (!Screen.hasAltDown())
-			this.previousAltDown = false;
+            this.previousAltDown = false;
 
-		if (!this.previousAltDown && Screen.hasAltDown()) {
-			if (Screen.hasShiftDown())
+        if (!this.previousAltDown && Screen.hasAltDown()) {
+            if (Screen.hasShiftDown())
                 this.componentIndex--;
-			else
+            else
                 this.componentIndex++;
             this.previousAltDown = true;
-		}
+        }
 
-		if (this.componentIndex >= this.componentList.size())
+        if (this.componentIndex >= this.components.modifiedComponents().size())
             this.componentIndex = 0;
-		else if (this.componentIndex < 0)
-            this.componentIndex = this.componentList.size() - 1;
+        else if (this.componentIndex < 0)
+            this.componentIndex = this.components.modifiedComponents().size() - 1;
     }
 }

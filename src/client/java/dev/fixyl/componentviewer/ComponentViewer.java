@@ -40,26 +40,23 @@ import dev.fixyl.componentviewer.keybind.KeyBindings;
 import dev.fixyl.componentviewer.screen.ConfigScreen;
 
 public class ComponentViewer implements ClientModInitializer {
-	public static final MinecraftClient minecraftClient = MinecraftClient.getInstance();
-	public static final FabricLoader fabricLoader = FabricLoader.getInstance();
+    public static final MinecraftClient minecraftClient = MinecraftClient.getInstance();
+    public static final FabricLoader fabricLoader = FabricLoader.getInstance();
 
-	public static final Logger logger = LoggerFactory.getLogger("ComponentViewer");
+    public static final Logger logger = LoggerFactory.getLogger("ComponentViewer");
 
-	public static final ConfigManager configManager = new ConfigManager();
-	public static final ComponentManager componentManager = new ComponentManager();
+    public static final ConfigManager configManager = ConfigManager.getInstance();
+    public static final ComponentManager componentManager = ComponentManager.getInstance();
 
-	public static final KeyBindings keyBindings = new KeyBindings();
+    public static final KeyBindings keyBindings = new KeyBindings();
 
-	@Override
-	public void onInitializeClient() {
-		ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipType, tooltipLines) -> {
-			ComponentViewer.componentManager.itemTooltipCallbackListener(itemStack, tooltipContext, tooltipType, tooltipLines);
-		});
+    @Override
+    public void onInitializeClient() {
+        ItemTooltipCallback.EVENT.register(ComponentViewer.componentManager::itemTooltipCallbackListener);
 
-		ClientTickEvents.END_CLIENT_TICK.register(minecraftClient -> {
-			if (ComponentViewer.keyBindings.CONFIG_KEY.isPressed()) {
-				minecraftClient.setScreen(new ConfigScreen(null));
-			}
-		});
-	}
+        ClientTickEvents.END_CLIENT_TICK.register(minecraftClient -> {
+            if (ComponentViewer.keyBindings.configKey.isPressed())
+                minecraftClient.setScreen(new ConfigScreen(null));
+        });
+    }
 }

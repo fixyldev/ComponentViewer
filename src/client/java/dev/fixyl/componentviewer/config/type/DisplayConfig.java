@@ -42,7 +42,7 @@ public class DisplayConfig extends AbstractConfig<DisplayOption> {
             this.translationKey,
             SimpleOption.constantTooltip((Text)Text.translatable(this.tooltipTranslationKey)),
             SimpleOption.enumValueText(),
-            new SimpleOption.PotentialValuesBasedCallbacks<DisplayOption>(Arrays.asList(DisplayOption.values()), Codec.INT.xmap(DisplayOption::byId, DisplayOption::getId)),
+            new SimpleOption.PotentialValuesBasedCallbacks<>(Arrays.asList(DisplayOption.values()), Codec.INT.xmap(DisplayOption::byId, DisplayOption::getId)),
             this.defaultValue,
             value -> ComponentViewer.configManager.writeConfigFile()
         );

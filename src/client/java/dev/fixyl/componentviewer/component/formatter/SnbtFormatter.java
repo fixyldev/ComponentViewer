@@ -41,28 +41,18 @@ import dev.fixyl.componentviewer.component.ComponentDisplay;
 import dev.fixyl.componentviewer.config.Config;
 
 public class SnbtFormatter extends AbstractFormatter {
-    private NbtTextFormatter nbtTextFormatter;
-
     private MutableText textPart;
 
     private boolean colored;
 
-    public SnbtFormatter() {
-        this.initializeNewFormatter();
-    }
-
-    private void initializeNewFormatter() {
-        this.nbtTextFormatter = new NbtTextFormatter(this.getIndentPrefix());
-    }
-
     @Override
     public void setIndentSize(Integer indentSize) {
-        if (this.getIndentSize() == indentSize)
+        Integer previousIndentSize = this.getIndentSize();
+
+        if (previousIndentSize != null && previousIndentSize.equals(indentSize))
             return;
 
         super.setIndentSize(indentSize);
-
-        this.initializeNewFormatter();
     }
 
     public List<Text> formatComponent(Component<?> component, boolean colored) {
@@ -70,8 +60,10 @@ public class SnbtFormatter extends AbstractFormatter {
 
         this.setIndentSize(Config.INDENT_SIZE.getValue());
 
+        NbtTextFormatter nbtTextFormatter = new NbtTextFormatter(this.getIndentPrefix());
+
         NbtElement nbtElement = component.encode(ComponentViewer.minecraftClient.player.getRegistryManager().getOps(NbtOps.INSTANCE)).getOrThrow();
-        Text text = this.nbtTextFormatter.apply(nbtElement);
+        Text text = nbtTextFormatter.apply(nbtElement);
 
         return this.processText(text);
     }
@@ -80,22 +72,25 @@ public class SnbtFormatter extends AbstractFormatter {
         this.textList = new ArrayList<Text>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
 
         this.textPart = Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX);
-        text.visit((style, string) -> this.processSegment(style, string), Style.EMPTY);
+        text.visit(this::processSegment, Style.EMPTY);
 
-        this.textList.add((Text)this.textPart);
+        this.textList.add(this.textPart);
 
         return this.textList;
     }
 
     private Optional<Object> processSegment(Style style, String string) {
-        if (string.equals("\n")) {
-            this.textList.add((Text)this.textPart);
-            this.textPart = Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX);
+        String[] stringArray = string.split("(?=\\n)|(?<=\\n)");
 
-            return Optional.empty();
+        for (String stringPart : stringArray) {
+            if (stringPart.equals("\n")) {
+                this.textList.add(this.textPart);
+                this.textPart = Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX);
+                continue;
+            }
+
+            this.textPart.append(Text.literal(stringPart).setStyle(this.colored ? style : ComponentDisplay.COMPONENT_VALUE_GENERAL_STYLE));
         }
-
-        this.textPart.append((Text)Text.literal(string).setStyle(this.colored ? style : Style.EMPTY.withFormatting(ComponentDisplay.GENERAL_FORMATTING)));
 
         return Optional.empty();
     }

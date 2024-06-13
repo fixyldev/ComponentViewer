@@ -24,67 +24,75 @@
 
 package dev.fixyl.componentviewer.component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.component.Component;
 import net.minecraft.component.type.NbtComponent;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import dev.fixyl.componentviewer.component.formatter.AbstractFormatter;
 import dev.fixyl.componentviewer.component.formatter.ClassFormatter;
 import dev.fixyl.componentviewer.component.formatter.SnbtFormatter;
 import dev.fixyl.componentviewer.config.Config;
 import dev.fixyl.componentviewer.option.ModeOption;
 
-public class ComponentDisplay {
+public final class ComponentDisplay {
+    private static ComponentDisplay instance;
+
     public static final String GENERAL_INDENT_PREFIX = " ";
 
-    public static final Formatting HEADER_FORMATTING = Formatting.GRAY;
-    public static final Formatting GENERAL_FORMATTING = Formatting.DARK_GRAY;
-    public static final Formatting HIGHLIGHTED_FORMATTING = Formatting.DARK_GREEN;
+    public static final Style HEADER_STYLE = Style.EMPTY.withColor(Formatting.GRAY);
+
+    public static final Style COMPONENT_TYPE_GENERAL_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);
+    public static final Style COMPONENT_TYPE_HIGHLIGHTED_STYLE = Style.EMPTY.withColor(Formatting.DARK_GREEN);
+    public static final Style COMPONENT_TYPE_REMOVED_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY).withStrikethrough(true);
+
+    public static final Style COMPONENT_VALUE_GENERAL_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);
 
     private final SnbtFormatter snbtFormatter;
     private final ClassFormatter classFormatter;
 
-    public ComponentDisplay() {
+    private ComponentDisplay() {
         this.snbtFormatter = new SnbtFormatter();
         this.classFormatter = new ClassFormatter();
     }
 
-    public boolean displayComponentTypes(List<Component<?>> componentList, int componentIndex, List<Text> tooltipLines) {
-        tooltipLines.add((Text)Text.empty());
+    public static ComponentDisplay getInstance() {
+        if (ComponentDisplay.instance == null)
+            ComponentDisplay.instance = new ComponentDisplay();
 
-        if (componentList.isEmpty()) {
-			tooltipLines.add((Text)Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.empty.changes" : "componentviewer.tooltips.components.empty.general").formatted(ComponentDisplay.HEADER_FORMATTING));
-			return false;
+        return ComponentDisplay.instance;
+    }
+
+    public boolean displayComponentTypes(Components components, int componentIndex, List<Text> tooltipLines) {
+        tooltipLines.add(Text.empty());
+
+        if (components.isEmpty()) {
+            tooltipLines.add(Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.empty.changes" : "componentviewer.tooltips.components.empty.general").setStyle(ComponentDisplay.HEADER_STYLE));
+            return false;
         }
 
-		tooltipLines.add((Text)Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.header.changes" : "componentviewer.tooltips.components.header.general").formatted(ComponentDisplay.HEADER_FORMATTING));
+        tooltipLines.add(Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.header.changes" : "componentviewer.tooltips.components.header.general").setStyle(ComponentDisplay.HEADER_STYLE));
 
-		for (int index = 0; index < componentList.size(); index++) {
-			String componentType = componentList.get(index).type().toString();
+        if (Config.COMPONENT_CHANGES.getValue())
+            this.displayRemovedComponents(components.removedComponents(), tooltipLines);
 
-			if (index == componentIndex && Config.COMPONENT_VALUES.getValue())
-                tooltipLines.add((Text)Text.literal((componentList.size() == 1 ? ComponentDisplay.GENERAL_INDENT_PREFIX : ComponentDisplay.GENERAL_INDENT_PREFIX.repeat(2)) + componentType).formatted(ComponentDisplay.HIGHLIGHTED_FORMATTING));
-			else
-                tooltipLines.add((Text)Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX + componentType).formatted(ComponentDisplay.GENERAL_FORMATTING));
-		}
+        this.displayModifiedComponents(components.modifiedComponents(), componentIndex, components.size() > 1, tooltipLines);
 
         return true;
     }
 
-    public void displayComponentValue(List<Component<?>> componentList, int componentIndex, List<Text> tooltipLines) {
-        Component<?> component = componentList.get(componentIndex);
-        List<Text> textList = new ArrayList<Text>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
+    public void displayComponentValue(Component<?> component, List<Text> tooltipLines) {
+        tooltipLines.add(Text.empty());
 
-        tooltipLines.add((Text)Text.empty());
+        List<Text> textList;
 
         switch (Config.MODE.getValue()) {
             case ModeOption.SNBT -> {
                 if (component.type().getCodec() == null) {
-                    tooltipLines.add((Text)Text.translatable("componentviewer.tooltips.components.error.no_codec").formatted(ComponentDisplay.HEADER_FORMATTING));
+                    tooltipLines.add(Text.translatable("componentviewer.tooltips.components.error.no_codec").setStyle(ComponentDisplay.HEADER_STYLE));
                     return;
                 }
 
@@ -95,13 +103,38 @@ public class ComponentDisplay {
                 if (component.value() instanceof NbtComponent)
                     textList = this.snbtFormatter.formatComponent(component, false);
                 else
-                    textList = this.classFormatter.formatGeneral(component);
+                    textList = this.classFormatter.formatComponent(component);
             }
 
             default -> throw new IllegalArgumentException("Illegal ModeOption enum value: " + Config.MODE.getValue());
         }
 
-		tooltipLines.add((Text)Text.translatable("componentviewer.tooltips.components.value").formatted(ComponentDisplay.HEADER_FORMATTING));
+        tooltipLines.add(Text.translatable("componentviewer.tooltips.components.value").setStyle(ComponentDisplay.HEADER_STYLE));
         tooltipLines.addAll(textList);
+    }
+
+    private void displayRemovedComponents(List<Component<?>> removedComponents, List<Text> tooltipLines) {
+        for (Component<?> component : removedComponents) {
+            MutableText componentTypeText = Text.literal(component.type().toString())
+                    .setStyle(ComponentDisplay.COMPONENT_TYPE_REMOVED_STYLE);
+
+            tooltipLines.add(Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX).append(componentTypeText));
+        }
+    }
+
+    private void displayModifiedComponents(List<Component<?>> modifiedComponents, int componentIndex, boolean indentOnSelected, List<Text> tooltipLines) {
+        for (int index = 0; index < modifiedComponents.size(); index++) {
+            MutableText componentTypeText = Text.literal(modifiedComponents.get(index).type().toString());
+
+            if (index == componentIndex && Config.COMPONENT_VALUES.getValue()) {
+                componentTypeText.setStyle(ComponentDisplay.COMPONENT_TYPE_HIGHLIGHTED_STYLE);
+
+                if (indentOnSelected)
+                    componentTypeText = Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX).append(componentTypeText);
+            } else
+                componentTypeText.setStyle(ComponentDisplay.COMPONENT_TYPE_GENERAL_STYLE);
+
+            tooltipLines.add(Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX).append(componentTypeText));
+        }
     }
 }

@@ -25,16 +25,20 @@
 package dev.fixyl.componentviewer.screen;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.option.SimpleOptionsScreen;
-import net.minecraft.client.option.SimpleOption;
+import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.text.Text;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Config;
 
-public class ConfigScreen extends SimpleOptionsScreen {
+public class ConfigScreen extends GameOptionsScreen {
     public ConfigScreen(Screen parentScreen) {
-        super(parentScreen, ComponentViewer.minecraftClient.options, (Text)Text.translatable("componentviewer.config.title"), new SimpleOption[] {
+        super(parentScreen, ComponentViewer.minecraftClient.options, Text.translatable("componentviewer.config.title"));
+    }
+
+    @Override
+    protected void addOptions() {
+        this.body.addAll(
             Config.MODE.getSimpleOption(),
             Config.DISPLAY.getSimpleOption(),
             Config.INDENT_SIZE.getSimpleOption(),
@@ -42,6 +46,6 @@ public class ConfigScreen extends SimpleOptionsScreen {
             Config.COMPONENT_CHANGES.getSimpleOption(),
             Config.COMPONENT_VALUES.getSimpleOption(),
             Config.ADVANCED_TOOLTIPS.getSimpleOption()
-        });
+        );
     }
 }
