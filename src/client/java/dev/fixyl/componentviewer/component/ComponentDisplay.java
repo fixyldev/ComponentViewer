@@ -28,6 +28,8 @@ import java.util.List;
 
 import net.minecraft.component.Component;
 import net.minecraft.component.type.NbtComponent;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -41,9 +43,13 @@ public final class ComponentDisplay {
 
     public static final String GENERAL_INDENT_PREFIX = " ";
 
-    public static final Formatting HEADER_FORMATTING = Formatting.GRAY;
-    public static final Formatting GENERAL_FORMATTING = Formatting.DARK_GRAY;
-    public static final Formatting HIGHLIGHTED_FORMATTING = Formatting.DARK_GREEN;
+    public static final Style HEADER_STYLE = Style.EMPTY.withColor(Formatting.GRAY);
+
+    public static final Style COMPONENT_TYPE_GENERAL_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);
+    public static final Style COMPONENT_TYPE_HIGHLIGHTED_STYLE = Style.EMPTY.withColor(Formatting.DARK_GREEN);
+    public static final Style COMPONENT_TYPE_REMOVED_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY).withStrikethrough(true);
+
+    public static final Style COMPONENT_VALUE_GENERAL_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);
 
     private final SnbtFormatter snbtFormatter;
     private final ClassFormatter classFormatter;
@@ -60,24 +66,20 @@ public final class ComponentDisplay {
         return ComponentDisplay.instance;
     }
 
-    public boolean displayComponentTypes(List<Component<?>> componentList, int componentIndex, List<Text> tooltipLines) {
+    public boolean displayComponentTypes(Components components, int componentIndex, List<Text> tooltipLines) {
         tooltipLines.add(Text.empty());
 
-        if (componentList.isEmpty()) {
-            tooltipLines.add(Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.empty.changes" : "componentviewer.tooltips.components.empty.general").formatted(ComponentDisplay.HEADER_FORMATTING));
+        if (components.isEmpty()) {
+            tooltipLines.add(Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.empty.changes" : "componentviewer.tooltips.components.empty.general").setStyle(ComponentDisplay.HEADER_STYLE));
             return false;
         }
 
-        tooltipLines.add(Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.header.changes" : "componentviewer.tooltips.components.header.general").formatted(ComponentDisplay.HEADER_FORMATTING));
+        tooltipLines.add(Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.header.changes" : "componentviewer.tooltips.components.header.general").setStyle(ComponentDisplay.HEADER_STYLE));
 
-        for (int index = 0; index < componentList.size(); index++) {
-            String componentType = componentList.get(index).type().toString();
+        if (Config.COMPONENT_CHANGES.getValue())
+            this.displayRemovedComponents(components.removedComponents(), tooltipLines);
 
-            if (index == componentIndex && Config.COMPONENT_VALUES.getValue())
-                tooltipLines.add(Text.literal((componentList.size() == 1 ? ComponentDisplay.GENERAL_INDENT_PREFIX : ComponentDisplay.GENERAL_INDENT_PREFIX.repeat(2)) + componentType).formatted(ComponentDisplay.HIGHLIGHTED_FORMATTING));
-            else
-                tooltipLines.add(Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX + componentType).formatted(ComponentDisplay.GENERAL_FORMATTING));
-        }
+        this.displayModifiedComponents(components.modifiedComponents(), componentIndex, components.size() > 1, tooltipLines);
 
         return true;
     }
@@ -90,7 +92,7 @@ public final class ComponentDisplay {
         switch (Config.MODE.getValue()) {
             case ModeOption.SNBT -> {
                 if (component.type().getCodec() == null) {
-                    tooltipLines.add(Text.translatable("componentviewer.tooltips.components.error.no_codec").formatted(ComponentDisplay.HEADER_FORMATTING));
+                    tooltipLines.add(Text.translatable("componentviewer.tooltips.components.error.no_codec").setStyle(ComponentDisplay.HEADER_STYLE));
                     return;
                 }
 
@@ -107,7 +109,32 @@ public final class ComponentDisplay {
             default -> throw new IllegalArgumentException("Illegal ModeOption enum value: " + Config.MODE.getValue());
         }
 
-        tooltipLines.add(Text.translatable("componentviewer.tooltips.components.value").formatted(ComponentDisplay.HEADER_FORMATTING));
+        tooltipLines.add(Text.translatable("componentviewer.tooltips.components.value").setStyle(ComponentDisplay.HEADER_STYLE));
         tooltipLines.addAll(textList);
+    }
+
+    private void displayRemovedComponents(List<Component<?>> removedComponents, List<Text> tooltipLines) {
+        for (Component<?> component : removedComponents) {
+            MutableText componentTypeText = Text.literal(component.type().toString())
+                    .setStyle(ComponentDisplay.COMPONENT_TYPE_REMOVED_STYLE);
+
+            tooltipLines.add(Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX).append(componentTypeText));
+        }
+    }
+
+    private void displayModifiedComponents(List<Component<?>> modifiedComponents, int componentIndex, boolean indentOnSelected, List<Text> tooltipLines) {
+        for (int index = 0; index < modifiedComponents.size(); index++) {
+            MutableText componentTypeText = Text.literal(modifiedComponents.get(index).type().toString());
+
+            if (index == componentIndex && Config.COMPONENT_VALUES.getValue()) {
+                componentTypeText.setStyle(ComponentDisplay.COMPONENT_TYPE_HIGHLIGHTED_STYLE);
+
+                if (indentOnSelected)
+                    componentTypeText = Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX).append(componentTypeText);
+            } else
+                componentTypeText.setStyle(ComponentDisplay.COMPONENT_TYPE_GENERAL_STYLE);
+
+            tooltipLines.add(Text.literal(ComponentDisplay.GENERAL_INDENT_PREFIX).append(componentTypeText));
+        }
     }
 }

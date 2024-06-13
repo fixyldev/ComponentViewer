@@ -69,7 +69,9 @@ public class ClassFormatter extends AbstractFormatter {
 
     @Override
     public void setIndentSize(Integer indentSize) {
-        if (this.getIndentSize().equals(indentSize))
+        Integer previousIndentSize = this.getIndentSize();
+
+        if (previousIndentSize != null && previousIndentSize.equals(indentSize))
             return;
 
         super.setIndentSize(indentSize);
@@ -87,7 +89,7 @@ public class ClassFormatter extends AbstractFormatter {
 
         if (Config.INDENT_SIZE.getValue() == 0) {
             this.line.append(this.componentValue);
-            this.textList.add(Text.literal(this.line.toString()).formatted(ComponentDisplay.GENERAL_FORMATTING));
+            this.textList.add(Text.literal(this.line.toString()).setStyle(ComponentDisplay.COMPONENT_VALUE_GENERAL_STYLE));
 
             return this.textList;
         }
@@ -99,13 +101,13 @@ public class ClassFormatter extends AbstractFormatter {
         }
 
         if (this.line.length() != 0)
-            this.textList.add(Text.literal(this.line.toString()).formatted(ComponentDisplay.GENERAL_FORMATTING));
+            this.textList.add(Text.literal(this.line.toString()).setStyle(ComponentDisplay.COMPONENT_VALUE_GENERAL_STYLE));
 
         if (this.formattingError || this.indentLevel != 0 || this.inString || this.inCurlyBracketString) {
             this.textList.clear();
-            this.textList.add(Text.literal(this.getIndentPrefixFromLevel(0) + this.componentValue).formatted(ComponentDisplay.GENERAL_FORMATTING));
+            this.textList.add(Text.literal(this.getIndentPrefixFromLevel(0) + this.componentValue).setStyle(ComponentDisplay.COMPONENT_VALUE_GENERAL_STYLE));
             this.textList.add(Text.empty());
-            this.textList.add(Text.translatable("componentviewer.tooltips.components.error.class_formatting").formatted(ComponentDisplay.HEADER_FORMATTING));
+            this.textList.add(Text.translatable("componentviewer.tooltips.components.error.class_formatting").setStyle(ComponentDisplay.HEADER_STYLE));
         }
 
         return this.textList;
@@ -265,7 +267,7 @@ public class ClassFormatter extends AbstractFormatter {
     }
 
     private void prepareNewLine() {
-        this.textList.add(Text.literal(this.line.toString()).formatted(ComponentDisplay.GENERAL_FORMATTING));
+        this.textList.add(Text.literal(this.line.toString()).setStyle(ComponentDisplay.COMPONENT_VALUE_GENERAL_STYLE));
         this.line.setLength(0);
     }
 

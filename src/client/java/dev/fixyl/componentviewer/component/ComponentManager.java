@@ -24,13 +24,9 @@
 
 package dev.fixyl.componentviewer.component;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.component.Component;
-import net.minecraft.component.ComponentMap;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.item.Item.TooltipContext;
 import net.minecraft.item.ItemStack;
@@ -42,21 +38,14 @@ import dev.fixyl.componentviewer.option.DisplayOption;
 public final class ComponentManager {
     private static ComponentManager instance;
 
-    private static final int INITIAL_COMPONENT_LIST_CAPACITY = 16;
-
     private final ComponentDisplay componentDisplay;
 
-    private final List<Component<?>> componentList;
-    private final List<Component<?>> defaultComponentList;
-
+    private Components components;
     private int componentIndex;
     private boolean previousAltDown;
 
     private ComponentManager() {
         this.componentDisplay = ComponentDisplay.getInstance();
-
-        this.componentList = new ArrayList<>(ComponentManager.INITIAL_COMPONENT_LIST_CAPACITY);
-        this.defaultComponentList = new ArrayList<>(ComponentManager.INITIAL_COMPONENT_LIST_CAPACITY);
 
         this.componentIndex = 0;
         this.previousAltDown = false;
@@ -85,37 +74,18 @@ public final class ComponentManager {
                 throw new IllegalArgumentException("Illegal DisplayOption enum value: " + Config.DISPLAY.getValue());
         }
 
-        this.getComponents(itemStack);
+        this.components = Components.getComponents(itemStack);
 
         this.swapComponentIndex();
 
-        if (!this.componentDisplay.displayComponentTypes(this.componentList, this.componentIndex, tooltipLines))
+        if (!this.componentDisplay.displayComponentTypes(this.components, this.componentIndex, tooltipLines))
             return;
 
         if (!Config.COMPONENT_VALUES.getValue())
             return;
 
-        this.componentDisplay.displayComponentValue(this.componentList.get(this.componentIndex), tooltipLines);
-    }
-
-    private void getComponents(ItemStack itemStack) {
-        this.componentList.clear();
-        ComponentMap componentMap = itemStack.getComponents();
-
-        for (Component<?> component : componentMap)
-            this.componentList.add(component);
-        this.componentList.sort(Comparator.comparing(component -> component.type().toString()));
-
-        if (!Config.COMPONENT_CHANGES.getValue())
-            return;
-
-        this.defaultComponentList.clear();
-        ComponentMap defaultComponentMap = itemStack.getDefaultComponents();
-
-        for (Component<?> defaultComponent : defaultComponentMap)
-            this.defaultComponentList.add(defaultComponent);
-
-        this.componentList.removeAll(defaultComponentList);
+        if (!this.components.modifiedComponents().isEmpty())
+            this.componentDisplay.displayComponentValue(this.components.modifiedComponents().get(this.componentIndex), tooltipLines);
     }
 
     private void swapComponentIndex() {
@@ -133,9 +103,9 @@ public final class ComponentManager {
             this.previousAltDown = true;
         }
 
-        if (this.componentIndex >= this.componentList.size())
+        if (this.componentIndex >= this.components.modifiedComponents().size())
             this.componentIndex = 0;
         else if (this.componentIndex < 0)
-            this.componentIndex = this.componentList.size() - 1;
+            this.componentIndex = this.components.modifiedComponents().size() - 1;
     }
 }
