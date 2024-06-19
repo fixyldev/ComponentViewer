@@ -41,6 +41,8 @@ import dev.fixyl.componentviewer.component.ComponentDisplay;
 import dev.fixyl.componentviewer.config.Config;
 
 public class SnbtFormatter extends AbstractFormatter {
+    private static final String NO_CODEC_REPRESENTATION = "{}";
+
     private MutableText textPart;
 
     private boolean colored;
@@ -59,6 +61,11 @@ public class SnbtFormatter extends AbstractFormatter {
         this.colored = colored;
 
         this.setIndentSize(Config.INDENT_SIZE.getValue());
+
+        if (component.type().getCodec() == null) {
+            Text noCodecText = Text.literal(SnbtFormatter.NO_CODEC_REPRESENTATION).setStyle(ComponentDisplay.COMPONENT_VALUE_WHITE_STYLE);
+            return this.processText(noCodecText);
+        }
 
         NbtTextFormatter nbtTextFormatter = new NbtTextFormatter(this.getIndentPrefix());
 

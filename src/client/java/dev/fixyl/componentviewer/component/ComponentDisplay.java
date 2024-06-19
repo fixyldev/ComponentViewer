@@ -50,6 +50,7 @@ public final class ComponentDisplay {
     public static final Style COMPONENT_TYPE_REMOVED_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY).withStrikethrough(true);
 
     public static final Style COMPONENT_VALUE_GENERAL_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);
+    public static final Style COMPONENT_VALUE_WHITE_STYLE = Style.EMPTY.withColor(Formatting.WHITE);
 
     private final SnbtFormatter snbtFormatter;
     private final ClassFormatter classFormatter;
@@ -90,14 +91,7 @@ public final class ComponentDisplay {
         List<Text> textList;
 
         switch (Config.MODE.getValue()) {
-            case ModeOption.SNBT -> {
-                if (component.type().getCodec() == null) {
-                    tooltipLines.add(Text.translatable("componentviewer.tooltips.components.error.no_codec").setStyle(ComponentDisplay.HEADER_STYLE));
-                    return;
-                }
-
-                textList = this.snbtFormatter.formatComponent(component, Config.COLORED_SNBT.getValue());
-            }
+            case ModeOption.SNBT -> textList = this.snbtFormatter.formatComponent(component, Config.COLORED_SNBT.getValue());
 
             case ModeOption.CLASS -> {
                 if (component.value() instanceof NbtComponent)

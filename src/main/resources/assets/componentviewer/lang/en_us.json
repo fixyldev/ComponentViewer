@@ -26,7 +26,6 @@
     "componentviewer.tooltips.components.empty.changes": "No Component Changes",
     "componentviewer.tooltips.components.empty.general": "No Components",
     "componentviewer.tooltips.components.error.class_formatting": "Class formatting error: Displaying non-formatted value",
-    "componentviewer.tooltips.components.error.no_codec": "Internal component: No SNBT representation available",
     "componentviewer.tooltips.components.header.changes": "Component Changes:",
     "componentviewer.tooltips.components.header.general": "Components:",
     "componentviewer.tooltips.components.value": "Value:"
