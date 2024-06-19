@@ -39,7 +39,7 @@ import net.minecraft.item.ItemStack;
 import dev.fixyl.componentviewer.config.Config;
 
 public record Components(List<Component<?>> modifiedComponents, List<Component<?>> removedComponents) {
-    public static final Comparator<Component<?>> comparator = Comparator.comparing(component -> component.type().toString());
+    private static final Comparator<Component<?>> comparator = Comparator.comparing(component -> component.type().toString());
 
     public static Components getComponents(ItemStack itemStack) {
         if (Config.COMPONENT_CHANGES.getValue())

@@ -32,7 +32,7 @@ import net.minecraft.text.Text;
 import dev.fixyl.componentviewer.config.Config;
 
 public abstract class AbstractFormatter {
-    public static final int INITIAL_TEXT_LIST_CAPACITY = 16;
+    protected static final int INITIAL_TEXT_LIST_CAPACITY = 16;
 
     private Integer indentSize;
     private String indentPrefix;

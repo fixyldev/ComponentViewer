@@ -35,7 +35,7 @@ public class BooleanConfig extends AbstractConfig<Boolean> {
 
         this.simpleOption = SimpleOption.ofBoolean(
             this.translationKey,
-            SimpleOption.constantTooltip((Text)Text.translatable(this.tooltipTranslationKey)),
+            SimpleOption.constantTooltip(Text.translatable(this.tooltipTranslationKey)),
             this.defaultValue,
             value -> ComponentViewer.configManager.writeConfigFile()
         );

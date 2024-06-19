@@ -40,7 +40,7 @@ public class ModeConfig extends AbstractConfig<ModeOption> {
 
         this.simpleOption = new SimpleOption<ModeOption>(
             this.translationKey,
-            SimpleOption.constantTooltip((Text)Text.translatable(this.tooltipTranslationKey)),
+            SimpleOption.constantTooltip(Text.translatable(this.tooltipTranslationKey)),
             SimpleOption.enumValueText(),
             new SimpleOption.PotentialValuesBasedCallbacks<>(Arrays.asList(ModeOption.values()), Codec.INT.xmap(ModeOption::byId, ModeOption::getId)),
             this.defaultValue,

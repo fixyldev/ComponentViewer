@@ -89,7 +89,7 @@ public class SnbtFormatter extends AbstractFormatter {
                 continue;
             }
 
-            this.textPart.append(Text.literal(stringPart).setStyle(this.colored ? style : ComponentDisplay.COMPONENT_VALUE_GENERAL_STYLE));
+            this.textPart.append(Text.literal(stringPart).setStyle((this.colored) ? style : ComponentDisplay.COMPONENT_VALUE_GENERAL_STYLE));
         }
 
         return Optional.empty();

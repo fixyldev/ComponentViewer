@@ -47,11 +47,11 @@ public class IntegerConfig extends AbstractConfig<Integer> {
 
         this.simpleOption = new SimpleOption<Integer>(
             this.translationKey,
-            SimpleOption.constantTooltip((Text)Text.translatable(this.tooltipTranslationKey)),
+            SimpleOption.constantTooltip(Text.translatable(this.tooltipTranslationKey)),
             (optionText, value) -> {
                 if (value > 0)
-                    return (Text)Text.translatable(this.translationKeyValue, value);
-                return (Text)Text.translatable(this.translationKeyOff, value);
+                    return Text.translatable(this.translationKeyValue, value);
+                return Text.translatable(this.translationKeyOff, value);
             },
             new SimpleOption.ValidatingIntSliderCallbacks(this.minValue, this.maxValue),
             Codec.intRange(this.minValue, this.maxValue),
