@@ -68,9 +68,8 @@ public final class ConfigManager {
         try (FileReader configFileReader = new FileReader(this.configFile)) {
             ConfigJson configJson = this.gson.fromJson(configFileReader, ConfigJson.class);
 
-            if (configJson == null) {
+            if (configJson == null)
                 throw new JsonParseException("File is presumably empty!");
-            }
 
             configJson.setConfigValues();
         } catch (IOException | JsonParseException e) {

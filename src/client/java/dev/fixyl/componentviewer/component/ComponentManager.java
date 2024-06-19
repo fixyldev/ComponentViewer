@@ -72,6 +72,7 @@ public final class ComponentManager {
             case DisplayOption.HOLD:
                 if (!Screen.hasControlDown())
                     return;
+                break;
             case DisplayOption.ALWAYS:
                 break;
             default:
@@ -80,33 +81,32 @@ public final class ComponentManager {
 
         this.components = Components.getComponents(itemStack);
 
-        this.swapComponentIndex();
+        if (Config.COMPONENT_VALUES.getValue()) {
+            this.swapComponentIndex();
+            this.carryComponentIndex();
+        }
 
         if (!this.componentDisplay.displayComponentTypes(this.components, this.componentIndex, tooltipLines))
             return;
 
-        if (!Config.COMPONENT_VALUES.getValue())
-            return;
-
-        if (!this.components.modifiedComponents().isEmpty())
+        if (Config.COMPONENT_VALUES.getValue() && !this.components.modifiedComponents().isEmpty())
             this.componentDisplay.displayComponentValue(this.components.modifiedComponents().get(this.componentIndex), tooltipLines);
     }
 
     private void swapComponentIndex() {
-        if (!Config.COMPONENT_VALUES.getValue())
-            return;
+        boolean currentAltDown = Screen.hasAltDown();
 
-        if (!Screen.hasAltDown())
+        if (!currentAltDown)
             this.previousAltDown = false;
 
-        if (!this.previousAltDown && Screen.hasAltDown()) {
-            if (Screen.hasShiftDown())
-                this.componentIndex--;
-            else
-                this.componentIndex++;
+        if (!this.previousAltDown && currentAltDown) {
+            this.componentIndex += (Screen.hasShiftDown()) ? -1 : 1;
+
             this.previousAltDown = true;
         }
+    }
 
+    private void carryComponentIndex() {
         if (this.componentIndex >= this.components.modifiedComponents().size())
             this.componentIndex = 0;
         else if (this.componentIndex < 0)
