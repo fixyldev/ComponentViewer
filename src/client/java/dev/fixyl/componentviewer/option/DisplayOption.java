@@ -26,13 +26,15 @@ package dev.fixyl.componentviewer.option;
 
 import java.util.function.IntFunction;
 
+import com.google.gson.annotations.SerializedName;
+
 import net.minecraft.util.TranslatableOption;
 import net.minecraft.util.function.ValueLists;
 
 public enum DisplayOption implements TranslatableOption {
-    NEVER(0, "componentviewer.config.display.never"),
-    HOLD(1, "componentviewer.config.display.hold"),
-    ALWAYS(2, "componentviewer.config.display.always");
+    @SerializedName("never") NEVER(0, "componentviewer.config.display.never"),
+    @SerializedName("hold") HOLD(1, "componentviewer.config.display.hold"),
+    @SerializedName("always") ALWAYS(2, "componentviewer.config.display.always");
 
     private static final IntFunction<DisplayOption> BY_ID;
     private final int id;
