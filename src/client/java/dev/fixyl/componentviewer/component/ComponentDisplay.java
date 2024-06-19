@@ -70,11 +70,11 @@ public final class ComponentDisplay {
         tooltipLines.add(Text.empty());
 
         if (components.isEmpty()) {
-            tooltipLines.add(Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.empty.changes" : "componentviewer.tooltips.components.empty.general").setStyle(ComponentDisplay.HEADER_STYLE));
+            tooltipLines.add(Text.translatable((Config.COMPONENT_CHANGES.getValue()) ? "componentviewer.tooltips.components.empty.changes" : "componentviewer.tooltips.components.empty.general").setStyle(ComponentDisplay.HEADER_STYLE));
             return false;
         }
 
-        tooltipLines.add(Text.translatable(Config.COMPONENT_CHANGES.getValue() ? "componentviewer.tooltips.components.header.changes" : "componentviewer.tooltips.components.header.general").setStyle(ComponentDisplay.HEADER_STYLE));
+        tooltipLines.add(Text.translatable((Config.COMPONENT_CHANGES.getValue()) ? "componentviewer.tooltips.components.header.changes" : "componentviewer.tooltips.components.header.general").setStyle(ComponentDisplay.HEADER_STYLE));
 
         if (Config.COMPONENT_CHANGES.getValue())
             this.displayRemovedComponents(components.removedComponents(), tooltipLines);
