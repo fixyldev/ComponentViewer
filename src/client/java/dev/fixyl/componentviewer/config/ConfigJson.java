@@ -28,13 +28,13 @@ import dev.fixyl.componentviewer.option.DisplayOption;
 import dev.fixyl.componentviewer.option.ModeOption;
 
 public class ConfigJson {
-    public ModeOption mode;
-    public DisplayOption display;
-    public Integer indentSize;
-    public Boolean coloredSnbt;
-    public Boolean componentChanges;
-    public Boolean componentValues;
-    public Boolean advancedTooltips;
+    private ModeOption mode;
+    private DisplayOption display;
+    private Integer indentSize;
+    private Boolean coloredSnbt;
+    private Boolean componentChanges;
+    private Boolean componentValues;
+    private Boolean advancedTooltips;
 
     public void setConfigValues() {
         Config.MODE.setValue(this.mode);

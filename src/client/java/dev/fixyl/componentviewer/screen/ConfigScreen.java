@@ -34,7 +34,7 @@ import dev.fixyl.componentviewer.config.Config;
 
 public class ConfigScreen extends SimpleOptionsScreen {
     public ConfigScreen(Screen parentScreen) {
-        super(parentScreen, ComponentViewer.minecraftClient.options, (Text)Text.translatable("componentviewer.config.title"), new SimpleOption[] {
+        super(parentScreen, ComponentViewer.minecraftClient.options, Text.translatable("componentviewer.config.title"), new SimpleOption[] {
             Config.MODE.getSimpleOption(),
             Config.DISPLAY.getSimpleOption(),
             Config.INDENT_SIZE.getSimpleOption(),

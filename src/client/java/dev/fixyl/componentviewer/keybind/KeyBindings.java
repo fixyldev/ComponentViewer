@@ -30,7 +30,7 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 
 public class KeyBindings {
-    public final KeyBinding CONFIG_KEY = KeyBindingHelper.registerKeyBinding(new KeyBinding(
+    public final KeyBinding configKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
         "componentviewer.keybind.config",
         InputUtil.Type.KEYSYM,
         InputUtil.GLFW_KEY_J,
