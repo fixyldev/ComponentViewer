@@ -82,7 +82,7 @@ public final class ConfigManager {
         try (FileWriter configFileWriter = new FileWriter(this.configFile)) {
             this.gson.toJson(ConfigJson.getConfigValues(), configFileWriter);
         } catch (IOException | JsonParseException e) {
-            ComponentViewer.logger.error("Error when writing \"Component Viewer\" config file! Config will no be saved across sessions!", e);
+            ComponentViewer.logger.error("Error when writing \"Component Viewer\" config file! Config will not be saved across sessions!", e);
         }
     }
 }
