@@ -27,6 +27,7 @@ package dev.fixyl.componentviewer.config.type;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.client.option.SimpleOption;
+import net.minecraft.client.option.SimpleOption.ValueTextGetter;
 import net.minecraft.text.Text;
 
 import dev.fixyl.componentviewer.ComponentViewer;
@@ -34,30 +35,30 @@ import dev.fixyl.componentviewer.ComponentViewer;
 public class IntegerConfig extends AbstractConfig<Integer> {
     private final Integer minValue;
     private final Integer maxValue;
-    private final String translationKeyValue;
-    private final String translationKeyOff;
 
-    public IntegerConfig(Integer defaultValue, Integer minValue, Integer maxValue, String translationKey, String tooltipTranslationKey, String translationKeyValue, String translationKeyOff) {
-        super(defaultValue, translationKey, tooltipTranslationKey);
+    private IntegerConfig(IntegerConfigBuilder builder) {
+        super(builder);
 
-        this.minValue = minValue;
-        this.maxValue = maxValue;
-        this.translationKeyValue = translationKeyValue;
-        this.translationKeyOff = translationKeyOff;
+        AbstractConfig.assertNull(builder.minValue, builder.maxValue);
 
-        this.simpleOption = new SimpleOption<Integer>(
-            this.translationKey,
-            SimpleOption.constantTooltip(Text.translatable(this.tooltipTranslationKey)),
-            (optionText, value) -> {
-                if (value > 0)
-                    return Text.translatable(this.translationKeyValue, value);
-                return Text.translatable(this.translationKeyOff, value);
-            },
-            new SimpleOption.ValidatingIntSliderCallbacks(this.minValue, this.maxValue),
-            Codec.intRange(this.minValue, this.maxValue),
-            this.defaultValue,
-            value -> ComponentViewer.configManager.writeConfigFile()
-        );
+        if (builder.minValue > builder.maxValue) {
+            ComponentViewer.logger.error("Invalid integer range {}-{}! The min value must be less than or equal to the max value.", builder.minValue, builder.maxValue);
+            throw new IllegalArgumentException("Invalid integer range");
+        }
+
+        if (this.defaultValue < builder.minValue || this.defaultValue > builder.maxValue) {
+            ComponentViewer.logger.error("Invalid default value {}! The default value must be within the valid integer range {}-{}.", this.defaultValue, builder.minValue, builder.maxValue);
+            throw new IllegalArgumentException("Invalid default value");
+        }
+
+        this.minValue = builder.minValue;
+        this.maxValue = builder.maxValue;
+
+        this.simpleOption = this.createSimpleOption();
+    }
+
+    public static IntegerConfigBuilder createBuilder(String id) {
+        return new IntegerConfigBuilder(id);
     }
 
     @Override
@@ -65,5 +66,48 @@ public class IntegerConfig extends AbstractConfig<Integer> {
         value = Math.max(this.minValue, Math.min(this.maxValue, value));
 
         super.setValue(value);
+    }
+
+    @Override
+    protected ValueTextGetter<Integer> getDefaultValueTextGetter() {
+        return (optionText, value) -> Text.empty();
+    }
+
+    @Override
+    protected SimpleOption<Integer> createSimpleOption() {
+        return new SimpleOption<>(
+            this.nameTranslationKey,
+            this.tooltipFactory,
+            this.valueTextGetter,
+            new SimpleOption.ValidatingIntSliderCallbacks(this.minValue, this.maxValue),
+            Codec.intRange(this.minValue, this.maxValue),
+            this.defaultValue,
+            value -> ComponentViewer.configManager.writeConfigFile()
+        );
+    }
+
+    public static class IntegerConfigBuilder extends AbstractConfigBuilder<Integer, IntegerConfig, IntegerConfigBuilder> {
+        private Integer minValue;
+        private Integer maxValue;
+
+        private IntegerConfigBuilder(String id) {
+            super(id);
+        }
+
+        public IntegerConfigBuilder setIntegerRange(Integer minValue, Integer maxValue) {
+            this.minValue = minValue;
+            this.maxValue = maxValue;
+            return this;
+        }
+
+        @Override
+        public IntegerConfig build() {
+            return new IntegerConfig(this);
+        }
+
+        @Override
+        protected IntegerConfigBuilder self() {
+            return this;
+        }
     }
 }

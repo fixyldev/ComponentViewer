@@ -38,7 +38,7 @@ import net.minecraft.text.MutableText;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.component.ComponentDisplay;
-import dev.fixyl.componentviewer.config.Config;
+import dev.fixyl.componentviewer.config.Configs;
 
 public class SnbtFormatter extends AbstractFormatter {
     private static final String NO_CODEC_REPRESENTATION = "{}";
@@ -60,7 +60,7 @@ public class SnbtFormatter extends AbstractFormatter {
     public List<Text> formatComponent(Component<?> component, boolean colored) {
         this.colored = colored;
 
-        this.setIndentSize(Config.INDENT_SIZE.getValue());
+        this.setIndentSize(Configs.INDENT_SIZE.value());
 
         if (component.type().getCodec() == null) {
             Text noCodecText = Text.literal(SnbtFormatter.NO_CODEC_REPRESENTATION).setStyle(ComponentDisplay.COMPONENT_VALUE_WHITE_STYLE);

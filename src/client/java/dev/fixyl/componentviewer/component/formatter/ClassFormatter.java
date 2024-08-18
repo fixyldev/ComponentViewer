@@ -33,7 +33,7 @@ import net.minecraft.component.Component;
 import net.minecraft.text.Text;
 
 import dev.fixyl.componentviewer.component.ComponentDisplay;
-import dev.fixyl.componentviewer.config.Config;
+import dev.fixyl.componentviewer.config.Configs;
 
 public class ClassFormatter extends AbstractFormatter {
     private static final int INITIAL_INDENT_CACHE_CAPACITY = 12;
@@ -81,13 +81,13 @@ public class ClassFormatter extends AbstractFormatter {
     }
 
     public List<Text> formatComponent(Component<?> component) {
-        this.setIndentSize(Config.INDENT_SIZE.getValue());
+        this.setIndentSize(Configs.INDENT_SIZE.value());
 
         this.initializeFormattingVariables(component);
 
         this.line.append(this.getIndentPrefixFromLevel(this.indentLevel));
 
-        if (Config.INDENT_SIZE.getValue() == 0) {
+        if (Configs.INDENT_SIZE.value() == 0) {
             this.line.append(this.componentValue);
             this.textList.add(Text.literal(this.line.toString()).setStyle(ComponentDisplay.COMPONENT_VALUE_GENERAL_STYLE));
 

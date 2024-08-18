@@ -29,22 +29,52 @@ import java.util.Arrays;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.client.option.SimpleOption;
-import net.minecraft.text.Text;
+import net.minecraft.client.option.SimpleOption.ValueTextGetter;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.option.DisplayOption;
 
 public class DisplayConfig extends AbstractConfig<DisplayOption> {
-    public DisplayConfig(DisplayOption defaultValue, String translationKey, String tooltipTranslationKey) {
-        super(defaultValue, translationKey, tooltipTranslationKey);
+    private DisplayConfig(DisplayConfigBuilder builder) {
+        super(builder);
 
-        this.simpleOption = new SimpleOption<DisplayOption>(
-            this.translationKey,
-            SimpleOption.constantTooltip(Text.translatable(this.tooltipTranslationKey)),
-            SimpleOption.enumValueText(),
+        this.simpleOption = this.createSimpleOption();
+    }
+
+    public static DisplayConfigBuilder createBuilder(String id) {
+        return new DisplayConfigBuilder(id);
+    }
+
+    @Override
+    protected ValueTextGetter<DisplayOption> getDefaultValueTextGetter() {
+        return SimpleOption.enumValueText();
+    }
+
+    @Override
+    protected SimpleOption<DisplayOption> createSimpleOption() {
+        return new SimpleOption<>(
+            this.nameTranslationKey,
+            this.tooltipFactory,
+            this.valueTextGetter,
             new SimpleOption.PotentialValuesBasedCallbacks<>(Arrays.asList(DisplayOption.values()), Codec.INT.xmap(DisplayOption::byId, DisplayOption::getId)),
             this.defaultValue,
             value -> ComponentViewer.configManager.writeConfigFile()
         );
+    }
+
+    public static class DisplayConfigBuilder extends AbstractConfigBuilder<DisplayOption, DisplayConfig, DisplayConfigBuilder> {
+        private DisplayConfigBuilder(String id) {
+            super(id);
+        }
+
+        @Override
+        public DisplayConfig build() {
+            return new DisplayConfig(this);
+        }
+
+        @Override
+        protected DisplayConfigBuilder self() {
+            return this;
+        }
     }
 }
