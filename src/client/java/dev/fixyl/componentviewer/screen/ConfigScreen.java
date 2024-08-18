@@ -29,7 +29,7 @@ import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.text.Text;
 
 import dev.fixyl.componentviewer.ComponentViewer;
-import dev.fixyl.componentviewer.config.Config;
+import dev.fixyl.componentviewer.config.Configs;
 
 public class ConfigScreen extends GameOptionsScreen {
     public ConfigScreen(Screen parentScreen) {
@@ -39,13 +39,13 @@ public class ConfigScreen extends GameOptionsScreen {
     @Override
     protected void addOptions() {
         this.body.addAll(
-            Config.MODE.getSimpleOption(),
-            Config.DISPLAY.getSimpleOption(),
-            Config.INDENT_SIZE.getSimpleOption(),
-            Config.COLORED_SNBT.getSimpleOption(),
-            Config.COMPONENT_CHANGES.getSimpleOption(),
-            Config.COMPONENT_VALUES.getSimpleOption(),
-            Config.ADVANCED_TOOLTIPS.getSimpleOption()
+            Configs.MODE.simpleOption(),
+            Configs.DISPLAY.simpleOption(),
+            Configs.INDENT_SIZE.simpleOption(),
+            Configs.COLORED_SNBT.simpleOption(),
+            Configs.COMPONENT_CHANGES.simpleOption(),
+            Configs.COMPONENT_VALUES.simpleOption(),
+            Configs.ADVANCED_TOOLTIPS.simpleOption()
         );
     }
 }

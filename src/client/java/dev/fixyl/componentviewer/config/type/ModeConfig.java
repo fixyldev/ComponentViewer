@@ -29,22 +29,52 @@ import java.util.Arrays;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.client.option.SimpleOption;
-import net.minecraft.text.Text;
+import net.minecraft.client.option.SimpleOption.ValueTextGetter;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.option.ModeOption;
 
 public class ModeConfig extends AbstractConfig<ModeOption> {
-    public ModeConfig(ModeOption defaultValue, String translationKey, String tooltipTranslationKey) {
-        super(defaultValue, translationKey, tooltipTranslationKey);
+    private ModeConfig(ModeConfigBuilder builder) {
+        super(builder);
 
-        this.simpleOption = new SimpleOption<ModeOption>(
-            this.translationKey,
-            SimpleOption.constantTooltip(Text.translatable(this.tooltipTranslationKey)),
-            SimpleOption.enumValueText(),
+        this.simpleOption = this.createSimpleOption();
+    }
+
+    public static ModeConfigBuilder createBuilder(String id) {
+        return new ModeConfigBuilder(id);
+    }
+
+    @Override
+    protected ValueTextGetter<ModeOption> getDefaultValueTextGetter() {
+        return SimpleOption.enumValueText();
+    }
+
+    @Override
+    protected SimpleOption<ModeOption> createSimpleOption() {
+        return new SimpleOption<>(
+            this.nameTranslationKey,
+            this.tooltipFactory,
+            this.valueTextGetter,
             new SimpleOption.PotentialValuesBasedCallbacks<>(Arrays.asList(ModeOption.values()), Codec.INT.xmap(ModeOption::byId, ModeOption::getId)),
             this.defaultValue,
             value -> ComponentViewer.configManager.writeConfigFile()
         );
+    }
+
+    public static class ModeConfigBuilder extends AbstractConfigBuilder<ModeOption, ModeConfig, ModeConfigBuilder> {
+        private ModeConfigBuilder(String id) {
+            super(id);
+        }
+
+        @Override
+        public ModeConfig build() {
+            return new ModeConfig(this);
+        }
+
+        @Override
+        protected ModeConfigBuilder self() {
+            return this;
+        }
     }
 }
