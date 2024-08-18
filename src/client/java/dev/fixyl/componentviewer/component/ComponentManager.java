@@ -33,7 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
 import dev.fixyl.componentviewer.ComponentViewer;
-import dev.fixyl.componentviewer.config.Config;
+import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.option.DisplayOption;
 
 public final class ComponentManager {
@@ -63,10 +63,10 @@ public final class ComponentManager {
         if (ComponentViewer.minecraftClient.player == null)
             return;
 
-        if (Config.ADVANCED_TOOLTIPS.getValue() && !tooltipType.isAdvanced())
+        if (Configs.ADVANCED_TOOLTIPS.value() && !tooltipType.isAdvanced())
             return;
 
-        switch (Config.DISPLAY.getValue()) {
+        switch (Configs.DISPLAY.value()) {
             case DisplayOption.NEVER:
                 return;
             case DisplayOption.HOLD:
@@ -76,12 +76,12 @@ public final class ComponentManager {
             case DisplayOption.ALWAYS:
                 break;
             default:
-                throw new IllegalArgumentException("Illegal DisplayOption enum value: " + Config.DISPLAY.getValue());
+                throw new IllegalArgumentException(String.format("Illegal DisplayOption enum value: %s", Configs.DISPLAY.value()));
         }
 
         this.components = Components.getComponents(itemStack);
 
-        if (Config.COMPONENT_VALUES.getValue()) {
+        if (Configs.COMPONENT_VALUES.value()) {
             this.swapComponentIndex();
             this.carryComponentIndex();
         }
@@ -89,7 +89,7 @@ public final class ComponentManager {
         if (!this.componentDisplay.displayComponentTypes(this.components, this.componentIndex, tooltipLines))
             return;
 
-        if (Config.COMPONENT_VALUES.getValue() && !this.components.modifiedComponents().isEmpty())
+        if (Configs.COMPONENT_VALUES.value() && !this.components.modifiedComponents().isEmpty())
             this.componentDisplay.displayComponentValue(this.components.modifiedComponents().get(this.componentIndex), tooltipLines);
     }
 

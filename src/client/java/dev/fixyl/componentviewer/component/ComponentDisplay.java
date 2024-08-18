@@ -35,7 +35,7 @@ import net.minecraft.util.Formatting;
 
 import dev.fixyl.componentviewer.component.formatter.ClassFormatter;
 import dev.fixyl.componentviewer.component.formatter.SnbtFormatter;
-import dev.fixyl.componentviewer.config.Config;
+import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.option.ModeOption;
 
 public final class ComponentDisplay {
@@ -71,13 +71,13 @@ public final class ComponentDisplay {
         tooltipLines.add(Text.empty());
 
         if (components.isEmpty()) {
-            tooltipLines.add(Text.translatable((Config.COMPONENT_CHANGES.getValue()) ? "componentviewer.tooltips.components.empty.changes" : "componentviewer.tooltips.components.empty.general").setStyle(ComponentDisplay.HEADER_STYLE));
+            tooltipLines.add(Text.translatable((Configs.COMPONENT_CHANGES.value()) ? "componentviewer.tooltips.components.empty.changes" : "componentviewer.tooltips.components.empty.general").setStyle(ComponentDisplay.HEADER_STYLE));
             return false;
         }
 
-        tooltipLines.add(Text.translatable((Config.COMPONENT_CHANGES.getValue()) ? "componentviewer.tooltips.components.header.changes" : "componentviewer.tooltips.components.header.general").setStyle(ComponentDisplay.HEADER_STYLE));
+        tooltipLines.add(Text.translatable((Configs.COMPONENT_CHANGES.value()) ? "componentviewer.tooltips.components.header.changes" : "componentviewer.tooltips.components.header.general").setStyle(ComponentDisplay.HEADER_STYLE));
 
-        if (Config.COMPONENT_CHANGES.getValue())
+        if (Configs.COMPONENT_CHANGES.value())
             this.displayRemovedComponents(components.removedComponents(), tooltipLines);
 
         this.displayModifiedComponents(components.modifiedComponents(), componentIndex, components.size() > 1, tooltipLines);
@@ -90,8 +90,8 @@ public final class ComponentDisplay {
 
         List<Text> textList;
 
-        switch (Config.MODE.getValue()) {
-            case ModeOption.SNBT -> textList = this.snbtFormatter.formatComponent(component, Config.COLORED_SNBT.getValue());
+        switch (Configs.MODE.value()) {
+            case ModeOption.SNBT -> textList = this.snbtFormatter.formatComponent(component, Configs.COLORED_SNBT.value());
 
             case ModeOption.CLASS -> {
                 if (component.value() instanceof NbtComponent)
@@ -100,7 +100,7 @@ public final class ComponentDisplay {
                     textList = this.classFormatter.formatComponent(component);
             }
 
-            default -> throw new IllegalArgumentException("Illegal ModeOption enum value: " + Config.MODE.getValue());
+            default -> throw new IllegalArgumentException(String.format("Illegal ModeOption enum value: %s", Configs.MODE.value()));
         }
 
         tooltipLines.add(Text.translatable("componentviewer.tooltips.components.value").setStyle(ComponentDisplay.HEADER_STYLE));
@@ -120,7 +120,7 @@ public final class ComponentDisplay {
         for (int index = 0; index < modifiedComponents.size(); index++) {
             MutableText componentTypeText = Text.literal(modifiedComponents.get(index).type().toString());
 
-            if (index == componentIndex && Config.COMPONENT_VALUES.getValue()) {
+            if (index == componentIndex && Configs.COMPONENT_VALUES.value()) {
                 componentTypeText.setStyle(ComponentDisplay.COMPONENT_TYPE_HIGHLIGHTED_STYLE);
 
                 if (indentOnSelected)

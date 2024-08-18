@@ -25,19 +25,50 @@
 package dev.fixyl.componentviewer.config.type;
 
 import net.minecraft.client.option.SimpleOption;
-import net.minecraft.text.Text;
+import net.minecraft.client.option.SimpleOption.ValueTextGetter;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 
 public class BooleanConfig extends AbstractConfig<Boolean> {
-    public BooleanConfig(Boolean defaultValue, String translationKey, String tooltipTranslationKey) {
-        super(defaultValue, translationKey, tooltipTranslationKey);
+    private BooleanConfig(BooleanConfigBuilder builder) {
+        super(builder);
 
-        this.simpleOption = SimpleOption.ofBoolean(
-            this.translationKey,
-            SimpleOption.constantTooltip(Text.translatable(this.tooltipTranslationKey)),
+        this.simpleOption = this.createSimpleOption();
+    }
+
+    public static BooleanConfigBuilder createBuilder(String id) {
+        return new BooleanConfigBuilder(id);
+    }
+
+    @Override
+    protected ValueTextGetter<Boolean> getDefaultValueTextGetter() {
+        return SimpleOption.BOOLEAN_TEXT_GETTER;
+    }
+
+    @Override
+    protected SimpleOption<Boolean> createSimpleOption() {
+        return SimpleOption.ofBoolean(
+            this.nameTranslationKey,
+            this.tooltipFactory,
+            this.valueTextGetter,
             this.defaultValue,
             value -> ComponentViewer.configManager.writeConfigFile()
         );
+    }
+
+    public static class BooleanConfigBuilder extends AbstractConfigBuilder<Boolean, BooleanConfig, BooleanConfigBuilder> {
+        private BooleanConfigBuilder(String id) {
+            super(id);
+        }
+
+        @Override
+        public BooleanConfig build() {
+            return new BooleanConfig(this);
+        }
+
+        @Override
+        protected BooleanConfigBuilder self() {
+            return this;
+        }
     }
 }

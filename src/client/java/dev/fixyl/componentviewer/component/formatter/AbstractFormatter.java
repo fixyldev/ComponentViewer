@@ -29,7 +29,7 @@ import java.util.List;
 
 import net.minecraft.text.Text;
 
-import dev.fixyl.componentviewer.config.Config;
+import dev.fixyl.componentviewer.config.Configs;
 
 public abstract class AbstractFormatter {
     protected static final int INITIAL_TEXT_LIST_CAPACITY = 16;
@@ -40,7 +40,7 @@ public abstract class AbstractFormatter {
     protected List<Text> textList;
 
     protected AbstractFormatter() {
-        this.setIndentSize(Config.INDENT_SIZE.getValue());
+        this.setIndentSize(Configs.INDENT_SIZE.value());
 
         this.textList = new ArrayList<>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
     }

@@ -24,29 +24,66 @@
 
 package dev.fixyl.componentviewer.config.type;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+
 import net.minecraft.client.option.SimpleOption;
+import net.minecraft.client.option.SimpleOption.TooltipFactory;
+import net.minecraft.client.option.SimpleOption.ValueTextGetter;
+import net.minecraft.text.Text;
+
+import dev.fixyl.componentviewer.ComponentViewer;
 
 public abstract class AbstractConfig<T> {
-    protected SimpleOption<T> simpleOption;
-    protected final T defaultValue;
-    protected final String translationKey;
-    protected final String tooltipTranslationKey;
+    private static final String ID_REGEX = "^[a-z]++(?:_[a-z]++)*+(?:\\.[a-z]++(?:_[a-z]++)*+)*+$";
 
-    protected AbstractConfig(T defaultValue, String translationKey, String tooltipTranslationKey) {
-        this.defaultValue = defaultValue;
-        this.translationKey = translationKey;
-        this.tooltipTranslationKey = tooltipTranslationKey;
+    protected final String id;
+    protected final T defaultValue;
+    protected final String nameTranslationKey;
+    protected final TooltipFactory<T> tooltipFactory;
+    protected final ValueTextGetter<T> valueTextGetter;
+
+    protected SimpleOption<T> simpleOption;
+
+    protected AbstractConfig(AbstractConfigBuilder<T, ?, ?> builder) {
+        AbstractConfig.assertNull(builder.id, builder.defaultValue, builder.nameTranslationKey);
+
+        if (!builder.id.matches(AbstractConfig.ID_REGEX)) {
+            ComponentViewer.logger.error("Invalid config id '{}'! Config ids should follow the regex {}", builder.id, AbstractConfig.ID_REGEX);
+            throw new IllegalArgumentException("Invalid config id");
+        }
+
+        this.id = builder.id;
+        this.defaultValue = builder.defaultValue;
+        this.nameTranslationKey = builder.nameTranslationKey;
+        this.tooltipFactory = (builder.tooltipTranslationKey == null) ? SimpleOption.emptyTooltip() : SimpleOption.constantTooltip(Text.translatable(builder.tooltipTranslationKey));
+        this.valueTextGetter = this.createValueTextGetter(builder.translationKeyOverwrite);
     }
 
-    public SimpleOption<T> getSimpleOption() {
+    public Type type() {
+        Type type = getClass().getGenericSuperclass();
+
+        if (type instanceof ParameterizedType) {
+            ParameterizedType parameterizedType = (ParameterizedType) type;
+            return parameterizedType.getActualTypeArguments()[0];
+        }
+
+        return null;
+    }
+
+    public SimpleOption<T> simpleOption() {
         return this.simpleOption;
     }
 
-    public T getValue() {
+    public String id() {
+        return this.id;
+    }
+
+    public T value() {
         return this.simpleOption.getValue();
     }
 
-    public T getDefaultValue() {
+    public T defaultValue() {
         return this.defaultValue;
     }
 
@@ -61,5 +98,74 @@ public abstract class AbstractConfig<T> {
 
     public void setValueToDefault() {
         this.simpleOption.setValue(this.defaultValue);
+    }
+
+    protected abstract ValueTextGetter<T> getDefaultValueTextGetter();
+
+    private ValueTextGetter<T> createValueTextGetter(TranslationKeyOverwrite<T> translationKeyOverwrite) {
+        if (translationKeyOverwrite == null)
+            return this.getDefaultValueTextGetter();
+
+        return (optionText, value) -> {
+            String translationKey = translationKeyOverwrite.getTranslationKey(value);
+
+            if (translationKey == null)
+                return Text.literal(String.valueOf((Object) null));
+
+            return Text.translatable(translationKey, value);
+        };
+    }
+
+    protected abstract SimpleOption<T> createSimpleOption();
+
+    protected static void assertNull(Object... objects) {
+        for (Object obj : objects) {
+            if (obj != null)
+                continue;
+
+            ComponentViewer.logger.error("At least one necessary config parameter is missing or null!");
+            throw new IllegalArgumentException("Config parameter missing");
+        }
+    }
+
+    @FunctionalInterface
+    public static interface TranslationKeyOverwrite<T> {
+        String getTranslationKey(T value);
+    }
+
+    public abstract static class AbstractConfigBuilder<T, C extends AbstractConfig<T>, B extends AbstractConfigBuilder<T, C, B>> {
+        protected String id;
+        protected T defaultValue;
+        protected String nameTranslationKey;
+        protected String tooltipTranslationKey;
+        protected TranslationKeyOverwrite<T> translationKeyOverwrite;
+
+        protected AbstractConfigBuilder(String id) {
+            this.id = id;
+        }
+
+        public B setDefaultValue(T defaultValue) {
+            this.defaultValue = defaultValue;
+            return this.self();
+        }
+
+        public B setTranslationKeys(String nameTranslationKey, String tooltipTranslationKey) {
+            this.nameTranslationKey = nameTranslationKey;
+            this.tooltipTranslationKey = tooltipTranslationKey;
+            return this.self();
+        }
+
+        public B setTranslationKeys(String nameTranslationKey) {
+            return this.setTranslationKeys(nameTranslationKey, null);
+        }
+
+        public B setTranslationKeyOverwrite(TranslationKeyOverwrite<T> translationKeyOverwrite) {
+            this.translationKeyOverwrite = translationKeyOverwrite;
+            return this.self();
+        }
+
+        public abstract C build();
+
+        protected abstract B self();
     }
 }
