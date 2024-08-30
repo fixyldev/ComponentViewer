@@ -32,9 +32,9 @@ import net.minecraft.util.TranslatableOption;
 import net.minecraft.util.function.ValueLists;
 
 public enum DisplayOption implements TranslatableOption {
-    @SerializedName("never") NEVER(0, "componentviewer.config.display.never"),
-    @SerializedName("hold") HOLD(1, "componentviewer.config.display.hold"),
-    @SerializedName("always") ALWAYS(2, "componentviewer.config.display.always");
+    @SerializedName("never") NEVER(0, "componentviewer.config.tooltips.display.never"),
+    @SerializedName("hold") HOLD(1, "componentviewer.config.tooltips.display.hold"),
+    @SerializedName("always") ALWAYS(2, "componentviewer.config.tooltips.display.always");
 
     private static final IntFunction<DisplayOption> BY_ID;
     private final int id;

@@ -25,27 +25,25 @@
 package dev.fixyl.componentviewer.screen;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.option.GameOptionsScreen;
-import net.minecraft.text.Text;
 
-import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Configs;
+import dev.fixyl.componentviewer.config.type.AbstractConfig.ConfigScreen;
 
-public class ConfigScreen extends GameOptionsScreen {
-    public ConfigScreen(Screen parentScreen) {
-        super(parentScreen, ComponentViewer.minecraftClient.options, Text.translatable("componentviewer.config.title"));
+public class TooltipsConfigScreen extends ConfigScreen {
+    public TooltipsConfigScreen(Screen parentScreen) {
+        super(parentScreen, "componentviewer.config.tooltips.title");
     }
 
     @Override
-    protected void addOptions() {
-        this.body.addAll(
-            Configs.MODE.simpleOption(),
-            Configs.DISPLAY.simpleOption(),
-            Configs.INDENT_SIZE.simpleOption(),
-            Configs.COLORED_SNBT.simpleOption(),
-            Configs.COMPONENT_CHANGES.simpleOption(),
-            Configs.COMPONENT_VALUES.simpleOption(),
-            Configs.ADVANCED_TOOLTIPS.simpleOption()
+    protected void addElements() {
+        this.addConfigs(
+            Configs.DISPLAY,
+            Configs.MODE,
+            Configs.COMPONENT_CHANGES,
+            Configs.COMPONENT_VALUES,
+            Configs.INDENT_SIZE,
+            Configs.COLORED_SNBT,
+            Configs.ADVANCED_TOOLTIPS
         );
     }
 }
