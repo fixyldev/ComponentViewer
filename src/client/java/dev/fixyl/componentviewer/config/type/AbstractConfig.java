@@ -46,7 +46,7 @@ public abstract class AbstractConfig<T> {
     protected SimpleOption<T> simpleOption;
 
     protected AbstractConfig(AbstractConfigBuilder<T, ?, ?> builder) {
-        AbstractConfig.assertNull(builder.id, builder.defaultValue, builder.nameTranslationKey);
+        AbstractConfig.assertNull(builder.id, builder.defaultValue);
 
         if (!builder.id.matches(AbstractConfig.ID_REGEX)) {
             ComponentViewer.logger.error("Invalid config id '{}'! Config ids should follow the regex {}", builder.id, AbstractConfig.ID_REGEX);
@@ -55,7 +55,7 @@ public abstract class AbstractConfig<T> {
 
         this.id = builder.id;
         this.defaultValue = builder.defaultValue;
-        this.nameTranslationKey = builder.nameTranslationKey;
+        this.nameTranslationKey = (builder.nameTranslationKey) == null ? builder.id : builder.nameTranslationKey;
         this.tooltipFactory = (builder.tooltipTranslationKey == null) ? SimpleOption.emptyTooltip() : SimpleOption.constantTooltip(Text.translatable(builder.tooltipTranslationKey));
         this.valueTextGetter = this.createValueTextGetter(builder.translationKeyOverwrite);
     }
