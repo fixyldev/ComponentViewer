@@ -45,7 +45,7 @@ public final class Configs {
     public static final IntegerConfig INDENT_SIZE = IntegerConfig.createBuilder("tooltips.indent_size")
             .setDefaultValue(4)
             .setIntegerRange(0, 8)
-            .setTranslationKeys("componentviewer.config.indent_size")
+            .setTranslationKeys("componentviewer.config.indent_size", "componentviewer.config.indent_size.tooltip")
             .setTranslationKeyOverwrite(value -> {
                 if (value == 0)
                     return "componentviewer.config.indent_size.off";
