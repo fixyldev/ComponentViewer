@@ -34,39 +34,40 @@ import dev.fixyl.componentviewer.option.ModeOption;
 public final class Configs {
     private Configs() {}
 
-    public static final ModeConfig MODE = ModeConfig.createBuilder("tooltips.mode")
-            .setDefaultValue(ModeOption.SNBT)
-            .setTranslationKeys("componentviewer.config.mode", "componentviewer.config.mode.tooltip")
-            .build();
     public static final DisplayConfig DISPLAY = DisplayConfig.createBuilder("tooltips.display")
             .setDefaultValue(DisplayOption.HOLD)
-            .setTranslationKeys("componentviewer.config.display", "componentviewer.config.display.tooltip")
+            .setTranslationKeys("componentviewer.config.tooltips.display", "componentviewer.config.tooltips.display.tooltip")
+            .build();
+    public static final ModeConfig MODE = ModeConfig.createBuilder("tooltips.mode")
+            .setDefaultValue(ModeOption.SNBT)
+            .setTranslationKeys("componentviewer.config.tooltips.mode", "componentviewer.config.tooltips.mode.tooltip")
+            .setDependency(() -> Configs.DISPLAY.value() != DisplayOption.NEVER)
+            .build();
+    public static final BooleanConfig COMPONENT_CHANGES = BooleanConfig.createBuilder("tooltips.component_changes")
+            .setDefaultValue(false)
+            .setTranslationKeys("componentviewer.config.tooltips.component_changes", "componentviewer.config.tooltips.component_changes.tooltip")
+            .setDependency(() -> Configs.DISPLAY.value() != DisplayOption.NEVER)
+            .build();
+    public static final BooleanConfig COMPONENT_VALUES = BooleanConfig.createBuilder("tooltips.component_values")
+            .setDefaultValue(true)
+            .setTranslationKeys("componentviewer.config.tooltips.component_values", "componentviewer.config.tooltips.component_values.tooltip")
+            .setDependency(() -> Configs.DISPLAY.value() != DisplayOption.NEVER)
             .build();
     public static final IntegerConfig INDENT_SIZE = IntegerConfig.createBuilder("tooltips.indent_size")
             .setDefaultValue(4)
             .setIntegerRange(0, 8)
-            .setTranslationKeys("componentviewer.config.indent_size", "componentviewer.config.indent_size.tooltip")
-            .setTranslationKeyOverwrite(value -> {
-                if (value == 0)
-                    return "componentviewer.config.indent_size.off";
-
-                return "componentviewer.config.indent_size.value";
-            })
+            .setTranslationKeys("componentviewer.config.tooltips.indent_size", "componentviewer.config.tooltips.indent_size.tooltip")
+            .setTranslationKeyOverwrite(value -> (value == 0) ? "componentviewer.config.tooltips.indent_size.off" : "componentviewer.config.tooltips.indent_size.value")
+            .setDependency(() -> Configs.DISPLAY.value() != DisplayOption.NEVER && Configs.COMPONENT_VALUES.value())
             .build();
     public static final BooleanConfig COLORED_SNBT = BooleanConfig.createBuilder("tooltips.colored_snbt")
             .setDefaultValue(true)
-            .setTranslationKeys("componentviewer.config.colored_snbt", "componentviewer.config.colored_snbt.tooltip")
-            .build();
-    public static final BooleanConfig COMPONENT_CHANGES = BooleanConfig.createBuilder("tooltips.component_changes")
-            .setDefaultValue(false)
-            .setTranslationKeys("componentviewer.config.component_changes", "componentviewer.config.component_changes.tooltip")
-            .build();
-    public static final BooleanConfig COMPONENT_VALUES = BooleanConfig.createBuilder("tooltips.component_values")
-            .setDefaultValue(true)
-            .setTranslationKeys("componentviewer.config.component_values", "componentviewer.config.component_values.tooltip")
+            .setTranslationKeys("componentviewer.config.tooltips.colored_snbt", "componentviewer.config.tooltips.colored_snbt.tooltip")
+            .setDependency(() -> Configs.DISPLAY.value() != DisplayOption.NEVER && Configs.MODE.value() == ModeOption.SNBT && Configs.COMPONENT_VALUES.value())
             .build();
     public static final BooleanConfig ADVANCED_TOOLTIPS = BooleanConfig.createBuilder("tooltips.advanced_tooltips")
             .setDefaultValue(false)
-            .setTranslationKeys("componentviewer.config.advanced_tooltips", "componentviewer.config.advanced_tooltips.tooltip")
+            .setTranslationKeys("componentviewer.config.tooltips.advanced_tooltips", "componentviewer.config.tooltips.advanced_tooltips.tooltip")
+            .setDependency(() -> Configs.DISPLAY.value() != DisplayOption.NEVER)
             .build();
 }
