@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
 import dev.fixyl.componentviewer.component.ComponentManager;
 import dev.fixyl.componentviewer.config.ConfigManager;
 import dev.fixyl.componentviewer.keybind.KeyBindings;
-import dev.fixyl.componentviewer.screen.ConfigScreen;
+import dev.fixyl.componentviewer.screen.MainConfigScreen;
 
 public class ComponentViewer implements ClientModInitializer {
     public static final MinecraftClient minecraftClient = MinecraftClient.getInstance();
@@ -56,7 +56,7 @@ public class ComponentViewer implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register(minecraftClient -> {
             if (ComponentViewer.keyBindings.configKey.isPressed())
-                minecraftClient.setScreen(new ConfigScreen(null));
+                minecraftClient.setScreen(new MainConfigScreen(null));
         });
     }
 }

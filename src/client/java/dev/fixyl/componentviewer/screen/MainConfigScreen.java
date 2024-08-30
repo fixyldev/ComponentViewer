@@ -22,43 +22,19 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.option;
+package dev.fixyl.componentviewer.screen;
 
-import java.util.function.IntFunction;
+import net.minecraft.client.gui.screen.Screen;
 
-import com.google.gson.annotations.SerializedName;
+import dev.fixyl.componentviewer.config.type.AbstractConfig.ConfigScreen;
 
-import net.minecraft.util.TranslatableOption;
-import net.minecraft.util.function.ValueLists;
-
-public enum ModeOption implements TranslatableOption {
-    @SerializedName("snbt") SNBT(0, "componentviewer.config.tooltips.mode.snbt"),
-    @SerializedName("class") CLASS(1, "componentviewer.config.tooltips.mode.class");
-
-    private static final IntFunction<ModeOption> BY_ID;
-    private final int id;
-    private final String translationKey;
-
-    private ModeOption(int id, String translationKey) {
-        this.id = id;
-        this.translationKey = translationKey;
+public class MainConfigScreen extends ConfigScreen {
+    public MainConfigScreen(Screen parentScreen) {
+        super(parentScreen, "componentviewer.config.title");
     }
 
     @Override
-    public int getId() {
-        return this.id;
-    }
-
-    @Override
-    public String getTranslationKey() {
-        return this.translationKey;
-    }
-
-    public static ModeOption byId(int id) {
-        return BY_ID.apply(id);
-    }
-
-    static {
-        BY_ID = ValueLists.createIdToValueFunction(ModeOption::getId, ModeOption.values(), ValueLists.OutOfBoundsHandling.WRAP);
+    protected void addElements() {
+        this.addRedirect(new TooltipsConfigScreen(this), "componentviewer.config.tooltips");
     }
 }
