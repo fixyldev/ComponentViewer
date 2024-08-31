@@ -35,6 +35,6 @@ public class MainConfigScreen extends ConfigScreen {
 
     @Override
     protected void addElements() {
-        this.addRedirect(new TooltipsConfigScreen(this), "componentviewer.config.tooltips");
+        this.addRedirect("componentviewer.config.tooltips", () -> new TooltipsConfigScreen(this));
     }
 }
