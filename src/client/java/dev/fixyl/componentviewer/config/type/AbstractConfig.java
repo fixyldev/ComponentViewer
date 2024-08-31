@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
@@ -229,8 +230,8 @@ public abstract class AbstractConfig<T> {
                 this.addConfig(config);
         }
 
-        protected void addRedirect(Screen screen, String nameTranslationKey) {
-            this.queuedWidgets.add(ButtonWidget.builder(Text.translatable(String.valueOf(nameTranslationKey)), buttonWidget -> this.client.setScreen(screen)).build());
+        protected void addRedirect(String nameTranslationKey, Supplier<Screen> screenSupplier) {
+            this.queuedWidgets.add(ButtonWidget.builder(Text.translatable(String.valueOf(nameTranslationKey)), buttonWidget -> this.client.setScreen(screenSupplier.get())).build());
         }
 
         private void deployWidgets() {
@@ -250,9 +251,6 @@ public abstract class AbstractConfig<T> {
         public final void onDisplayed() {
             for (ClickableWidget configWidget : ConfigScreen.deployedConfigWidgets)
                 configWidget.setFocused(false);
-
-            if (this.client != null && this.client.getNavigationType().isMouse() && !this.children().isEmpty())
-                this.children().getLast().setFocused(false);
         }
 
         private static void updateDependentConfigs() {
