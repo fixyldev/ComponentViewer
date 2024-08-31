@@ -57,7 +57,7 @@ public class IntegerConfig extends AbstractConfig<Integer> {
         this.simpleOption = this.createSimpleOption();
     }
 
-    public static IntegerConfigBuilder createBuilder(String id) {
+    public static IntegerConfigBuilder builder(String id) {
         return new IntegerConfigBuilder(id);
     }
 
