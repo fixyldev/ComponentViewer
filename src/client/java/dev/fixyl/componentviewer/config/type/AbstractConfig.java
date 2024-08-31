@@ -27,15 +27,16 @@ package dev.fixyl.componentviewer.config.type;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
+import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.option.SimpleOption;
@@ -53,10 +54,9 @@ public abstract class AbstractConfig<T> {
     protected final String nameTranslationKey;
     protected final TooltipFactory<T> tooltipFactory;
     protected final ValueTextGetter<T> valueTextGetter;
-    protected final BooleanSupplier configDependency;
+    protected final BooleanSupplier dependencyFulfilledSupplier;
 
     protected SimpleOption<T> simpleOption;
-    protected ClickableWidget configWidget;
 
     protected AbstractConfig(AbstractConfigBuilder<T, ?, ?> builder) {
         AbstractConfig.assertNull(builder.id, builder.defaultValue);
@@ -71,7 +71,7 @@ public abstract class AbstractConfig<T> {
         this.nameTranslationKey = (builder.nameTranslationKey == null) ? builder.id : builder.nameTranslationKey;
         this.tooltipFactory = (builder.tooltipTranslationKey == null) ? SimpleOption.emptyTooltip() : SimpleOption.constantTooltip(Text.translatable(builder.tooltipTranslationKey));
         this.valueTextGetter = this.createValueTextGetter(builder.translationKeyOverwrite);
-        this.configDependency = builder.configDependency;
+        this.dependencyFulfilledSupplier = builder.dependencyFulfilledSupplier;
     }
 
     public Type type() {
@@ -129,31 +129,11 @@ public abstract class AbstractConfig<T> {
     protected abstract SimpleOption<T> createSimpleOption();
 
     private boolean isDependent() {
-        return this.configDependency != null;
+        return this.dependencyFulfilledSupplier != null;
     }
 
-    private void updateActiveStatus() {
-        if (!this.isDependent() || this.configWidget == null)
-            return;
-
-        boolean active = this.configDependency.getAsBoolean();
-
-        this.configWidget.active = active;
-        this.configWidget.setTooltip((active) ? this.tooltipFactory.apply(this.value()) : null);
-    }
-
-    private ClickableWidget getConfigWidget() {
-        if (this.configWidget != null)
-            return this.configWidget;
-
-        this.configWidget = this.simpleOption.createWidget(ComponentViewer.minecraftClient.options, 0, 0, 150, value -> ConfigScreen.updateDependentConfigs());
-
-        if (this.isDependent()) {
-            this.updateActiveStatus();
-            ConfigScreen.dependentConfigs.add(this);
-        }
-
-        return this.configWidget;
+    private Tooltip getTooltip() {
+        return this.tooltipFactory.apply(this.value());
     }
 
     protected static void assertNull(Object... objects) {
@@ -172,7 +152,7 @@ public abstract class AbstractConfig<T> {
         protected String nameTranslationKey;
         protected String tooltipTranslationKey;
         protected Function<T, String> translationKeyOverwrite;
-        protected BooleanSupplier configDependency;
+        protected BooleanSupplier dependencyFulfilledSupplier;
 
         protected AbstractConfigBuilder(String id) {
             this.id = id;
@@ -198,8 +178,8 @@ public abstract class AbstractConfig<T> {
             return this.self();
         }
 
-        public B setDependency(BooleanSupplier configDependency) {
-            this.configDependency = configDependency;
+        public B setDependency(BooleanSupplier dependencyFulfilledSupplier) {
+            this.dependencyFulfilledSupplier = dependencyFulfilledSupplier;
             return this.self();
         }
 
@@ -209,20 +189,22 @@ public abstract class AbstractConfig<T> {
     }
 
     public abstract static class ConfigScreen extends GameOptionsScreen {
-        private static Set<AbstractConfig<?>> dependentConfigs = new HashSet<>();
-        private static Set<ClickableWidget> deployedConfigWidgets = new HashSet<>();
-
         private List<ClickableWidget> queuedWidgets = new ArrayList<>();
+        private Map<ClickableWidget, AbstractConfig<?>> dependentConfigWidgets = new HashMap<>();
 
         protected ConfigScreen(Screen parentScreen, String titleTranslationKey) {
             super(parentScreen, ComponentViewer.minecraftClient.options, Text.translatable(String.valueOf(titleTranslationKey)));
         }
 
         protected void addConfig(AbstractConfig<?> config) {
-            ClickableWidget configWidget = config.getConfigWidget();
+            ClickableWidget configWidget = config.simpleOption.createWidget(this.gameOptions, 0, 0, 150, value -> this.updateDependentConfigWidgets());
+
+            if (config.isDependent()) {
+                this.updateDependentConfigWidgetState(configWidget, config);
+                this.dependentConfigWidgets.put(configWidget, config);
+            }
 
             this.queuedWidgets.add(configWidget);
-            ConfigScreen.deployedConfigWidgets.add(configWidget);
         }
 
         protected void addConfigs(AbstractConfig<?>... configs) {
@@ -247,15 +229,15 @@ public abstract class AbstractConfig<T> {
             this.deployWidgets();
         }
 
-        @Override
-        public final void onDisplayed() {
-            for (ClickableWidget configWidget : ConfigScreen.deployedConfigWidgets)
-                configWidget.setFocused(false);
+        private void updateDependentConfigWidgetState(ClickableWidget configWidget, AbstractConfig<?> config) {
+            boolean active = config.dependencyFulfilledSupplier.getAsBoolean();
+
+            configWidget.active = active;
+            configWidget.setTooltip((active) ? config.getTooltip() : null);
         }
 
-        private static void updateDependentConfigs() {
-            for (AbstractConfig<?> dependentConfig : ConfigScreen.dependentConfigs)
-                dependentConfig.updateActiveStatus();
+        private void updateDependentConfigWidgets() {
+            this.dependentConfigWidgets.forEach(this::updateDependentConfigWidgetState);
         }
     }
 }
