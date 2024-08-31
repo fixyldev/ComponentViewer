@@ -25,55 +25,77 @@
 package dev.fixyl.componentviewer.config.type;
 
 import java.util.Arrays;
+import java.util.function.IntFunction;
 
 import com.mojang.serialization.Codec;
 
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.option.SimpleOption.ValueTextGetter;
+import net.minecraft.util.TranslatableOption;
+import net.minecraft.util.function.ValueLists;
 
 import dev.fixyl.componentviewer.ComponentViewer;
-import dev.fixyl.componentviewer.option.DisplayOption;
 
-public class DisplayConfig extends AbstractConfig<DisplayOption> {
-    private DisplayConfig(DisplayConfigBuilder builder) {
+public class EnumConfig<E extends Enum<E> & TranslatableOption> extends AbstractConfig<E> {
+    private final Class<E> enumClass;
+    private final IntFunction<E> enumByIdFunction;
+
+    private EnumConfig(EnumConfigBuilder<E> builder) {
         super(builder);
+
+        AbstractConfig.assertNull(builder.enumClass);
+
+        this.enumClass = builder.enumClass;
+        this.enumByIdFunction = ValueLists.createIdToValueFunction(E::getId, this.enumValues(), ValueLists.OutOfBoundsHandling.WRAP);
 
         this.simpleOption = this.createSimpleOption();
     }
 
-    public static DisplayConfigBuilder createBuilder(String id) {
-        return new DisplayConfigBuilder(id);
+    public static <E extends Enum<E> & TranslatableOption> EnumConfigBuilder<E> createBuilder(Class<E> enumClass, String id) {
+        return new EnumConfigBuilder<>(enumClass, id);
     }
 
     @Override
-    protected ValueTextGetter<DisplayOption> getDefaultValueTextGetter() {
+    protected ValueTextGetter<E> getDefaultValueTextGetter() {
         return SimpleOption.enumValueText();
     }
 
     @Override
-    protected SimpleOption<DisplayOption> createSimpleOption() {
+    protected SimpleOption<E> createSimpleOption() {
         return new SimpleOption<>(
             this.nameTranslationKey,
             this.tooltipFactory,
             this.valueTextGetter,
-            new SimpleOption.PotentialValuesBasedCallbacks<>(Arrays.asList(DisplayOption.values()), Codec.INT.xmap(DisplayOption::byId, DisplayOption::getId)),
+            new SimpleOption.PotentialValuesBasedCallbacks<>(Arrays.asList(this.enumValues()), Codec.INT.xmap(this::enumById, E::getId)),
             this.defaultValue,
             value -> ComponentViewer.configManager.writeConfigFile()
         );
     }
 
-    public static class DisplayConfigBuilder extends AbstractConfigBuilder<DisplayOption, DisplayConfig, DisplayConfigBuilder> {
-        private DisplayConfigBuilder(String id) {
+    private E[] enumValues() {
+        return this.enumClass.getEnumConstants();
+    }
+
+    private E enumById(int id) {
+        return this.enumByIdFunction.apply(id);
+    }
+
+    public static class EnumConfigBuilder<E extends Enum<E> & TranslatableOption> extends AbstractConfigBuilder<E, EnumConfig<E>, EnumConfigBuilder<E>> {
+        private Class<E> enumClass;
+
+        private EnumConfigBuilder(Class<E> enumClass, String id) {
             super(id);
+
+            this.enumClass = enumClass;
         }
 
         @Override
-        public DisplayConfig build() {
-            return new DisplayConfig(this);
+        public EnumConfig<E> build() {
+            return new EnumConfig<>(this);
         }
 
         @Override
-        protected DisplayConfigBuilder self() {
+        protected EnumConfigBuilder<E> self() {
             return this;
         }
     }

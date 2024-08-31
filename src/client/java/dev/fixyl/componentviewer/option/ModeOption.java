@@ -24,18 +24,14 @@
 
 package dev.fixyl.componentviewer.option;
 
-import java.util.function.IntFunction;
-
 import com.google.gson.annotations.SerializedName;
 
 import net.minecraft.util.TranslatableOption;
-import net.minecraft.util.function.ValueLists;
 
 public enum ModeOption implements TranslatableOption {
     @SerializedName("snbt") SNBT(0, "componentviewer.config.tooltips.mode.snbt"),
     @SerializedName("class") CLASS(1, "componentviewer.config.tooltips.mode.class");
 
-    private static final IntFunction<ModeOption> BY_ID;
     private final int id;
     private final String translationKey;
 
@@ -52,13 +48,5 @@ public enum ModeOption implements TranslatableOption {
     @Override
     public String getTranslationKey() {
         return this.translationKey;
-    }
-
-    public static ModeOption byId(int id) {
-        return BY_ID.apply(id);
-    }
-
-    static {
-        BY_ID = ValueLists.createIdToValueFunction(ModeOption::getId, ModeOption.values(), ValueLists.OutOfBoundsHandling.WRAP);
     }
 }

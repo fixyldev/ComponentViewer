@@ -24,19 +24,15 @@
 
 package dev.fixyl.componentviewer.option;
 
-import java.util.function.IntFunction;
-
 import com.google.gson.annotations.SerializedName;
 
 import net.minecraft.util.TranslatableOption;
-import net.minecraft.util.function.ValueLists;
 
 public enum DisplayOption implements TranslatableOption {
     @SerializedName("never") NEVER(0, "componentviewer.config.tooltips.display.never"),
     @SerializedName("hold") HOLD(1, "componentviewer.config.tooltips.display.hold"),
     @SerializedName("always") ALWAYS(2, "componentviewer.config.tooltips.display.always");
 
-    private static final IntFunction<DisplayOption> BY_ID;
     private final int id;
     private final String translationKey;
 
@@ -53,13 +49,5 @@ public enum DisplayOption implements TranslatableOption {
     @Override
     public String getTranslationKey() {
         return this.translationKey;
-    }
-
-    public static DisplayOption byId(int id) {
-        return BY_ID.apply(id);
-    }
-
-    static {
-        BY_ID = ValueLists.createIdToValueFunction(DisplayOption::getId, DisplayOption.values(), ValueLists.OutOfBoundsHandling.WRAP);
     }
 }

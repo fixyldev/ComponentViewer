@@ -25,20 +25,19 @@
 package dev.fixyl.componentviewer.config;
 
 import dev.fixyl.componentviewer.config.type.BooleanConfig;
-import dev.fixyl.componentviewer.config.type.DisplayConfig;
+import dev.fixyl.componentviewer.config.type.EnumConfig;
 import dev.fixyl.componentviewer.config.type.IntegerConfig;
-import dev.fixyl.componentviewer.config.type.ModeConfig;
 import dev.fixyl.componentviewer.option.DisplayOption;
 import dev.fixyl.componentviewer.option.ModeOption;
 
 public final class Configs {
     private Configs() {}
 
-    public static final DisplayConfig DISPLAY = DisplayConfig.createBuilder("tooltips.display")
+    public static final EnumConfig<DisplayOption> DISPLAY = EnumConfig.createBuilder(DisplayOption.class, "tooltips.display")
             .setDefaultValue(DisplayOption.HOLD)
             .setTranslationKeys("componentviewer.config.tooltips.display", "componentviewer.config.tooltips.display.tooltip")
             .build();
-    public static final ModeConfig MODE = ModeConfig.createBuilder("tooltips.mode")
+    public static final EnumConfig<ModeOption> MODE = EnumConfig.createBuilder(ModeOption.class, "tooltips.mode")
             .setDefaultValue(ModeOption.SNBT)
             .setTranslationKeys("componentviewer.config.tooltips.mode", "componentviewer.config.tooltips.mode.tooltip")
             .setDependency(() -> Configs.DISPLAY.value() != DisplayOption.NEVER)
