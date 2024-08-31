@@ -60,7 +60,7 @@ public class SnbtFormatter extends AbstractFormatter {
     public List<Text> formatComponent(Component<?> component, boolean colored) {
         this.colored = colored;
 
-        this.setIndentSize(Configs.INDENT_SIZE.value());
+        this.setIndentSize(Configs.TOOLTIPS_INDENT_SIZE.value());
 
         if (component.type().getCodec() == null) {
             Text noCodecText = Text.literal(SnbtFormatter.NO_CODEC_REPRESENTATION).setStyle(ComponentDisplay.COMPONENT_VALUE_WHITE_STYLE);

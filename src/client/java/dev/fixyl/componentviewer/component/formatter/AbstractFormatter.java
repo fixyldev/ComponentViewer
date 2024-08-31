@@ -40,7 +40,7 @@ public abstract class AbstractFormatter {
     protected List<Text> textList;
 
     protected AbstractFormatter() {
-        this.setIndentSize(Configs.INDENT_SIZE.value());
+        this.setIndentSize(Configs.TOOLTIPS_INDENT_SIZE.value());
 
         this.textList = new ArrayList<>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
     }
