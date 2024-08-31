@@ -34,7 +34,7 @@ import net.minecraft.text.Text;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Configs;
-import dev.fixyl.componentviewer.option.DisplayOption;
+import dev.fixyl.componentviewer.option.TooltipsDisplay;
 
 public final class ComponentManager {
     private static ComponentManager instance;
@@ -63,25 +63,25 @@ public final class ComponentManager {
         if (ComponentViewer.minecraftClient.player == null)
             return;
 
-        if (Configs.ADVANCED_TOOLTIPS.value() && !tooltipType.isAdvanced())
+        if (Configs.TOOLTIPS_ADVANCED_TOOLTIPS.value() && !tooltipType.isAdvanced())
             return;
 
-        switch (Configs.DISPLAY.value()) {
-            case DisplayOption.NEVER:
+        switch (Configs.TOOLTIPS_DISPLAY.value()) {
+            case TooltipsDisplay.NEVER:
                 return;
-            case DisplayOption.HOLD:
+            case TooltipsDisplay.HOLD:
                 if (!Screen.hasControlDown())
                     return;
                 break;
-            case DisplayOption.ALWAYS:
+            case TooltipsDisplay.ALWAYS:
                 break;
             default:
-                throw new IllegalArgumentException(String.format("Illegal DisplayOption enum value: %s", Configs.DISPLAY.value()));
+                throw new IllegalArgumentException(String.format("Illegal DisplayOption enum value: %s", Configs.TOOLTIPS_DISPLAY.value()));
         }
 
         this.components = Components.getComponents(itemStack);
 
-        if (Configs.COMPONENT_VALUES.value()) {
+        if (Configs.TOOLTIPS_COMPONENT_VALUES.value()) {
             this.swapComponentIndex();
             this.carryComponentIndex();
         }
@@ -89,7 +89,7 @@ public final class ComponentManager {
         if (!this.componentDisplay.displayComponentTypes(this.components, this.componentIndex, tooltipLines))
             return;
 
-        if (Configs.COMPONENT_VALUES.value() && !this.components.modifiedComponents().isEmpty())
+        if (Configs.TOOLTIPS_COMPONENT_VALUES.value() && !this.components.modifiedComponents().isEmpty())
             this.componentDisplay.displayComponentValue(this.components.modifiedComponents().get(this.componentIndex), tooltipLines);
     }
 

@@ -81,13 +81,13 @@ public class ClassFormatter extends AbstractFormatter {
     }
 
     public List<Text> formatComponent(Component<?> component) {
-        this.setIndentSize(Configs.INDENT_SIZE.value());
+        this.setIndentSize(Configs.TOOLTIPS_INDENT_SIZE.value());
 
         this.initializeFormattingVariables(component);
 
         this.line.append(this.getIndentPrefixFromLevel(this.indentLevel));
 
-        if (Configs.INDENT_SIZE.value() == 0) {
+        if (Configs.TOOLTIPS_INDENT_SIZE.value() == 0) {
             this.line.append(this.componentValue);
             this.textList.add(Text.literal(this.line.toString()).setStyle(ComponentDisplay.COMPONENT_VALUE_GENERAL_STYLE));
 
