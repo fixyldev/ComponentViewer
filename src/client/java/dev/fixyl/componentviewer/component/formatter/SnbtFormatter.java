@@ -48,7 +48,7 @@ public class SnbtFormatter extends AbstractFormatter {
     private boolean colored;
 
     @Override
-    public void setIndentSize(Integer indentSize) {
+    public void setIndentSize(int indentSize) {
         Integer previousIndentSize = this.getIndentSize();
 
         if (previousIndentSize != null && previousIndentSize.equals(indentSize))
@@ -60,7 +60,7 @@ public class SnbtFormatter extends AbstractFormatter {
     public List<Text> formatComponent(Component<?> component, boolean colored) {
         this.colored = colored;
 
-        this.setIndentSize(Configs.TOOLTIPS_INDENT_SIZE.value());
+        this.setIndentSize(Configs.TOOLTIPS_INDENT_SIZE.intValue());
 
         if (component.type().getCodec() == null) {
             Text noCodecText = Text.literal(SnbtFormatter.NO_CODEC_REPRESENTATION).setStyle(ComponentDisplay.COMPONENT_VALUE_WHITE_STYLE);

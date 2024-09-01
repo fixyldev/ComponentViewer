@@ -40,6 +40,15 @@ public class BooleanConfig extends AbstractConfig<Boolean> {
         return new BooleanConfigBuilder(id);
     }
 
+    public boolean booleanValue() {
+        Boolean value = this.value();
+        return (value != null) && value.booleanValue();
+    }
+
+    public boolean booleanDefaultValue() {
+        return (this.defaultValue != null) && this.defaultValue.booleanValue();
+    }
+
     @Override
     protected ValueTextGetter<Boolean> getDefaultValueTextGetter() {
         return SimpleOption.BOOLEAN_TEXT_GETTER;
