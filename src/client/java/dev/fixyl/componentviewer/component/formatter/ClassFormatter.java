@@ -68,7 +68,7 @@ public class ClassFormatter extends AbstractFormatter {
     }
 
     @Override
-    public void setIndentSize(Integer indentSize) {
+    public void setIndentSize(int indentSize) {
         Integer previousIndentSize = this.getIndentSize();
 
         if (previousIndentSize != null && previousIndentSize.equals(indentSize))
@@ -81,13 +81,13 @@ public class ClassFormatter extends AbstractFormatter {
     }
 
     public List<Text> formatComponent(Component<?> component) {
-        this.setIndentSize(Configs.TOOLTIPS_INDENT_SIZE.value());
+        this.setIndentSize(Configs.TOOLTIPS_INDENT_SIZE.intValue());
 
         this.initializeFormattingVariables(component);
 
         this.line.append(this.getIndentPrefixFromLevel(this.indentLevel));
 
-        if (Configs.TOOLTIPS_INDENT_SIZE.value() == 0) {
+        if (Configs.TOOLTIPS_INDENT_SIZE.intValue() == 0) {
             this.line.append(this.componentValue);
             this.textList.add(Text.literal(this.line.toString()).setStyle(ComponentDisplay.COMPONENT_VALUE_GENERAL_STYLE));
 
@@ -164,17 +164,17 @@ public class ClassFormatter extends AbstractFormatter {
     }
 
     private void formatInsideOfString() {
-        switch (this.currentChar) {
-            case '"', '\'' -> this.processQuote();
-            default -> this.appendCurrentCharacter();
-        }
+        if (this.currentChar == '"' || this.currentChar == '\'')
+            this.processQuote();
+        else
+            this.appendCurrentCharacter();
     }
 
     private void formatInsideOfCurlyBracketString() {
-        switch (this.currentChar) {
-            case '}' -> this.processCurlyBracketStringEnd();
-            default -> this.appendCurrentCharacter();
-        }
+        if (this.currentChar == '}')
+            this.processCurlyBracketStringEnd();
+        else
+            this.appendCurrentCharacter();
     }
 
     private void formatOutsideOfString() {

@@ -24,7 +24,13 @@
 
 package dev.fixyl.componentviewer.config;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -39,6 +45,8 @@ import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.type.AbstractConfig;
 
 public class ConfigAdapter implements JsonSerializer<ConfigAdapter>, JsonDeserializer<ConfigAdapter> {
+    private static final Set<AbstractConfig<?>> configSet = new TreeSet<>(Comparator.comparing(AbstractConfig::id));
+
     private boolean doConfigRewrite = false;
 
     public boolean doConfigRewrite() {
@@ -49,7 +57,7 @@ public class ConfigAdapter implements JsonSerializer<ConfigAdapter>, JsonDeseria
     public JsonElement serialize(ConfigAdapter src, Type type, JsonSerializationContext context) {
         JsonObject root = new JsonObject();
 
-        for (AbstractConfig<?> config : ConfigHelper.configSet()) {
+        for (AbstractConfig<?> config : ConfigAdapter.getConfigSet()) {
             String[] path = config.id().split("\\.");
 
             JsonObject node = root;
@@ -86,7 +94,7 @@ public class ConfigAdapter implements JsonSerializer<ConfigAdapter>, JsonDeseria
 
         ConfigAdapter parseResult = new ConfigAdapter();
 
-        for (AbstractConfig<?> config : ConfigHelper.configSet()) {
+        for (AbstractConfig<?> config : ConfigAdapter.getConfigSet()) {
             String[] path = config.id().split("\\.");
 
             JsonObject node = root;
@@ -114,5 +122,32 @@ public class ConfigAdapter implements JsonSerializer<ConfigAdapter>, JsonDeseria
         }
 
         return parseResult;
+    }
+
+    private static Set<AbstractConfig<?>> getConfigSet() {
+        if (!ConfigAdapter.configSet.isEmpty())
+            return ConfigAdapter.configSet;
+
+        Set<String> ids = new HashSet<>();
+
+        Field[] fields = Configs.class.getDeclaredFields();
+
+        for (Field field : fields) {
+            if (!AbstractConfig.class.isAssignableFrom(field.getType()) || !Modifier.isStatic(field.getModifiers()) || !Modifier.isFinal(field.getModifiers()))
+                continue;
+
+            try {
+                AbstractConfig<?> config = (AbstractConfig<?>) field.get(null);
+
+                if (ids.add(config.id()))
+                    ConfigAdapter.configSet.add(config);
+                else
+                    ComponentViewer.logger.warn("Duplicate config id '{}' present! Config field {} will never be saved across sessions! All config ids should be unique!", config.id(), field.getName());
+            } catch (IllegalAccessException e) {
+                ComponentViewer.logger.error(String.format("Can't access config field %s!", field.getName()), e);
+            }
+        }
+
+        return ConfigAdapter.configSet;
     }
 }

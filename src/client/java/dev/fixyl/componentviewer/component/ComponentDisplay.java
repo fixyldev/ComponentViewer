@@ -71,13 +71,13 @@ public final class ComponentDisplay {
         tooltipLines.add(Text.empty());
 
         if (components.isEmpty()) {
-            tooltipLines.add(Text.translatable((Configs.TOOLTIPS_COMPONENT_CHANGES.value()) ? "componentviewer.tooltips.components.empty.changes" : "componentviewer.tooltips.components.empty.general").setStyle(ComponentDisplay.HEADER_STYLE));
+            tooltipLines.add(Text.translatable((Configs.TOOLTIPS_COMPONENT_CHANGES.booleanValue()) ? "componentviewer.tooltips.components.empty.changes" : "componentviewer.tooltips.components.empty.general").setStyle(ComponentDisplay.HEADER_STYLE));
             return false;
         }
 
-        tooltipLines.add(Text.translatable((Configs.TOOLTIPS_COMPONENT_CHANGES.value()) ? "componentviewer.tooltips.components.header.changes" : "componentviewer.tooltips.components.header.general").setStyle(ComponentDisplay.HEADER_STYLE));
+        tooltipLines.add(Text.translatable((Configs.TOOLTIPS_COMPONENT_CHANGES.booleanValue()) ? "componentviewer.tooltips.components.header.changes" : "componentviewer.tooltips.components.header.general").setStyle(ComponentDisplay.HEADER_STYLE));
 
-        if (Configs.TOOLTIPS_COMPONENT_CHANGES.value())
+        if (Configs.TOOLTIPS_COMPONENT_CHANGES.booleanValue())
             this.displayRemovedComponents(components.removedComponents(), tooltipLines);
 
         this.displayModifiedComponents(components.modifiedComponents(), componentIndex, components.size() > 1, tooltipLines);
@@ -91,7 +91,7 @@ public final class ComponentDisplay {
         List<Text> textList;
 
         switch (Configs.TOOLTIPS_MODE.value()) {
-            case TooltipsMode.SNBT -> textList = this.snbtFormatter.formatComponent(component, Configs.TOOLTIPS_COLORED_SNBT.value());
+            case TooltipsMode.SNBT -> textList = this.snbtFormatter.formatComponent(component, Configs.TOOLTIPS_COLORED_SNBT.booleanValue());
 
             case TooltipsMode.CLASS -> {
                 if (component.value() instanceof NbtComponent)
@@ -120,7 +120,7 @@ public final class ComponentDisplay {
         for (int index = 0; index < modifiedComponents.size(); index++) {
             MutableText componentTypeText = Text.literal(modifiedComponents.get(index).type().toString());
 
-            if (index == componentIndex && Configs.TOOLTIPS_COMPONENT_VALUES.value()) {
+            if (index == componentIndex && Configs.TOOLTIPS_COMPONENT_VALUES.booleanValue()) {
                 componentTypeText.setStyle(ComponentDisplay.COMPONENT_TYPE_HIGHLIGHTED_STYLE);
 
                 if (indentOnSelected)

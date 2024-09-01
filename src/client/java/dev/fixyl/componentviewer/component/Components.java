@@ -42,7 +42,7 @@ public record Components(List<Component<?>> modifiedComponents, List<Component<?
     private static final Comparator<Component<?>> comparator = Comparator.comparing(component -> component.type().toString());
 
     public static Components getComponents(ItemStack itemStack) {
-        if (Configs.TOOLTIPS_COMPONENT_CHANGES.value())
+        if (Configs.TOOLTIPS_COMPONENT_CHANGES.booleanValue())
             return Components.handleComponentChanges(itemStack);
 
         return Components.handleComponents(itemStack);

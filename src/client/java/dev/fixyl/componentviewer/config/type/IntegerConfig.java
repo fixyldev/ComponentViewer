@@ -61,6 +61,15 @@ public class IntegerConfig extends AbstractConfig<Integer> {
         return new IntegerConfigBuilder(id);
     }
 
+    public int intValue() {
+        Integer value = this.value();
+        return (value != null) ? value.intValue() : 0;
+    }
+
+    public int intDefaultValue() {
+        return (this.defaultValue != null) ? this.defaultValue.intValue() : 0;
+    }
+
     @Override
     public void setValue(Integer value) {
         value = Math.max(this.minValue, Math.min(this.maxValue, value));

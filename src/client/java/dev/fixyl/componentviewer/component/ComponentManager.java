@@ -28,7 +28,6 @@ import java.util.List;
 
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.item.Item.TooltipContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
@@ -59,11 +58,11 @@ public final class ComponentManager {
         return ComponentManager.instance;
     }
 
-    public void itemTooltipCallbackListener(ItemStack itemStack, TooltipContext tooltipContext, TooltipType tooltipType, List<Text> tooltipLines) {
+    public void itemTooltipCallbackListener(ItemStack itemStack, TooltipType tooltipType, List<Text> tooltipLines) {
         if (ComponentViewer.minecraftClient.player == null)
             return;
 
-        if (Configs.TOOLTIPS_ADVANCED_TOOLTIPS.value() && !tooltipType.isAdvanced())
+        if (Configs.TOOLTIPS_ADVANCED_TOOLTIPS.booleanValue() && !tooltipType.isAdvanced())
             return;
 
         switch (Configs.TOOLTIPS_DISPLAY.value()) {
@@ -81,7 +80,7 @@ public final class ComponentManager {
 
         this.components = Components.getComponents(itemStack);
 
-        if (Configs.TOOLTIPS_COMPONENT_VALUES.value()) {
+        if (Configs.TOOLTIPS_COMPONENT_VALUES.booleanValue()) {
             this.swapComponentIndex();
             this.carryComponentIndex();
         }
@@ -89,7 +88,7 @@ public final class ComponentManager {
         if (!this.componentDisplay.displayComponentTypes(this.components, this.componentIndex, tooltipLines))
             return;
 
-        if (Configs.TOOLTIPS_COMPONENT_VALUES.value() && !this.components.modifiedComponents().isEmpty())
+        if (Configs.TOOLTIPS_COMPONENT_VALUES.booleanValue() && !this.components.modifiedComponents().isEmpty())
             this.componentDisplay.displayComponentValue(this.components.modifiedComponents().get(this.componentIndex), tooltipLines);
     }
 
