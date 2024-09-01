@@ -52,7 +52,7 @@ public class ComponentViewer implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ItemTooltipCallback.EVENT.register(ComponentViewer.componentManager::itemTooltipCallbackListener);
+        ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipType, tooltipLines) -> ComponentViewer.componentManager.itemTooltipCallbackListener(itemStack, tooltipType, tooltipLines));
 
         ClientTickEvents.END_CLIENT_TICK.register(minecraftClient -> {
             if (ComponentViewer.keyBindings.configKey.isPressed())

@@ -57,12 +57,12 @@ public final class Configs {
             .setIntegerRange(0, 8)
             .setTranslationKeys("componentviewer.config.tooltips.indent_size", "componentviewer.config.tooltips.indent_size.tooltip")
             .setTranslationKeyOverwrite(value -> (value == 0) ? "componentviewer.config.tooltips.indent_size.off" : "componentviewer.config.tooltips.indent_size.value")
-            .setDependency(() -> Configs.TOOLTIPS_DISPLAY.value() != TooltipsDisplay.NEVER && Configs.TOOLTIPS_COMPONENT_VALUES.value())
+            .setDependency(() -> Configs.TOOLTIPS_DISPLAY.value() != TooltipsDisplay.NEVER && Configs.TOOLTIPS_COMPONENT_VALUES.booleanValue())
             .build();
     public static final BooleanConfig TOOLTIPS_COLORED_SNBT = BooleanConfig.builder("tooltips.colored_snbt")
             .setDefaultValue(true)
             .setTranslationKeys("componentviewer.config.tooltips.colored_snbt", "componentviewer.config.tooltips.colored_snbt.tooltip")
-            .setDependency(() -> Configs.TOOLTIPS_DISPLAY.value() != TooltipsDisplay.NEVER && Configs.TOOLTIPS_MODE.value() == TooltipsMode.SNBT && Configs.TOOLTIPS_COMPONENT_VALUES.value())
+            .setDependency(() -> Configs.TOOLTIPS_DISPLAY.value() != TooltipsDisplay.NEVER && Configs.TOOLTIPS_MODE.value() == TooltipsMode.SNBT && Configs.TOOLTIPS_COMPONENT_VALUES.booleanValue())
             .build();
     public static final BooleanConfig TOOLTIPS_ADVANCED_TOOLTIPS = BooleanConfig.builder("tooltips.advanced_tooltips")
             .setDefaultValue(false)
