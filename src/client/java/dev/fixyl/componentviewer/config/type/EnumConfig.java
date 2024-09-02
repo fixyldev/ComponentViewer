@@ -24,6 +24,7 @@
 
 package dev.fixyl.componentviewer.config.type;
 
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.function.IntFunction;
 
@@ -53,6 +54,11 @@ public class EnumConfig<E extends Enum<E> & TranslatableOption> extends Abstract
 
     public static <E extends Enum<E> & TranslatableOption> EnumConfigBuilder<E> builder(Class<E> enumClass, String id) {
         return new EnumConfigBuilder<>(enumClass, id);
+    }
+
+    @Override
+    public Type type() {
+        return this.enumClass;
     }
 
     @Override
