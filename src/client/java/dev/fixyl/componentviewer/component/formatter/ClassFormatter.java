@@ -68,20 +68,20 @@ public class ClassFormatter extends AbstractFormatter {
     }
 
     @Override
-    public void setIndentSize(int indentSize) {
-        Integer previousIndentSize = this.getIndentSize();
+    public void setIndentation(int indentation) {
+        int previousIndentation = this.getIndentation();
 
-        if (previousIndentSize != null && previousIndentSize.equals(indentSize))
+        if (this.isIndentationSet && previousIndentation == indentation)
             return;
 
-        super.setIndentSize(indentSize);
+        super.setIndentation(indentation);
 
         if (this.indentCache != null)
             this.indentCache.clear();
     }
 
     public List<Text> formatComponent(Component<?> component) {
-        this.setIndentSize(Configs.TOOLTIPS_INDENT_SIZE.intValue());
+        this.setIndentation(Configs.TOOLTIPS_INDENT_SIZE.intValue());
 
         this.initializeFormattingVariables(component);
 
