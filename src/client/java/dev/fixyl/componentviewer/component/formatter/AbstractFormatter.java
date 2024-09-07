@@ -34,27 +34,31 @@ import dev.fixyl.componentviewer.config.Configs;
 public abstract class AbstractFormatter {
     protected static final int INITIAL_TEXT_LIST_CAPACITY = 16;
 
-    private int indentSize;
+    protected boolean isIndentationSet;
+    private int indentation;
     private String indentPrefix;
 
     protected List<Text> textList;
 
     protected AbstractFormatter() {
-        this.setIndentSize(Configs.TOOLTIPS_INDENT_SIZE.intValue());
+        this.isIndentationSet = false;
+
+        this.setIndentation(Configs.TOOLTIPS_INDENT_SIZE.intValue());
 
         this.textList = new ArrayList<>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
     }
 
-    public void setIndentSize(int indentSize) {
-        if (indentSize < 0)
-            indentSize = 0;
+    public void setIndentation(int indentation) {
+        if (indentation < 0)
+            indentation = 0;
 
-        this.indentSize = indentSize;
-        this.indentPrefix = " ".repeat(indentSize);
+        this.indentation = indentation;
+        this.indentPrefix = " ".repeat(indentation);
+        this.isIndentationSet = true;
     }
 
-    public int getIndentSize() {
-        return this.indentSize;
+    public int getIndentation() {
+        return this.indentation;
     }
 
     public String getIndentPrefix() {
