@@ -18,15 +18,11 @@ To build this mod, you will need **JDK 21** installed on your system.
     git clone https://github.com/fixyldev/ComponentViewer.git
     cd ComponentViewer
     ```
-2. **Grant execute permissions**
-    ```sh
-    chmod u+x gradlew
-    ```
-3. **Build the project**
+2. **Build the project**
     ```sh
     ./gradlew build
     ```
-4. **Locate the JAR files**
+3. **Locate the JAR files**
     ```sh
     cd build/libs
     ```
