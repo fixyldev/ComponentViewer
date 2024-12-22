@@ -84,7 +84,7 @@ public record Components(List<Component<?>> modifiedComponents, List<Component<?
     }
 
     private static Set<Component<?>> createComponentSet(ComponentMap componentMap) {
-        Set<Component<?>> componentSet = new HashSet<>(componentMap.size());
+        Set<Component<?>> componentSet = HashSet.newHashSet(componentMap.size());
 
         for (Component<?> component : componentMap)
             componentSet.add(component);

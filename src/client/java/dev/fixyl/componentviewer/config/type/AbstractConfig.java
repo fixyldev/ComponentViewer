@@ -77,10 +77,8 @@ public abstract class AbstractConfig<T> {
     public Type type() {
         Type type = getClass().getGenericSuperclass();
 
-        if (type instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) type;
+        if (type instanceof ParameterizedType parameterizedType)
             return parameterizedType.getActualTypeArguments()[0];
-        }
 
         return null;
     }

@@ -72,7 +72,7 @@ public class IntegerConfig extends AbstractConfig<Integer> {
 
     @Override
     public void setValue(Integer value) {
-        value = Math.max(this.minValue, Math.min(this.maxValue, value));
+        value = Math.clamp(value, this.minValue, this.maxValue);
 
         super.setValue(value);
     }
