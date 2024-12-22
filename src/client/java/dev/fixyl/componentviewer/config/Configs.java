@@ -28,7 +28,7 @@ import dev.fixyl.componentviewer.config.type.BooleanConfig;
 import dev.fixyl.componentviewer.config.type.EnumConfig;
 import dev.fixyl.componentviewer.config.type.IntegerConfig;
 import dev.fixyl.componentviewer.option.TooltipsDisplay;
-import dev.fixyl.componentviewer.option.TooltipsMode;
+import dev.fixyl.componentviewer.option.TooltipsFormatting;
 
 public final class Configs {
     private Configs() {}
@@ -37,9 +37,9 @@ public final class Configs {
             .setDefaultValue(TooltipsDisplay.HOLD)
             .setTranslationKeys("componentviewer.config.tooltips.display", "componentviewer.config.tooltips.display.tooltip")
             .build();
-    public static final EnumConfig<TooltipsMode> TOOLTIPS_MODE = EnumConfig.builder(TooltipsMode.class, "tooltips.mode")
-            .setDefaultValue(TooltipsMode.SNBT)
-            .setTranslationKeys("componentviewer.config.tooltips.mode", "componentviewer.config.tooltips.mode.tooltip")
+    public static final EnumConfig<TooltipsFormatting> TOOLTIPS_FORMATTING = EnumConfig.builder(TooltipsFormatting.class, "tooltips.formatting")
+            .setDefaultValue(TooltipsFormatting.SNBT)
+            .setTranslationKeys("componentviewer.config.tooltips.formatting", "componentviewer.config.tooltips.formatting.tooltip")
             .setDependency(() -> Configs.TOOLTIPS_DISPLAY.value() != TooltipsDisplay.NEVER)
             .build();
     public static final BooleanConfig TOOLTIPS_COMPONENT_CHANGES = BooleanConfig.builder("tooltips.component_changes")
@@ -52,17 +52,17 @@ public final class Configs {
             .setTranslationKeys("componentviewer.config.tooltips.component_values", "componentviewer.config.tooltips.component_values.tooltip")
             .setDependency(() -> Configs.TOOLTIPS_DISPLAY.value() != TooltipsDisplay.NEVER)
             .build();
-    public static final IntegerConfig TOOLTIPS_INDENT_SIZE = IntegerConfig.builder("tooltips.indent_size")
+    public static final IntegerConfig TOOLTIPS_INDENTATION = IntegerConfig.builder("tooltips.indentation")
             .setDefaultValue(4)
             .setIntegerRange(0, 8)
-            .setTranslationKeys("componentviewer.config.tooltips.indent_size", "componentviewer.config.tooltips.indent_size.tooltip")
-            .setTranslationKeyOverwrite(value -> (value == 0) ? "componentviewer.config.tooltips.indent_size.off" : "componentviewer.config.tooltips.indent_size.value")
+            .setTranslationKeys("componentviewer.config.tooltips.indentation", "componentviewer.config.tooltips.indentation.tooltip")
+            .setTranslationKeyOverwrite(value -> (value == 0) ? "componentviewer.config.tooltips.indentation.off" : "componentviewer.config.tooltips.indentation.value")
             .setDependency(() -> Configs.TOOLTIPS_DISPLAY.value() != TooltipsDisplay.NEVER && Configs.TOOLTIPS_COMPONENT_VALUES.booleanValue())
             .build();
     public static final BooleanConfig TOOLTIPS_COLORED_SNBT = BooleanConfig.builder("tooltips.colored_snbt")
             .setDefaultValue(true)
             .setTranslationKeys("componentviewer.config.tooltips.colored_snbt", "componentviewer.config.tooltips.colored_snbt.tooltip")
-            .setDependency(() -> Configs.TOOLTIPS_DISPLAY.value() != TooltipsDisplay.NEVER && Configs.TOOLTIPS_MODE.value() == TooltipsMode.SNBT && Configs.TOOLTIPS_COMPONENT_VALUES.booleanValue())
+            .setDependency(() -> Configs.TOOLTIPS_DISPLAY.value() != TooltipsDisplay.NEVER && Configs.TOOLTIPS_FORMATTING.value() == TooltipsFormatting.SNBT && Configs.TOOLTIPS_COMPONENT_VALUES.booleanValue())
             .build();
     public static final BooleanConfig TOOLTIPS_ADVANCED_TOOLTIPS = BooleanConfig.builder("tooltips.advanced_tooltips")
             .setDefaultValue(false)

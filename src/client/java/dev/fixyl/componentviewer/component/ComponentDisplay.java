@@ -36,7 +36,7 @@ import net.minecraft.util.Formatting;
 import dev.fixyl.componentviewer.component.formatter.ClassFormatter;
 import dev.fixyl.componentviewer.component.formatter.SnbtFormatter;
 import dev.fixyl.componentviewer.config.Configs;
-import dev.fixyl.componentviewer.option.TooltipsMode;
+import dev.fixyl.componentviewer.option.TooltipsFormatting;
 
 public final class ComponentDisplay {
     private static ComponentDisplay instance;
@@ -90,17 +90,17 @@ public final class ComponentDisplay {
 
         List<Text> textList;
 
-        switch (Configs.TOOLTIPS_MODE.value()) {
-            case TooltipsMode.SNBT -> textList = this.snbtFormatter.formatComponent(component, Configs.TOOLTIPS_COLORED_SNBT.booleanValue());
+        switch (Configs.TOOLTIPS_FORMATTING.value()) {
+            case TooltipsFormatting.SNBT -> textList = this.snbtFormatter.formatComponent(component, Configs.TOOLTIPS_COLORED_SNBT.booleanValue());
 
-            case TooltipsMode.CLASS -> {
+            case TooltipsFormatting.OBJECT -> {
                 if (component.value() instanceof NbtComponent)
                     textList = this.snbtFormatter.formatComponent(component, false);
                 else
                     textList = this.classFormatter.formatComponent(component);
             }
 
-            default -> throw new IllegalArgumentException(String.format("Illegal ModeOption enum value: %s", Configs.TOOLTIPS_MODE.value()));
+            default -> throw new IllegalArgumentException(String.format("Illegal TooltipsFormatting enum value: %s", Configs.TOOLTIPS_FORMATTING.value()));
         }
 
         tooltipLines.add(Text.translatable("componentviewer.tooltips.components.value").setStyle(ComponentDisplay.HEADER_STYLE));

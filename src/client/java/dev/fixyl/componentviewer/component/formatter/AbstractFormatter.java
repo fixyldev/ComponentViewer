@@ -43,7 +43,7 @@ public abstract class AbstractFormatter {
     protected AbstractFormatter() {
         this.isIndentationSet = false;
 
-        this.setIndentation(Configs.TOOLTIPS_INDENT_SIZE.intValue());
+        this.setIndentation(Configs.TOOLTIPS_INDENTATION.intValue());
 
         this.textList = new ArrayList<>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
     }

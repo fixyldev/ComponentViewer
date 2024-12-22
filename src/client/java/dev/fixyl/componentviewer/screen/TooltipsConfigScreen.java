@@ -38,10 +38,10 @@ public class TooltipsConfigScreen extends ConfigScreen {
     protected void addElements() {
         this.addConfigs(
             Configs.TOOLTIPS_DISPLAY,
-            Configs.TOOLTIPS_MODE,
+            Configs.TOOLTIPS_FORMATTING,
             Configs.TOOLTIPS_COMPONENT_CHANGES,
             Configs.TOOLTIPS_COMPONENT_VALUES,
-            Configs.TOOLTIPS_INDENT_SIZE,
+            Configs.TOOLTIPS_INDENTATION,
             Configs.TOOLTIPS_COLORED_SNBT,
             Configs.TOOLTIPS_ADVANCED_TOOLTIPS
         );

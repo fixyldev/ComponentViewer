@@ -75,7 +75,7 @@ public final class ComponentManager {
             case TooltipsDisplay.ALWAYS:
                 break;
             default:
-                throw new IllegalArgumentException(String.format("Illegal DisplayOption enum value: %s", Configs.TOOLTIPS_DISPLAY.value()));
+                throw new IllegalArgumentException(String.format("Illegal TooltipsDisplay enum value: %s", Configs.TOOLTIPS_DISPLAY.value()));
         }
 
         this.components = Components.getComponents(itemStack);

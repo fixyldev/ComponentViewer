@@ -81,13 +81,13 @@ public class ClassFormatter extends AbstractFormatter {
     }
 
     public List<Text> formatComponent(Component<?> component) {
-        this.setIndentation(Configs.TOOLTIPS_INDENT_SIZE.intValue());
+        this.setIndentation(Configs.TOOLTIPS_INDENTATION.intValue());
 
         this.initializeFormattingVariables(component);
 
         this.line.append(this.getIndentPrefixFromLevel(this.indentLevel));
 
-        if (Configs.TOOLTIPS_INDENT_SIZE.intValue() == 0) {
+        if (Configs.TOOLTIPS_INDENTATION.intValue() == 0) {
             this.line.append(this.componentValue);
             this.textList.add(Text.literal(this.line.toString()).setStyle(ComponentDisplay.COMPONENT_VALUE_GENERAL_STYLE));
 
@@ -107,7 +107,7 @@ public class ClassFormatter extends AbstractFormatter {
             this.textList.clear();
             this.textList.add(Text.literal(this.getIndentPrefixFromLevel(0) + this.componentValue).setStyle(ComponentDisplay.COMPONENT_VALUE_GENERAL_STYLE));
             this.textList.add(Text.empty());
-            this.textList.add(Text.translatable("componentviewer.tooltips.components.error.class_formatting").setStyle(ComponentDisplay.HEADER_STYLE));
+            this.textList.add(Text.translatable("componentviewer.tooltips.components.error.object_formatting").setStyle(ComponentDisplay.HEADER_STYLE));
         }
 
         return this.textList;
