@@ -54,10 +54,8 @@ public class SnbtFormatter implements Formatter {
 
         String formattedString = SnbtFormatter.getFormattedText(component, indentation).getString();
 
-        if (!linePrefix.isEmpty()) {
-            String lineSeparator = System.lineSeparator();
-            return linePrefix + formattedString.replace(lineSeparator, lineSeparator + linePrefix);
-        }
+        if (!linePrefix.isEmpty())
+            return linePrefix + formattedString.replace("\n", "\n" + linePrefix);
 
         return formattedString;
     }
