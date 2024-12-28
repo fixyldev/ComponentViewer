@@ -22,28 +22,29 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.screen;
+package dev.fixyl.componentviewer.formatting;
 
-import net.minecraft.client.gui.screen.Screen;
+import java.util.List;
 
-import dev.fixyl.componentviewer.config.Configs;
-import dev.fixyl.componentviewer.config.type.AbstractConfig.ConfigScreen;
+import org.jetbrains.annotations.Nullable;
 
-public class TooltipsConfigScreen extends ConfigScreen {
-    public TooltipsConfigScreen(Screen parentScreen) {
-        super(parentScreen, "componentviewer.config.tooltips.title");
+import net.minecraft.component.Component;
+import net.minecraft.text.Style;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+
+public interface Formatter {
+    public static final Style NO_COLOR_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);
+
+    public String componentToString(Component<?> component, int indentation, @Nullable String linePrefix);
+
+    public List<Text> componentToText(Component<?> component, int indentation, boolean colored, @Nullable String linePrefix);
+
+    public default String componentToString(Component<?> component, int indentation) {
+        return this.componentToString(component, indentation, null);
     }
 
-    @Override
-    protected void addElements() {
-        this.addConfigs(
-            Configs.TOOLTIPS_DISPLAY,
-            Configs.TOOLTIPS_FORMATTING,
-            Configs.TOOLTIPS_COMPONENT_CHANGES,
-            Configs.TOOLTIPS_COMPONENT_VALUES,
-            Configs.TOOLTIPS_INDENTATION,
-            Configs.TOOLTIPS_COLORED_VALUES,
-            Configs.TOOLTIPS_ADVANCED_TOOLTIPS
-        );
+    public default List<Text> componentToText(Component<?> component, int indentation, boolean colored) {
+        return this.componentToText(component, indentation, colored, null);
     }
 }

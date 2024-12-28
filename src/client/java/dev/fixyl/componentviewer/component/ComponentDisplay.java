@@ -33,8 +33,9 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import dev.fixyl.componentviewer.component.formatter.ClassFormatter;
-import dev.fixyl.componentviewer.component.formatter.SnbtFormatter;
+import dev.fixyl.componentviewer.formatting.Formatter;
+import dev.fixyl.componentviewer.formatting.ObjectFormatter;
+import dev.fixyl.componentviewer.formatting.SnbtFormatter;
 import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.option.TooltipsFormatting;
 
@@ -52,12 +53,12 @@ public final class ComponentDisplay {
     public static final Style COMPONENT_VALUE_GENERAL_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);
     public static final Style COMPONENT_VALUE_WHITE_STYLE = Style.EMPTY.withColor(Formatting.WHITE);
 
-    private final SnbtFormatter snbtFormatter;
-    private final ClassFormatter classFormatter;
+    private final Formatter snbtFormatter;
+    private final Formatter objectFormatter;
 
     private ComponentDisplay() {
         this.snbtFormatter = new SnbtFormatter();
-        this.classFormatter = new ClassFormatter();
+        this.objectFormatter = new ObjectFormatter();
     }
 
     public static ComponentDisplay getInstance() {
@@ -91,13 +92,13 @@ public final class ComponentDisplay {
         List<Text> textList;
 
         switch (Configs.TOOLTIPS_FORMATTING.value()) {
-            case TooltipsFormatting.SNBT -> textList = this.snbtFormatter.formatComponent(component, Configs.TOOLTIPS_COLORED_SNBT.booleanValue());
+            case TooltipsFormatting.SNBT -> textList = this.snbtFormatter.componentToText(component, Configs.TOOLTIPS_INDENTATION.intValue(), Configs.TOOLTIPS_COLORED_VALUES.booleanValue(), ComponentDisplay.GENERAL_INDENT_PREFIX);
 
             case TooltipsFormatting.OBJECT -> {
                 if (component.value() instanceof NbtComponent)
-                    textList = this.snbtFormatter.formatComponent(component, false);
+                    textList = this.snbtFormatter.componentToText(component, Configs.TOOLTIPS_INDENTATION.intValue(), Configs.TOOLTIPS_COLORED_VALUES.booleanValue(), ComponentDisplay.GENERAL_INDENT_PREFIX);
                 else
-                    textList = this.classFormatter.formatComponent(component);
+                    textList = this.objectFormatter.componentToText(component, Configs.TOOLTIPS_INDENTATION.intValue(), Configs.TOOLTIPS_COLORED_VALUES.booleanValue(), ComponentDisplay.GENERAL_INDENT_PREFIX);
             }
 
             default -> throw new IllegalArgumentException(String.format("Illegal TooltipsFormatting enum value: %s", Configs.TOOLTIPS_FORMATTING.value()));

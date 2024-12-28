@@ -22,46 +22,22 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.component.formatter;
+package dev.fixyl.componentviewer.formatting;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import net.minecraft.text.Text;
-
-import dev.fixyl.componentviewer.config.Configs;
-
-public abstract class AbstractFormatter {
-    protected static final int INITIAL_TEXT_LIST_CAPACITY = 16;
-
-    protected boolean isIndentationSet;
-    private int indentation;
-    private String indentPrefix;
-
-    protected List<Text> textList;
-
-    protected AbstractFormatter() {
-        this.isIndentationSet = false;
-
-        this.setIndentation(Configs.TOOLTIPS_INDENTATION.intValue());
-
-        this.textList = new ArrayList<>(AbstractFormatter.INITIAL_TEXT_LIST_CAPACITY);
+public class FormattingException extends RuntimeException {
+    public FormattingException() {
+        super();
     }
 
-    public void setIndentation(int indentation) {
-        if (indentation < 0)
-            indentation = 0;
-
-        this.indentation = indentation;
-        this.indentPrefix = " ".repeat(indentation);
-        this.isIndentationSet = true;
+    public FormattingException(String message) {
+        super(message);
     }
 
-    public int getIndentation() {
-        return this.indentation;
+    public FormattingException(Throwable cause) {
+        super(cause);
     }
 
-    public String getIndentPrefix() {
-        return this.indentPrefix;
+    public FormattingException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
