@@ -53,6 +53,7 @@ public class SnbtFormatter implements Formatter {
         this.textResultCache = new ResultCache<>();
     }
 
+    @Override
     public String componentToString(Component<?> component, int indentation, String linePrefix) {
         return this.stringResultCache.cache(() -> {
             if (component.type().getCodec() == null)
@@ -67,6 +68,7 @@ public class SnbtFormatter implements Formatter {
         }, component, indentation, linePrefix);
     }
 
+    @Override
     public List<Text> componentToText(Component<?> component, int indentation, boolean colored, String linePrefix) {
         return Collections.unmodifiableList(this.textResultCache.cache(() -> {
             if (component.type().getCodec() != null) {

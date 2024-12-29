@@ -99,6 +99,7 @@ public class ObjectFormatter implements Formatter {
         this.isLinePrefixAndIndentationSet = false;
     }
 
+    @Override
     public String componentToString(Component<?> component, int indentation, String linePrefix) {
         return this.stringResultCache.cache(() -> {
             String componentValue = component.value().toString();
@@ -112,6 +113,7 @@ public class ObjectFormatter implements Formatter {
         }, component, indentation, linePrefix);
     }
 
+    @Override
     public List<Text> componentToText(Component<?> component, int indentation, boolean colored, String linePrefix) {
         return Collections.unmodifiableList(this.textResultCache.cache(() -> {
             String componentValue = component.value().toString();
