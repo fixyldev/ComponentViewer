@@ -25,10 +25,9 @@
 package dev.fixyl.componentviewer.formatting;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.component.Component;
 import net.minecraft.nbt.NbtElement;
@@ -40,45 +39,52 @@ import net.minecraft.util.Formatting;
 import net.minecraft.text.MutableText;
 
 import dev.fixyl.componentviewer.ComponentViewer;
+import dev.fixyl.componentviewer.util.ResultCache;
 
 public class SnbtFormatter implements Formatter {
     private static final String NO_CODEC_REPR = "{}";
     private static final Style NO_CODEC_REPR_STYLE = Style.EMPTY.withColor(Formatting.WHITE);
 
-    public String componentToString(Component<?> component, int indentation, @Nullable String linePrefix) {
-        if (linePrefix == null)
-            linePrefix = "";
+    private final ResultCache<String> stringResultCache;
+    private final ResultCache<List<Text>> textResultCache;
 
-        if (component.type().getCodec() == null)
-            return linePrefix + SnbtFormatter.NO_CODEC_REPR;
-
-        String formattedString = SnbtFormatter.getFormattedText(component, indentation).getString();
-
-        if (!linePrefix.isEmpty())
-            return linePrefix + formattedString.replace("\n", "\n" + linePrefix);
-
-        return formattedString;
+    public SnbtFormatter() {
+        this.stringResultCache = new ResultCache<>();
+        this.textResultCache = new ResultCache<>();
     }
 
-    public List<Text> componentToText(Component<?> component, int indentation, boolean colored, @Nullable String linePrefix) {
-        if (linePrefix == null)
-            linePrefix = "";
+    public String componentToString(Component<?> component, int indentation, String linePrefix) {
+        return this.stringResultCache.cache(() -> {
+            if (component.type().getCodec() == null)
+                return linePrefix + SnbtFormatter.NO_CODEC_REPR;
 
-        if (component.type().getCodec() != null) {
-            Text text = SnbtFormatter.getFormattedText(component, indentation);
-            return SnbtFormatter.convertToTextList(text, colored, linePrefix);
-        }
+            String formattedString = SnbtFormatter.getFormattedText(component, indentation).getString();
 
-        Text noCodecText = Text.literal(SnbtFormatter.NO_CODEC_REPR).setStyle((colored) ? SnbtFormatter.NO_CODEC_REPR_STYLE : Formatter.NO_COLOR_STYLE);
+            if (!linePrefix.isEmpty())
+                return linePrefix + formattedString.replace("\n", "\n" + linePrefix);
 
-        if (linePrefix.isEmpty())
-            return List.of(noCodecText);
+            return formattedString;
+        }, component, indentation, linePrefix);
+    }
 
-        MutableText startOfLine = Text.literal(linePrefix);
-        if (!colored)
-            startOfLine.setStyle(Formatter.NO_COLOR_STYLE);
+    public List<Text> componentToText(Component<?> component, int indentation, boolean colored, String linePrefix) {
+        return Collections.unmodifiableList(this.textResultCache.cache(() -> {
+            if (component.type().getCodec() != null) {
+                Text text = SnbtFormatter.getFormattedText(component, indentation);
+                return SnbtFormatter.convertToTextList(text, colored, linePrefix);
+            }
 
-        return List.of(startOfLine.append(noCodecText));
+            Text noCodecText = Text.literal(SnbtFormatter.NO_CODEC_REPR).setStyle((colored) ? SnbtFormatter.NO_CODEC_REPR_STYLE : Formatter.NO_COLOR_STYLE);
+
+            if (linePrefix.isEmpty())
+                return List.of(noCodecText);
+
+            MutableText startOfLine = Text.literal(linePrefix);
+            if (!colored)
+                startOfLine.setStyle(Formatter.NO_COLOR_STYLE);
+
+            return List.of(startOfLine.append(noCodecText));
+        }, component, indentation, colored, linePrefix));
     }
 
     private static Text getFormattedText(Component<?> component, int indentation) {

@@ -25,6 +25,7 @@
 package dev.fixyl.componentviewer.formatting;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -33,13 +34,13 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.component.Component;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+
+import dev.fixyl.componentviewer.util.ResultCache;
 
 public class ObjectFormatter implements Formatter {
     private static final Map<TokenType, Style> TOKEN_STYLES = Map.ofEntries(
@@ -62,6 +63,9 @@ public class ObjectFormatter implements Formatter {
         '{', '}',
         '[', ']'
     );
+
+    private final ResultCache<String> stringResultCache;
+    private final ResultCache<List<Text>> textResultCache;
 
     private final Tokenizer tokenizer;
     private final Map<Integer, String> lineAndIndentPrefixCache;
@@ -86,47 +90,48 @@ public class ObjectFormatter implements Formatter {
     private StringBuilder stringBuilder;
 
     public ObjectFormatter() {
+        this.stringResultCache = new ResultCache<>();
+        this.textResultCache = new ResultCache<>();
+
         this.tokenizer = new Tokenizer();
         this.lineAndIndentPrefixCache = new HashMap<>();
 
         this.isLinePrefixAndIndentationSet = false;
     }
 
-    public String componentToString(Component<?> component, int indentation, @Nullable String linePrefix) {
-        if (linePrefix == null)
-            linePrefix = "";
+    public String componentToString(Component<?> component, int indentation, String linePrefix) {
+        return this.stringResultCache.cache(() -> {
+            String componentValue = component.value().toString();
 
-        String componentValue = component.value().toString();
+            if (indentation <= 0)
+                return linePrefix + componentValue;
 
-        if (indentation <= 0)
-            return linePrefix + componentValue;
+            List<Token> tokenList = this.tokenizer.tokenize(componentValue);
 
-        List<Token> tokenList = this.tokenizer.tokenize(componentValue);
-
-        return this.formatTokensAsString(tokenList, indentation, linePrefix);
+            return this.formatTokensAsString(tokenList, indentation, linePrefix);
+        }, component, indentation, linePrefix);
     }
 
-    public List<Text> componentToText(Component<?> component, int indentation, boolean colored, @Nullable String linePrefix) {
-        if (linePrefix == null)
-            linePrefix = "";
+    public List<Text> componentToText(Component<?> component, int indentation, boolean colored, String linePrefix) {
+        return Collections.unmodifiableList(this.textResultCache.cache(() -> {
+            String componentValue = component.value().toString();
 
-        String componentValue = component.value().toString();
+            if (indentation <= 0 && !colored)
+                return List.of(Text.literal(linePrefix + componentValue).setStyle(Formatter.NO_COLOR_STYLE));
 
-        if (indentation <= 0 && !colored)
-            return List.of(Text.literal(linePrefix + componentValue).setStyle(Formatter.NO_COLOR_STYLE));
+            List<Token> tokenList = this.tokenizer.tokenize(componentValue);
 
-        List<Token> tokenList = this.tokenizer.tokenize(componentValue);
+            if (indentation <= 0) {
+                MutableText line = Text.literal(linePrefix);
 
-        if (indentation <= 0) {
-            MutableText line = Text.literal(linePrefix);
+                for (Token token : tokenList)
+                    line.append(Text.literal(token.content()).setStyle(ObjectFormatter.TOKEN_STYLES.get(token.tokenType())));
 
-            for (Token token : tokenList)
-                line.append(Text.literal(token.content()).setStyle(ObjectFormatter.TOKEN_STYLES.get(token.tokenType())));
+                return List.of(line);
+            }
 
-            return List.of(line);
-        }
-
-        return this.formatTokensAsText(tokenList, indentation, colored, linePrefix);
+            return this.formatTokensAsText(tokenList, indentation, colored, linePrefix);
+        }, component, indentation, colored, linePrefix));
     }
 
     private String formatTokensAsString(List<Token> tokens, int indentation, String linePrefix) {

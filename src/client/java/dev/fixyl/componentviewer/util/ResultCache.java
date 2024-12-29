@@ -22,27 +22,35 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.formatting;
+package dev.fixyl.componentviewer.util;
 
-import java.util.List;
+import java.util.Objects;
+import java.util.function.Supplier;
 
-import net.minecraft.component.Component;
-import net.minecraft.text.Style;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+public class ResultCache<T> {
+    private boolean empty;
+    private int hashCode;
+    private T result;
 
-public interface Formatter {
-    public static final Style NO_COLOR_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);
-
-    public String componentToString(Component<?> component, int indentation, String linePrefix);
-
-    public List<Text> componentToText(Component<?> component, int indentation, boolean colored, String linePrefix);
-
-    public default String componentToString(Component<?> component, int indentation) {
-        return this.componentToString(component, indentation, "");
+    public ResultCache() {
+        this.empty = true;
     }
 
-    public default List<Text> componentToText(Component<?> component, int indentation, boolean colored) {
-        return this.componentToText(component, indentation, colored, "");
+    public T cache(Supplier<T> resultSupplier, Object... arguments) {
+        int newHashCode = Objects.hash(arguments);
+
+        if (!this.empty && newHashCode == this.hashCode)
+            return this.result;
+
+        this.empty = false;
+        this.hashCode = newHashCode;
+        this.result = resultSupplier.get();
+
+        return this.result;
+    }
+
+    public void clear() {
+        this.empty = true;
+        this.result = null;
     }
 }
