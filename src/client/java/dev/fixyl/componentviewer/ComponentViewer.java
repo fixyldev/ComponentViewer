@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 
 import dev.fixyl.componentviewer.component.ComponentManager;
 import dev.fixyl.componentviewer.config.ConfigManager;
+import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.keybind.KeyBindings;
 import dev.fixyl.componentviewer.screen.MainConfigScreen;
 
@@ -45,7 +46,7 @@ public class ComponentViewer implements ClientModInitializer {
 
     public static final Logger logger = LoggerFactory.getLogger("ComponentViewer");
 
-    public static final ConfigManager configManager = ConfigManager.getInstance();
+    public static final ConfigManager configManager = new ConfigManager(Configs.class, "componentviewer-config.json");
     public static final ComponentManager componentManager = ComponentManager.getInstance();
 
     public static final KeyBindings keyBindings = new KeyBindings();
