@@ -26,7 +26,9 @@ package dev.fixyl.componentviewer.component;
 
 import java.util.List;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.item.Item.TooltipContext;
 import net.minecraft.item.ItemStack;
@@ -35,6 +37,7 @@ import net.minecraft.text.Text;
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Config;
 import dev.fixyl.componentviewer.option.DisplayOption;
+import org.lwjgl.glfw.GLFW;
 
 public final class ComponentManager {
     private static ComponentManager instance;
@@ -44,12 +47,14 @@ public final class ComponentManager {
     private Components components;
     private int componentIndex;
     private boolean previousAltDown;
+    private boolean previousCDown;
 
     private ComponentManager() {
         this.componentDisplay = ComponentDisplay.getInstance();
 
         this.componentIndex = 0;
         this.previousAltDown = false;
+        this.previousCDown = false;
     }
 
     public static ComponentManager getInstance() {
@@ -80,7 +85,7 @@ public final class ComponentManager {
 
         this.components = Components.getComponents(itemStack);
 
-        this.swapComponentIndex();
+        this.swapComponentIndex(itemStack);
 
         if (!this.componentDisplay.displayComponentTypes(this.components, this.componentIndex, tooltipLines))
             return;
@@ -92,12 +97,15 @@ public final class ComponentManager {
             this.componentDisplay.displayComponentValue(this.components.modifiedComponents().get(this.componentIndex), tooltipLines);
     }
 
-    private void swapComponentIndex() {
+    private void swapComponentIndex(ItemStack itemStack) {
         if (!Config.COMPONENT_VALUES.getValue())
             return;
 
         if (!Screen.hasAltDown())
             this.previousAltDown = false;
+
+        if(!isCDown())
+            this.previousCDown = false;
 
         if (!this.previousAltDown && Screen.hasAltDown()) {
             if (Screen.hasShiftDown())
@@ -107,9 +115,20 @@ public final class ComponentManager {
             this.previousAltDown = true;
         }
 
+        if(isCDown() && !Screen.hasAltDown() && !Screen.hasShiftDown()) {
+            if(!previousCDown) {
+                ComponentCopyer.copyItem(itemStack, this.components.modifiedComponents());
+                previousCDown = true;
+            }
+        }
+
         if (this.componentIndex >= this.components.modifiedComponents().size())
             this.componentIndex = 0;
         else if (this.componentIndex < 0)
             this.componentIndex = this.components.modifiedComponents().size() - 1;
+    }
+
+    private boolean isCDown() {
+        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_KEY_C);
     }
 }
