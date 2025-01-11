@@ -28,9 +28,9 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public class ResultCache<T> {
-    private boolean empty;
-    private int hashCode;
     private T result;
+    private int hashCode;
+    private boolean empty;
 
     public ResultCache() {
         this.empty = true;
@@ -42,9 +42,9 @@ public class ResultCache<T> {
         if (!this.empty && newHashCode == this.hashCode)
             return this.result;
 
-        this.empty = false;
-        this.hashCode = newHashCode;
         this.result = resultSupplier.get();
+        this.hashCode = newHashCode;
+        this.empty = false;
 
         return this.result;
     }
