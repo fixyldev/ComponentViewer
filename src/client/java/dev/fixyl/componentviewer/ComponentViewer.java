@@ -26,38 +26,36 @@ package dev.fixyl.componentviewer;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.fabricmc.loader.api.FabricLoader;
-
-import net.minecraft.client.MinecraftClient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dev.fixyl.componentviewer.component.ComponentManager;
 import dev.fixyl.componentviewer.config.ConfigManager;
-import dev.fixyl.componentviewer.config.Configs;
+import dev.fixyl.componentviewer.control.ControlFlow;
+import dev.fixyl.componentviewer.event.TooltipCallback;
 import dev.fixyl.componentviewer.keybind.KeyBindings;
 import dev.fixyl.componentviewer.screen.MainConfigScreen;
 
-public class ComponentViewer implements ClientModInitializer {
-    public static final MinecraftClient minecraftClient = MinecraftClient.getInstance();
-    public static final FabricLoader fabricLoader = FabricLoader.getInstance();
+public final class ComponentViewer implements ClientModInitializer {
+    public static final Logger LOGGER = LoggerFactory.getLogger("ComponentViewer");
+    public static final ConfigManager CONFIG_MANAGER = new ConfigManager("componentviewer-config.json");
 
-    public static final Logger logger = LoggerFactory.getLogger("ComponentViewer");
+    private final ControlFlow controlFlow;
+    private final KeyBindings keyBindings;
 
-    public static final ConfigManager configManager = new ConfigManager(Configs.class, "componentviewer-config.json");
-    public static final ComponentManager componentManager = ComponentManager.getInstance();
-
-    public static final KeyBindings keyBindings = new KeyBindings();
+    public ComponentViewer() {
+        this.controlFlow = new ControlFlow();
+        this.keyBindings = new KeyBindings();
+    }
 
     @Override
     public void onInitializeClient() {
-        ItemTooltipCallback.EVENT.register((itemStack, tooltipContext, tooltipType, tooltipLines) -> ComponentViewer.componentManager.itemTooltipCallbackListener(itemStack, tooltipType, tooltipLines));
+        TooltipCallback.EVENT.register(this.controlFlow::onTooltip);
 
         ClientTickEvents.END_CLIENT_TICK.register(minecraftClient -> {
-            if (ComponentViewer.keyBindings.configKey.isPressed())
+            if (this.keyBindings.configKey.isPressed()) {
                 minecraftClient.setScreen(new MainConfigScreen(null));
+            }
         });
     }
 }

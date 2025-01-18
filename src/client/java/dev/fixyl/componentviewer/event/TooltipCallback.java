@@ -22,36 +22,23 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.util;
+package dev.fixyl.componentviewer.event;
 
-import java.util.Objects;
-import java.util.function.Supplier;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
-public class ResultCache<T> {
-    private T result;
-    private int hashCode;
-    private boolean empty;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 
-    public ResultCache() {
-        this.empty = true;
-    }
+import dev.fixyl.componentviewer.tooltip.Tooltip;
 
-    public T cache(Supplier<T> resultSupplier, Object... arguments) {
-        int newHashCode = Objects.hash(arguments);
-
-        if (!this.empty && newHashCode == this.hashCode) {
-            return this.result;
+@FunctionalInterface
+public interface TooltipCallback {
+    public static final Event<TooltipCallback> EVENT = EventFactory.createArrayBacked(TooltipCallback.class, listeners -> (itemStack, tooltip, tooltipType) -> {
+        for (TooltipCallback listener : listeners) {
+            listener.onTooltipCallback(itemStack, tooltip, tooltipType);
         }
+    });
 
-        this.result = resultSupplier.get();
-        this.hashCode = newHashCode;
-        this.empty = false;
-
-        return this.result;
-    }
-
-    public void clear() {
-        this.empty = true;
-        this.result = null;
-    }
+    public void onTooltipCallback(ItemStack itemStack, Tooltip tooltip, TooltipType tooltipType);
 }

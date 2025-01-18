@@ -22,36 +22,28 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.util;
+package dev.fixyl.componentviewer.screen;
 
-import java.util.Objects;
-import java.util.function.Supplier;
+import net.minecraft.client.gui.screen.Screen;
 
-public class ResultCache<T> {
-    private T result;
-    private int hashCode;
-    private boolean empty;
+import dev.fixyl.componentviewer.config.ConfigScreen;
+import dev.fixyl.componentviewer.config.Configs;
 
-    public ResultCache() {
-        this.empty = true;
+public class TooltipConfigScreen extends ConfigScreen {
+    public TooltipConfigScreen(Screen parentScreen) {
+        super(parentScreen, "componentviewer.config.tooltip.title");
     }
 
-    public T cache(Supplier<T> resultSupplier, Object... arguments) {
-        int newHashCode = Objects.hash(arguments);
-
-        if (!this.empty && newHashCode == this.hashCode) {
-            return this.result;
-        }
-
-        this.result = resultSupplier.get();
-        this.hashCode = newHashCode;
-        this.empty = false;
-
-        return this.result;
-    }
-
-    public void clear() {
-        this.empty = true;
-        this.result = null;
+    @Override
+    protected void addElements() {
+        this.addConfigs(
+            Configs.TOOLTIP_DISPLAY,
+            Configs.TOOLTIP_COMPONENTS,
+            Configs.TOOLTIP_COMPONENT_VALUES,
+            Configs.TOOLTIP_FORMATTING,
+            Configs.TOOLTIP_INDENTATION,
+            Configs.TOOLTIP_COLORED_VALUES,
+            Configs.TOOLTIP_ADVANCED_TOOLTIPS
+        );
     }
 }

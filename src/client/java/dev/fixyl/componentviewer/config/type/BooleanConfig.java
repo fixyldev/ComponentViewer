@@ -28,8 +28,9 @@ import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.option.SimpleOption.ValueTextGetter;
 
 import dev.fixyl.componentviewer.ComponentViewer;
+import dev.fixyl.componentviewer.config.Config;
 
-public class BooleanConfig extends AbstractConfig<Boolean> {
+public class BooleanConfig extends Config<Boolean> {
     private BooleanConfig(BooleanConfigBuilder builder) {
         super(builder);
 
@@ -61,7 +62,7 @@ public class BooleanConfig extends AbstractConfig<Boolean> {
             this.tooltipFactory,
             this.valueTextGetter,
             this.defaultValue,
-            value -> ComponentViewer.configManager.writeConfigFile()
+            value -> ComponentViewer.CONFIG_MANAGER.writeConfigFile()
         );
     }
 

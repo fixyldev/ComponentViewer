@@ -24,34 +24,19 @@
 
 package dev.fixyl.componentviewer.util;
 
-import java.util.Objects;
-import java.util.function.Supplier;
+import java.util.List;
 
-public class ResultCache<T> {
-    private T result;
-    private int hashCode;
-    private boolean empty;
+public final class Lists {
+    private Lists() {}
 
-    public ResultCache() {
-        this.empty = true;
-    }
-
-    public T cache(Supplier<T> resultSupplier, Object... arguments) {
-        int newHashCode = Objects.hash(arguments);
-
-        if (!this.empty && newHashCode == this.hashCode) {
-            return this.result;
+    public static <T> boolean isModifiable(List<T> list) {
+        try {
+            list.addLast(null);
+        } catch (UnsupportedOperationException | NullPointerException e) {
+            return false;
         }
 
-        this.result = resultSupplier.get();
-        this.hashCode = newHashCode;
-        this.empty = false;
-
-        return this.result;
-    }
-
-    public void clear() {
-        this.empty = true;
-        this.result = null;
+        list.removeLast();
+        return true;
     }
 }

@@ -23,6 +23,9 @@
             "dev.fixyl.componentviewer.modmenu.ModMenu"
         ]
     },
+    "mixins": [
+        "componentviewer.mixins.json"
+    ],
     "depends": {
         "fabric-api": ">=0.100.1",
         "fabricloader": ">=0.15.6",

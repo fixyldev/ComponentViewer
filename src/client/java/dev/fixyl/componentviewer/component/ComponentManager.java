@@ -24,91 +24,64 @@
 
 package dev.fixyl.componentviewer.component;
 
-import java.util.List;
-
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.component.Component;
+import net.minecraft.component.ComponentMap;
+import net.minecraft.component.ComponentType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.Text;
 
-import dev.fixyl.componentviewer.ComponentViewer;
-import dev.fixyl.componentviewer.config.Configs;
-import dev.fixyl.componentviewer.option.TooltipsDisplay;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import dev.fixyl.componentviewer.option.TooltipComponents;
+import dev.fixyl.componentviewer.util.ResultCache;
 
 public final class ComponentManager {
-    private static ComponentManager instance;
+    private final ResultCache<Components> componentsCache;
 
-    private final ComponentDisplay componentDisplay;
-
-    private Components components;
-    private int componentIndex;
-    private boolean previousAltDown;
-
-    private ComponentManager() {
-        this.componentDisplay = ComponentDisplay.getInstance();
-
-        this.componentIndex = 0;
-        this.previousAltDown = false;
+    public ComponentManager() {
+        this.componentsCache = new ResultCache<>();
     }
 
-    public static ComponentManager getInstance() {
-        if (ComponentManager.instance == null)
-            ComponentManager.instance = new ComponentManager();
+    public Components getAllComponents(ItemStack itemStack) {
+        return this.componentsCache.cache(() -> {
+            Set<Component<?>> regularComponents = ComponentManager.createComponentSet(itemStack.getComponents());
 
-        return ComponentManager.instance;
+            return new Components(TooltipComponents.ALL, regularComponents);
+        }, itemStack, TooltipComponents.ALL);
     }
 
-    public void itemTooltipCallbackListener(ItemStack itemStack, TooltipType tooltipType, List<Text> tooltipLines) {
-        if (ComponentViewer.minecraftClient.player == null)
-            return;
+    public Components getDefaultComponents(ItemStack itemStack) {
+        return this.componentsCache.cache(() -> {
+            Set<Component<?>> defaultComponents = ComponentManager.createComponentSet(itemStack.getDefaultComponents());
 
-        if (Configs.TOOLTIPS_ADVANCED_TOOLTIPS.booleanValue() && !tooltipType.isAdvanced())
-            return;
+            return new Components(TooltipComponents.DEFAULT, defaultComponents);
+        }, itemStack, TooltipComponents.DEFAULT);
+    }
 
-        switch (Configs.TOOLTIPS_DISPLAY.value()) {
-            case TooltipsDisplay.NEVER:
-                return;
-            case TooltipsDisplay.HOLD:
-                if (!Screen.hasControlDown())
-                    return;
-                break;
-            case TooltipsDisplay.ALWAYS:
-                break;
-            default:
-                throw new IllegalArgumentException(String.format("Illegal TooltipsDisplay enum value: %s", Configs.TOOLTIPS_DISPLAY.value()));
+    public Components getChangedComponents(ItemStack itemStack) {
+        return this.componentsCache.cache(() -> {
+            Set<Component<?>> regularComponents = ComponentManager.createComponentSet(itemStack.getComponents());
+            Set<Component<?>> defaultComponents = ComponentManager.createComponentSet(itemStack.getDefaultComponents());
+
+            Set<Component<?>> changedComponents = new HashSet<>(regularComponents);
+            changedComponents.removeAll(defaultComponents);
+
+            Set<Component<?>> removedComponents = new HashSet<>(defaultComponents);
+            Set<ComponentType<?>> componentTypes = regularComponents.stream().map(Component::type).collect(Collectors.toSet());
+            removedComponents.removeIf(defaultComponent -> componentTypes.contains(defaultComponent.type()));
+
+            return new Components(TooltipComponents.CHANGES, changedComponents, removedComponents);
+        }, itemStack, TooltipComponents.CHANGES);
+    }
+
+    private static Set<Component<?>> createComponentSet(ComponentMap componentMap) {
+        Set<Component<?>> componentSet = new HashSet<>();
+
+        for (Component<?> component : componentMap) {
+            componentSet.add(component);
         }
 
-        this.components = Components.getComponents(itemStack);
-
-        if (Configs.TOOLTIPS_COMPONENT_VALUES.booleanValue()) {
-            this.swapComponentIndex();
-            this.carryComponentIndex();
-        }
-
-        if (!this.componentDisplay.displayComponentTypes(this.components, this.componentIndex, tooltipLines))
-            return;
-
-        if (Configs.TOOLTIPS_COMPONENT_VALUES.booleanValue() && !this.components.modifiedComponents().isEmpty())
-            this.componentDisplay.displayComponentValue(this.components.modifiedComponents().get(this.componentIndex), tooltipLines);
-    }
-
-    private void swapComponentIndex() {
-        boolean currentAltDown = Screen.hasAltDown();
-
-        if (!currentAltDown)
-            this.previousAltDown = false;
-
-        if (!this.previousAltDown && currentAltDown) {
-            this.componentIndex += (Screen.hasShiftDown()) ? -1 : 1;
-
-            this.previousAltDown = true;
-        }
-    }
-
-    private void carryComponentIndex() {
-        if (this.componentIndex >= this.components.modifiedComponents().size())
-            this.componentIndex = 0;
-        else if (this.componentIndex < 0)
-            this.componentIndex = this.components.modifiedComponents().size() - 1;
+        return componentSet;
     }
 }

@@ -31,23 +31,24 @@ import net.minecraft.client.option.SimpleOption.ValueTextGetter;
 import net.minecraft.text.Text;
 
 import dev.fixyl.componentviewer.ComponentViewer;
+import dev.fixyl.componentviewer.config.Config;
 
-public class IntegerConfig extends AbstractConfig<Integer> {
+public class IntegerConfig extends Config<Integer> {
     private final Integer minValue;
     private final Integer maxValue;
 
     private IntegerConfig(IntegerConfigBuilder builder) {
         super(builder);
 
-        AbstractConfig.assertNull(builder.minValue, builder.maxValue);
+        Config.assertNull(builder.minValue, builder.maxValue);
 
         if (builder.minValue > builder.maxValue) {
-            ComponentViewer.logger.error("Invalid integer range {}-{}! The min value must be less than or equal to the max value.", builder.minValue, builder.maxValue);
+            ComponentViewer.LOGGER.error("Invalid integer range {}-{}! The min value must be less than or equal to the max value.", builder.minValue, builder.maxValue);
             throw new IllegalArgumentException("Invalid integer range");
         }
 
         if (this.defaultValue < builder.minValue || this.defaultValue > builder.maxValue) {
-            ComponentViewer.logger.error("Invalid default value {}! The default value must be within the valid integer range {}-{}.", this.defaultValue, builder.minValue, builder.maxValue);
+            ComponentViewer.LOGGER.error("Invalid default value {}! The default value must be within the valid integer range {}-{}.", this.defaultValue, builder.minValue, builder.maxValue);
             throw new IllegalArgumentException("Invalid default value");
         }
 
@@ -91,7 +92,7 @@ public class IntegerConfig extends AbstractConfig<Integer> {
             new SimpleOption.ValidatingIntSliderCallbacks(this.minValue, this.maxValue),
             Codec.intRange(this.minValue, this.maxValue),
             this.defaultValue,
-            value -> ComponentViewer.configManager.writeConfigFile()
+            value -> ComponentViewer.CONFIG_MANAGER.writeConfigFile()
         );
     }
 

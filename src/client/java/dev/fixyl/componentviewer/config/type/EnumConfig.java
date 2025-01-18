@@ -36,15 +36,16 @@ import net.minecraft.util.TranslatableOption;
 import net.minecraft.util.function.ValueLists;
 
 import dev.fixyl.componentviewer.ComponentViewer;
+import dev.fixyl.componentviewer.config.Config;
 
-public class EnumConfig<E extends Enum<E> & TranslatableOption> extends AbstractConfig<E> {
+public class EnumConfig<E extends Enum<E> & TranslatableOption> extends Config<E> {
     private final Class<E> enumClass;
     private final IntFunction<E> enumByIdFunction;
 
     private EnumConfig(EnumConfigBuilder<E> builder) {
         super(builder);
 
-        AbstractConfig.assertNull(builder.enumClass);
+        Config.assertNull(builder.enumClass);
 
         this.enumClass = builder.enumClass;
         this.enumByIdFunction = ValueLists.createIdToValueFunction(E::getId, this.enumValues(), ValueLists.OutOfBoundsHandling.WRAP);
@@ -74,7 +75,7 @@ public class EnumConfig<E extends Enum<E> & TranslatableOption> extends Abstract
             this.valueTextGetter,
             new SimpleOption.PotentialValuesBasedCallbacks<>(Arrays.asList(this.enumValues()), Codec.INT.xmap(this::enumById, E::getId)),
             this.defaultValue,
-            value -> ComponentViewer.configManager.writeConfigFile()
+            value -> ComponentViewer.CONFIG_MANAGER.writeConfigFile()
         );
     }
 

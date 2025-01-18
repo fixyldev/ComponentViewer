@@ -26,7 +26,7 @@ package dev.fixyl.componentviewer.screen;
 
 import net.minecraft.client.gui.screen.Screen;
 
-import dev.fixyl.componentviewer.config.type.AbstractConfig.ConfigScreen;
+import dev.fixyl.componentviewer.config.ConfigScreen;
 
 public class MainConfigScreen extends ConfigScreen {
     public MainConfigScreen(Screen parentScreen) {
@@ -35,6 +35,6 @@ public class MainConfigScreen extends ConfigScreen {
 
     @Override
     protected void addElements() {
-        this.addRedirect("componentviewer.config.tooltips", () -> new TooltipsConfigScreen(this));
+        this.addRedirect("componentviewer.config.tooltip", () -> new TooltipConfigScreen(this));
     }
 }

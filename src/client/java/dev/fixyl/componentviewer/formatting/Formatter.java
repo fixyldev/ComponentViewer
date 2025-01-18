@@ -34,15 +34,15 @@ import net.minecraft.util.Formatting;
 public interface Formatter {
     public static final Style NO_COLOR_STYLE = Style.EMPTY.withColor(Formatting.DARK_GRAY);
 
-    public String componentToString(Component<?> component, int indentation, String linePrefix);
+    public <T> String componentToString(Component<T> component, int indentation, String linePrefix);
 
-    public List<Text> componentToText(Component<?> component, int indentation, boolean colored, String linePrefix);
+    public <T> List<Text> componentToText(Component<T> component, int indentation, boolean colored, String linePrefix);
 
-    public default String componentToString(Component<?> component, int indentation) {
+    public default <T> String componentToString(Component<T> component, int indentation) {
         return this.componentToString(component, indentation, "");
     }
 
-    public default List<Text> componentToText(Component<?> component, int indentation, boolean colored) {
+    public default <T> List<Text> componentToText(Component<T> component, int indentation, boolean colored) {
         return this.componentToText(component, indentation, colored, "");
     }
 }

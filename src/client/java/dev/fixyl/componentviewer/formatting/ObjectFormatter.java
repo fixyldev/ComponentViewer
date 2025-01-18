@@ -100,12 +100,13 @@ public class ObjectFormatter implements Formatter {
     }
 
     @Override
-    public String componentToString(Component<?> component, int indentation, String linePrefix) {
+    public <T> String componentToString(Component<T> component, int indentation, String linePrefix) {
         return this.stringResultCache.cache(() -> {
             String componentValue = component.value().toString();
 
-            if (indentation <= 0)
+            if (indentation <= 0) {
                 return linePrefix + componentValue;
+            }
 
             List<Token> tokenList = this.tokenizer.tokenize(componentValue);
 
@@ -114,20 +115,22 @@ public class ObjectFormatter implements Formatter {
     }
 
     @Override
-    public List<Text> componentToText(Component<?> component, int indentation, boolean colored, String linePrefix) {
+    public <T> List<Text> componentToText(Component<T> component, int indentation, boolean colored, String linePrefix) {
         return Collections.unmodifiableList(this.textResultCache.cache(() -> {
             String componentValue = component.value().toString();
 
-            if (indentation <= 0 && !colored)
-                return List.of(Text.literal(linePrefix + componentValue).setStyle(Formatter.NO_COLOR_STYLE));
+            if (indentation <= 0 && !colored) {
+                return List.of(Text.literal(linePrefix + componentValue).fillStyle(Formatter.NO_COLOR_STYLE));
+            }
 
             List<Token> tokenList = this.tokenizer.tokenize(componentValue);
 
             if (indentation <= 0) {
                 MutableText line = Text.literal(linePrefix);
 
-                for (Token token : tokenList)
-                    line.append(Text.literal(token.content()).setStyle(ObjectFormatter.TOKEN_STYLES.get(token.tokenType())));
+                for (Token token : tokenList) {
+                    line.append(Text.literal(token.content()).fillStyle(ObjectFormatter.TOKEN_STYLES.get(token.tokenType())));
+                }
 
                 return List.of(line);
             }
@@ -153,20 +156,23 @@ public class ObjectFormatter implements Formatter {
         this.textLine = Text.literal(linePrefix);
         this.colored = colored;
 
-        if (!this.colored)
-            this.textLine.setStyle(Formatter.NO_COLOR_STYLE);
+        if (!this.colored) {
+            this.textLine.fillStyle(Formatter.NO_COLOR_STYLE);
+        }
 
         this.formatTokens(tokens, indentation, linePrefix);
 
-        if (!this.textLine.getString().isEmpty())
+        if (!this.textLine.getString().isEmpty()) {
             this.textList.add(this.textLine);
+        }
 
         return this.textList;
     }
 
     private void updateLinePrefixAndIndentation(int indentation, String linePrefix) {
-        if (this.isLinePrefixAndIndentationSet && this.indentation == indentation && this.linePrefix.equals(linePrefix))
+        if (this.isLinePrefixAndIndentationSet && this.indentation == indentation && this.linePrefix.equals(linePrefix)) {
             return;
+        }
 
         this.indentation = indentation;
         this.indentPrefix = " ".repeat(indentation);
@@ -174,13 +180,15 @@ public class ObjectFormatter implements Formatter {
 
         this.isLinePrefixAndIndentationSet = true;
 
-        if (this.lineAndIndentPrefixCache != null)
+        if (this.lineAndIndentPrefixCache != null) {
             this.lineAndIndentPrefixCache.clear();
+        }
     }
 
     private String getLineAndIndentPrefixFromLevel(int indentLevel) {
-        if (indentLevel <= 0)
+        if (indentLevel <= 0) {
             return this.linePrefix;
+        }
 
         return this.lineAndIndentPrefixCache.computeIfAbsent(indentLevel, key -> this.linePrefix + this.indentPrefix.repeat(key));
     }
@@ -200,8 +208,9 @@ public class ObjectFormatter implements Formatter {
             this.processToken();
         }
 
-        if (this.indentLevel != 0)
+        if (this.indentLevel != 0) {
             throw new FormattingException(String.format("Indentation must end up being zero! But it was %s.", this.indentLevel));
+        }
     }
 
     private void processToken() {
@@ -234,15 +243,17 @@ public class ObjectFormatter implements Formatter {
     private void processClosingBracketToken() {
         char bracketCharacter = this.currentToken.content().charAt(0);
 
-        if (this.bracketHistory.isEmpty() || !ObjectFormatter.BRACKET_PAIR.get(this.bracketHistory.getLast()).equals(bracketCharacter))
+        if (this.bracketHistory.isEmpty() || !ObjectFormatter.BRACKET_PAIR.get(this.bracketHistory.getLast()).equals(bracketCharacter)) {
             throw new FormattingException(String.format("Unexpected bracket '%s' encountered! Either no pair was to be closed, or a different bracket opened this pair.", bracketCharacter));
+        }
 
         this.bracketHistory.removeLast();
 
-        if (this.state == State.EMPTY_BRACKETS)
+        if (this.state == State.EMPTY_BRACKETS) {
             this.state = State.DEFAULT;
-        else
+        } else {
             this.createNewLineBreak(-1);
+        }
 
         this.addCurrentToken();
     }
@@ -254,10 +265,12 @@ public class ObjectFormatter implements Formatter {
             this.textList.add(this.textLine);
             this.textLine = Text.literal(this.getLineAndIndentPrefixFromLevel(this.indentLevel));
 
-            if (!this.colored)
-                this.textLine.setStyle(Formatter.NO_COLOR_STYLE);
-        } else
+            if (!this.colored) {
+                this.textLine.fillStyle(Formatter.NO_COLOR_STYLE);
+            }
+        } else {
             this.stringBuilder.append('\n').append(this.getLineAndIndentPrefixFromLevel(this.indentLevel));
+        }
 
         this.state = State.NEW_LINE;
     }
@@ -270,10 +283,11 @@ public class ObjectFormatter implements Formatter {
             this.state = State.DEFAULT;
         }
 
-        if (this.formatAsText)
-            this.textLine.append(Text.literal(tokenContent).setStyle((this.colored) ? ObjectFormatter.TOKEN_STYLES.get(this.currentToken.tokenType()) : Formatter.NO_COLOR_STYLE));
-        else
+        if (this.formatAsText) {
+            this.textLine.append(Text.literal(tokenContent).fillStyle((this.colored) ? ObjectFormatter.TOKEN_STYLES.get(this.currentToken.tokenType()) : Formatter.NO_COLOR_STYLE));
+        } else {
             this.stringBuilder.append(tokenContent);
+        }
     }
 
     private enum State {
@@ -341,8 +355,9 @@ public class ObjectFormatter implements Formatter {
         }
 
         private Matcher getMatcherFromPattern(Pattern pattern) {
-            if (!this.patternMatcherMap.containsKey(pattern))
+            if (!this.patternMatcherMap.containsKey(pattern)) {
                 this.patternMatcherMap.put(pattern, pattern.matcher(this.currentString));
+            }
 
             return this.patternMatcherMap.get(pattern);
         }
@@ -352,23 +367,27 @@ public class ObjectFormatter implements Formatter {
                 case DEFAULT -> this.processDefaultTokenizerState();
                 case STRING -> this.processStringTokenizerState();
                 case CURLY_BRACKET_STRING -> this.processCurlyBracketStringTokenizerState();
-                default -> throw new IllegalArgumentException(String.format("Illegal TokenizerState enum value: %s", this.tokenizerState));
+                default -> throw new IllegalStateException(String.format("Unexpected enum value: %s", this.tokenizerState));
             }
         }
 
         private void processDefaultTokenizerState() {
             // May match based on context
-            if (Tokenizer.isCurlyBracketStringBeginCharacter(this.currentChar) && this.matchCurlyBracketStringBegin())
+            if (Tokenizer.isCurlyBracketStringBeginCharacter(this.currentChar) && this.matchCurlyBracketStringBegin()) {
                 return;
+            }
 
-            if (Tokenizer.isNumberCharacter(this.currentChar) && this.matchNumber())
+            if (Tokenizer.isNumberCharacter(this.currentChar) && this.matchNumber()) {
                 return;
+            }
 
-            if (Tokenizer.isBooleanCharacter(this.currentChar) && this.matchBoolean())
+            if (Tokenizer.isBooleanCharacter(this.currentChar) && this.matchBoolean()) {
                 return;
+            }
 
-            if (Tokenizer.isNullCharacter(this.currentChar) && this.matchNull())
+            if (Tokenizer.isNullCharacter(this.currentChar) && this.matchNull()) {
                 return;
+            }
 
             // Will always match
             switch (this.currentChar) {
@@ -383,8 +402,9 @@ public class ObjectFormatter implements Formatter {
 
         private void processStringTokenizerState() {
             // May match based on context
-            if (Tokenizer.isQuoteCharacter(this.currentChar) && this.matchClosingQuote())
+            if (Tokenizer.isQuoteCharacter(this.currentChar) && this.matchClosingQuote()) {
                 return;
+            }
 
             // Will always match
             this.addCurrentCharacter(TokenType.STRING);
@@ -392,10 +412,11 @@ public class ObjectFormatter implements Formatter {
 
         private void processCurlyBracketStringTokenizerState() {
             // Will always match
-            if (this.currentChar == '}')
+            if (this.currentChar == '}') {
                 this.processCurlyBracketStringEnd();
-            else
+            } else {
                 this.addCurrentCharacter(TokenType.STRING);
+            }
         }
 
         private void processSpecialCharacter() {
@@ -447,8 +468,9 @@ public class ObjectFormatter implements Formatter {
         }
 
         private boolean matchCurlyBracketStringBegin() {
-            if (!this.matchRegex(Tokenizer.NON_WORD_CHAR_PATTERN, Tokenizer.CURLY_BRACKET_STRING_BEGIN_PATTERN, TokenType.ANY))
+            if (!this.matchRegex(Tokenizer.NON_WORD_CHAR_PATTERN, Tokenizer.CURLY_BRACKET_STRING_BEGIN_PATTERN, TokenType.ANY)) {
                 return false;
+            }
 
             this.currentIndex++;
             this.currentChar = '{';
@@ -492,8 +514,9 @@ public class ObjectFormatter implements Formatter {
 
             contentMatcher.region(this.currentIndex, this.stringLength);
 
-            if (!isValidLeadingChar || !contentMatcher.find())
+            if (!isValidLeadingChar || !contentMatcher.find()) {
                 return false;
+            }
 
             this.finishCurrentToken();
             this.addCharacters(contentMatcher.group(1), tokenType);
@@ -505,8 +528,9 @@ public class ObjectFormatter implements Formatter {
         private void addCurrentCharacter(TokenType tokenType) {
             this.currentTokenContent.append(this.currentChar);
 
-            if (TokenType.singleCharacterTokenTypes.contains(tokenType))
+            if (TokenType.singleCharacterTokenTypes.contains(tokenType)) {
                 this.finishCurrentToken(tokenType);
+            }
 
             this.currentTokenType = tokenType;
         }

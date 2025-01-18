@@ -28,14 +28,15 @@ import com.google.gson.annotations.SerializedName;
 
 import net.minecraft.util.TranslatableOption;
 
-public enum TooltipsFormatting implements TranslatableOption {
-    @SerializedName("snbt") SNBT(0, "componentviewer.config.tooltips.formatting.snbt"),
-    @SerializedName("object") OBJECT(1, "componentviewer.config.tooltips.formatting.object");
+public enum TooltipDisplay implements TranslatableOption {
+    @SerializedName("never") NEVER(0, "componentviewer.config.tooltip.display.never"),
+    @SerializedName("hold") HOLD(1, "componentviewer.config.tooltip.display.hold"),
+    @SerializedName("always") ALWAYS(2, "componentviewer.config.tooltip.display.always");
 
     private final int id;
     private final String translationKey;
 
-    private TooltipsFormatting(int id, String translationKey) {
+    private TooltipDisplay(int id, String translationKey) {
         this.id = id;
         this.translationKey = translationKey;
     }

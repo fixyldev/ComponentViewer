@@ -24,79 +24,54 @@
 
 package dev.fixyl.componentviewer.component;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import net.minecraft.component.Component;
-import net.minecraft.component.ComponentMap;
-import net.minecraft.component.ComponentType;
-import net.minecraft.item.ItemStack;
 
-import dev.fixyl.componentviewer.config.Configs;
+import dev.fixyl.componentviewer.option.TooltipComponents;
 
-public record Components(List<Component<?>> modifiedComponents, List<Component<?>> removedComponents) {
-    private static final Comparator<Component<?>> comparator = Comparator.comparing(component -> component.type().toString());
+public class Components {
+    private static final Comparator<Component<?>> COMPARATOR = Comparator.comparing(component -> component.type().toString());
 
-    public static Components getComponents(ItemStack itemStack) {
-        if (Configs.TOOLTIPS_COMPONENT_CHANGES.booleanValue())
-            return Components.handleComponentChanges(itemStack);
+    private final TooltipComponents componentsType;
+    private final List<Component<?>> componentsList;
+    private final int startOfRemovedComponents;
 
-        return Components.handleComponents(itemStack);
+    Components(TooltipComponents componentsType, Set<Component<?>> regularComponents, Set<Component<?>> removedComponents) {
+        this.componentsType = componentsType;
+
+        this.componentsList = Stream.concat(regularComponents.stream().sorted(Components.COMPARATOR), removedComponents.stream().sorted(Components.COMPARATOR)).toList();
+
+        this.startOfRemovedComponents = regularComponents.size();
     }
 
-    private static Components handleComponents(ItemStack itemStack) {
-        ComponentMap componentMap = itemStack.getComponents();
-
-        List<Component<?>> components = new ArrayList<>(componentMap.size());
-
-        for (Component<?> component : componentMap)
-            components.add(component);
-
-        components.sort(Components.comparator);
-
-        return new Components(components, new ArrayList<>(0));
+    Components(TooltipComponents componentsType, Set<Component<?>> regularComponents) {
+        this(componentsType, regularComponents, new HashSet<>());
     }
 
-    private static Components handleComponentChanges(ItemStack itemStack) {
-        Set<Component<?>> componentSet = Components.createComponentSet(itemStack.getComponents());
-        Set<Component<?>> defaultComponentSet = Components.createComponentSet(itemStack.getDefaultComponents());
-
-        Set<Component<?>> modifiedComponentSet = new HashSet<>(componentSet);
-        modifiedComponentSet.removeAll(defaultComponentSet);
-
-        Set<Component<?>> removedComponentSet = new HashSet<>(defaultComponentSet);
-        Set<ComponentType<?>> componentTypes = componentSet.stream().map(Component::type).collect(Collectors.toSet());
-        removedComponentSet.removeIf(defaultComponent -> componentTypes.contains(defaultComponent.type()));
-
-        return new Components(Components.createSortedComponentList(modifiedComponentSet), Components.createSortedComponentList(removedComponentSet));
+    public TooltipComponents componentsType() {
+        return this.componentsType;
     }
 
     public int size() {
-        return this.modifiedComponents.size() + this.removedComponents.size();
+        return this.componentsList.size();
     }
 
     public boolean isEmpty() {
-        return this.modifiedComponents.isEmpty() && this.removedComponents.isEmpty();
+        return this.componentsList.isEmpty();
     }
 
-    private static Set<Component<?>> createComponentSet(ComponentMap componentMap) {
-        Set<Component<?>> componentSet = HashSet.newHashSet(componentMap.size());
-
-        for (Component<?> component : componentMap)
-            componentSet.add(component);
-
-        return componentSet;
+    // Suppresses the generic wildcard warning for SonarQube
+    @SuppressWarnings("java:S1452")
+    public Component<?> get(int index) {
+        return this.componentsList.get(index);
     }
 
-    private static List<Component<?>> createSortedComponentList(Set<Component<?>> componentSet) {
-        List<Component<?>> sortedComponentList = new ArrayList<>(componentSet);
-
-        sortedComponentList.sort(Components.comparator);
-
-        return sortedComponentList;
+    public boolean isRemovedComponent(int index) {
+        return index >= this.startOfRemovedComponents;
     }
 }

@@ -22,36 +22,37 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.util;
+package dev.fixyl.componentviewer.control;
 
-import java.util.Objects;
-import java.util.function.Supplier;
+import net.minecraft.client.gui.screen.Screen;
 
-public class ResultCache<T> {
-    private T result;
-    private int hashCode;
-    private boolean empty;
+public final class StateManager {
+    private int selectedIndex;
+    private boolean previousAltDown;
 
-    public ResultCache() {
-        this.empty = true;
+    public StateManager() {
+        this.selectedIndex = 0;
+        this.previousAltDown = false;
     }
 
-    public T cache(Supplier<T> resultSupplier, Object... arguments) {
-        int newHashCode = Objects.hash(arguments);
+    public void cycleSelectedIndex(int numberOfComponents) {
+        boolean currentAltDown = Screen.hasAltDown();
 
-        if (!this.empty && newHashCode == this.hashCode) {
-            return this.result;
+        if (!currentAltDown) {
+            this.previousAltDown = false;
+        } else if (!this.previousAltDown) {
+            this.selectedIndex += (Screen.hasShiftDown()) ? -1 : 1;
+            this.previousAltDown = true;
         }
 
-        this.result = resultSupplier.get();
-        this.hashCode = newHashCode;
-        this.empty = false;
-
-        return this.result;
+        if (this.selectedIndex < 0) {
+            this.selectedIndex = numberOfComponents - 1;
+        } else if (this.selectedIndex >= numberOfComponents) {
+            this.selectedIndex = 0;
+        }
     }
 
-    public void clear() {
-        this.empty = true;
-        this.result = null;
+    public int getSelectedIndex() {
+        return this.selectedIndex;
     }
 }

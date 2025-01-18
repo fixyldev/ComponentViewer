@@ -29,6 +29,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.Component;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
@@ -38,7 +39,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.text.MutableText;
 
-import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.util.ResultCache;
 
 public class SnbtFormatter implements Formatter {
@@ -54,36 +54,40 @@ public class SnbtFormatter implements Formatter {
     }
 
     @Override
-    public String componentToString(Component<?> component, int indentation, String linePrefix) {
+    public <T> String componentToString(Component<T> component, int indentation, String linePrefix) {
         return this.stringResultCache.cache(() -> {
-            if (component.type().getCodec() == null)
+            if (component.type().getCodec() == null) {
                 return linePrefix + SnbtFormatter.NO_CODEC_REPR;
+            }
 
             String formattedString = SnbtFormatter.getFormattedText(component, indentation).getString();
 
-            if (!linePrefix.isEmpty())
+            if (!linePrefix.isEmpty()) {
                 return linePrefix + formattedString.replace("\n", "\n" + linePrefix);
+            }
 
             return formattedString;
         }, component, indentation, linePrefix);
     }
 
     @Override
-    public List<Text> componentToText(Component<?> component, int indentation, boolean colored, String linePrefix) {
+    public <T> List<Text> componentToText(Component<T> component, int indentation, boolean colored, String linePrefix) {
         return Collections.unmodifiableList(this.textResultCache.cache(() -> {
             if (component.type().getCodec() != null) {
                 Text text = SnbtFormatter.getFormattedText(component, indentation);
                 return SnbtFormatter.convertToTextList(text, colored, linePrefix);
             }
 
-            Text noCodecText = Text.literal(SnbtFormatter.NO_CODEC_REPR).setStyle((colored) ? SnbtFormatter.NO_CODEC_REPR_STYLE : Formatter.NO_COLOR_STYLE);
+            Text noCodecText = Text.literal(SnbtFormatter.NO_CODEC_REPR).fillStyle((colored) ? SnbtFormatter.NO_CODEC_REPR_STYLE : Formatter.NO_COLOR_STYLE);
 
-            if (linePrefix.isEmpty())
+            if (linePrefix.isEmpty()) {
                 return List.of(noCodecText);
+            }
 
             MutableText startOfLine = Text.literal(linePrefix);
-            if (!colored)
-                startOfLine.setStyle(Formatter.NO_COLOR_STYLE);
+            if (!colored) {
+                startOfLine.fillStyle(Formatter.NO_COLOR_STYLE);
+            }
 
             return List.of(startOfLine.append(noCodecText));
         }, component, indentation, colored, linePrefix));
@@ -94,7 +98,7 @@ public class SnbtFormatter implements Formatter {
 
         NbtTextFormatter nbtTextFormatter = new NbtTextFormatter(prefix);
 
-        NbtElement nbtElement = component.encode(ComponentViewer.minecraftClient.player.getRegistryManager().getOps(NbtOps.INSTANCE)).getOrThrow(FormattingException::new);
+        NbtElement nbtElement = component.encode(MinecraftClient.getInstance().player.getRegistryManager().getOps(NbtOps.INSTANCE)).getOrThrow(FormattingException::new);
 
         return nbtTextFormatter.apply(nbtElement);
     }
@@ -103,19 +107,20 @@ public class SnbtFormatter implements Formatter {
         List<Text> textList = new ArrayList<>();
 
         MutableText startOfLine = Text.literal(linePrefix);
-        if (!colored)
-            startOfLine.setStyle(Formatter.NO_COLOR_STYLE);
+        if (!colored) {
+            startOfLine.fillStyle(Formatter.NO_COLOR_STYLE);
+        }
 
         // This must be encapsulated in an array, otherwise
         // the re-assigning inside the for-loop wouldn't work
-        final MutableText[] textLine = { startOfLine.copy() };
+        MutableText[] textLine = { startOfLine.copy() };
 
         text.visit((style, string) -> {
             String[] stringArray = string.split("(?=\\n)|(?<=\\n)");
 
             for (String stringSegment : stringArray) {
                 if (!stringSegment.equals("\n")) {
-                    textLine[0].append(Text.literal(stringSegment).setStyle((colored) ? style : Formatter.NO_COLOR_STYLE));
+                    textLine[0].append(Text.literal(stringSegment).fillStyle((colored) ? style : Formatter.NO_COLOR_STYLE));
                     continue;
                 }
 

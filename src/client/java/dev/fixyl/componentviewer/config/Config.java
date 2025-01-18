@@ -22,23 +22,14 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.config.type;
+package dev.fixyl.componentviewer.config;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.function.BooleanSupplier;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.option.SimpleOption.TooltipFactory;
 import net.minecraft.client.option.SimpleOption.ValueTextGetter;
@@ -46,7 +37,7 @@ import net.minecraft.text.Text;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 
-public abstract class AbstractConfig<T> {
+public abstract class Config<T> {
     private static final String ID_REGEX = "^[a-z]++(?:_[a-z]++)*+(?:\\.[a-z]++(?:_[a-z]++)*+)*+$";
 
     protected final String id;
@@ -58,11 +49,11 @@ public abstract class AbstractConfig<T> {
 
     protected SimpleOption<T> simpleOption;
 
-    protected AbstractConfig(AbstractConfigBuilder<T, ?, ?> builder) {
-        AbstractConfig.assertNull(builder.id, builder.defaultValue);
+    protected Config(AbstractConfigBuilder<T, ?, ?> builder) {
+        Config.assertNull(builder.id, builder.defaultValue);
 
-        if (!builder.id.matches(AbstractConfig.ID_REGEX)) {
-            ComponentViewer.logger.error("Invalid config id '{}'! Config ids should follow the regex {}", builder.id, AbstractConfig.ID_REGEX);
+        if (!builder.id.matches(Config.ID_REGEX)) {
+            ComponentViewer.LOGGER.error("Invalid config id '{}'! Config ids should follow the regex {}", builder.id, Config.ID_REGEX);
             throw new IllegalArgumentException("Invalid config id");
         }
 
@@ -77,8 +68,9 @@ public abstract class AbstractConfig<T> {
     public Type type() {
         Type type = getClass().getGenericSuperclass();
 
-        if (type instanceof ParameterizedType parameterizedType)
+        if (type instanceof ParameterizedType parameterizedType) {
             return parameterizedType.getActualTypeArguments()[0];
+        }
 
         return null;
     }
@@ -108,17 +100,27 @@ public abstract class AbstractConfig<T> {
         this.simpleOption.setValue(this.defaultValue);
     }
 
+    public boolean isDependent() {
+        return this.dependencyFulfilledSupplier != null;
+    }
+
+    Tooltip getTooltip() {
+        return this.tooltipFactory.apply(this.value());
+    }
+
     protected abstract ValueTextGetter<T> getDefaultValueTextGetter();
 
     private ValueTextGetter<T> createValueTextGetter(Function<T, String> translationKeyOverwrite) {
-        if (translationKeyOverwrite == null)
+        if (translationKeyOverwrite == null) {
             return this.getDefaultValueTextGetter();
+        }
 
         return (optionText, value) -> {
             String translationKey = translationKeyOverwrite.apply(value);
 
-            if (translationKey == null)
+            if (translationKey == null) {
                 return Text.literal(String.valueOf((Object) null));
+            }
 
             return Text.translatable(translationKey, value);
         };
@@ -126,25 +128,19 @@ public abstract class AbstractConfig<T> {
 
     protected abstract SimpleOption<T> createSimpleOption();
 
-    private boolean isDependent() {
-        return this.dependencyFulfilledSupplier != null;
-    }
-
-    private Tooltip getTooltip() {
-        return this.tooltipFactory.apply(this.value());
-    }
-
     protected static void assertNull(Object... objects) {
         for (Object obj : objects) {
-            if (obj != null)
+            if (obj != null) {
                 continue;
+            }
 
-            ComponentViewer.logger.error("At least one necessary config parameter is missing or null!");
+            ComponentViewer.LOGGER.error("At least one necessary config parameter is missing or null!");
             throw new IllegalArgumentException("Config parameter missing");
         }
     }
 
-    public abstract static class AbstractConfigBuilder<T, C extends AbstractConfig<T>, B extends AbstractConfigBuilder<T, C, B>> {
+    public abstract static class AbstractConfigBuilder<T, C extends Config<T>, B extends AbstractConfigBuilder<T, C, B>> {
+        protected ConfigManager configManager;
         protected String id;
         protected T defaultValue;
         protected String nameTranslationKey;
@@ -154,6 +150,11 @@ public abstract class AbstractConfig<T> {
 
         protected AbstractConfigBuilder(String id) {
             this.id = id;
+        }
+
+        public B setConfigManager(ConfigManager configManager) {
+            this.configManager = configManager;
+            return this.self();
         }
 
         public B setDefaultValue(T defaultValue) {
@@ -184,58 +185,5 @@ public abstract class AbstractConfig<T> {
         public abstract C build();
 
         protected abstract B self();
-    }
-
-    public abstract static class ConfigScreen extends GameOptionsScreen {
-        private List<ClickableWidget> queuedWidgets = new ArrayList<>();
-        private Map<ClickableWidget, AbstractConfig<?>> dependentConfigWidgets = new HashMap<>();
-
-        protected ConfigScreen(Screen parentScreen, String titleTranslationKey) {
-            super(parentScreen, ComponentViewer.minecraftClient.options, Text.translatable(String.valueOf(titleTranslationKey)));
-        }
-
-        protected void addConfig(AbstractConfig<?> config) {
-            ClickableWidget configWidget = config.simpleOption.createWidget(this.gameOptions, 0, 0, 150, value -> this.updateDependentConfigWidgets());
-
-            if (config.isDependent()) {
-                this.updateDependentConfigWidgetState(configWidget, config);
-                this.dependentConfigWidgets.put(configWidget, config);
-            }
-
-            this.queuedWidgets.add(configWidget);
-        }
-
-        protected void addConfigs(AbstractConfig<?>... configs) {
-            for (AbstractConfig<?> config : configs)
-                this.addConfig(config);
-        }
-
-        protected void addRedirect(String nameTranslationKey, Supplier<Screen> screenSupplier) {
-            this.queuedWidgets.add(ButtonWidget.builder(Text.translatable(String.valueOf(nameTranslationKey)), buttonWidget -> this.client.setScreen(screenSupplier.get())).build());
-        }
-
-        private void deployWidgets() {
-            this.body.addAll(this.queuedWidgets);
-            this.queuedWidgets.clear();
-        }
-
-        protected abstract void addElements();
-
-        @Override
-        protected final void addOptions() {
-            this.addElements();
-            this.deployWidgets();
-        }
-
-        private void updateDependentConfigWidgetState(ClickableWidget configWidget, AbstractConfig<?> config) {
-            boolean active = config.dependencyFulfilledSupplier.getAsBoolean();
-
-            configWidget.active = active;
-            configWidget.setTooltip((active) ? config.getTooltip() : null);
-        }
-
-        private void updateDependentConfigWidgets() {
-            this.dependentConfigWidgets.forEach(this::updateDependentConfigWidgetState);
-        }
     }
 }
