@@ -31,7 +31,28 @@ import net.minecraft.client.util.InputUtil;
 public final class KeyCombos {
     private KeyCombos() {}
 
-    public static boolean isCopyAction() {
-        return Screen.hasControlDown() && InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), InputUtil.GLFW_KEY_C);
+    public static boolean isCycleNextPressed() {
+        return Screen.hasAltDown() && !Screen.hasShiftDown()
+                || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), InputUtil.GLFW_KEY_DOWN)
+                || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), InputUtil.GLFW_KEY_RIGHT);
+    }
+
+    public static boolean isCyclePreviousPressed() {
+        return Screen.hasAltDown() && Screen.hasShiftDown()
+                || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), InputUtil.GLFW_KEY_UP)
+                || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), InputUtil.GLFW_KEY_LEFT);
+    }
+
+    public static boolean isCycleFirstPressed() {
+        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), InputUtil.GLFW_KEY_HOME);
+    }
+
+    public static boolean isCycleLastPressed() {
+        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), InputUtil.GLFW_KEY_END);
+    }
+
+    public static boolean isCopyActionPressed() {
+        return Screen.hasControlDown()
+                && InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), InputUtil.GLFW_KEY_C);
     }
 }
