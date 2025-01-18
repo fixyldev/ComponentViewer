@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.component.Component;
-import net.minecraft.component.type.NbtComponent;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -37,10 +36,7 @@ import net.minecraft.util.Formatting;
 import dev.fixyl.componentviewer.component.Components;
 import dev.fixyl.componentviewer.formatting.Formatter;
 import dev.fixyl.componentviewer.formatting.FormattingException;
-import dev.fixyl.componentviewer.formatting.ObjectFormatter;
-import dev.fixyl.componentviewer.formatting.SnbtFormatter;
 import dev.fixyl.componentviewer.option.TooltipComponents;
-import dev.fixyl.componentviewer.option.TooltipFormatting;
 
 public class Tooltip {
     private static final Style HEADER_STYLE = Style.EMPTY.withColor(Formatting.GRAY);
@@ -64,9 +60,6 @@ public class Tooltip {
         TooltipComponents.DEFAULT, "componentviewer.tooltip.component.selection.default.empty",
         TooltipComponents.CHANGES, "componentviewer.tooltip.component.selection.changes.empty"
     );
-
-    private static final Formatter SNBT_FORMATTER = new SnbtFormatter();
-    private static final Formatter OBJECT_FORMATTER = new ObjectFormatter();
 
     private final List<Text> lines;
 
@@ -123,15 +116,8 @@ public class Tooltip {
         return this;
     }
 
-    public <T> Tooltip addComponentValue(Component<T> component, TooltipFormatting formatting, int formattingIndentation, boolean coloredFormatting) {
+    public <T> Tooltip addComponentValue(Component<T> component, Formatter formatter, int formattingIndentation, boolean coloredFormatting) {
         this.addHeader("componentviewer.tooltip.component.value");
-
-        Formatter formatter;
-        if (formatting == TooltipFormatting.SNBT || component.value() instanceof NbtComponent) {
-            formatter = Tooltip.SNBT_FORMATTER;
-        } else {
-            formatter = Tooltip.OBJECT_FORMATTER;
-        }
 
         try {
             this.lines.addAll(formatter.componentToText(component, formattingIndentation, coloredFormatting, Tooltip.CONTENT_INDENTATION));

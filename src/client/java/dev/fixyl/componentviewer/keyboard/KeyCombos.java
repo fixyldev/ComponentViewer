@@ -22,18 +22,16 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.keybind;
+package dev.fixyl.componentviewer.keyboard;
 
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-
-import net.minecraft.client.option.KeyBinding;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.InputUtil;
 
-public class KeyBindings {
-    public final KeyBinding configKey = KeyBindingHelper.registerKeyBinding(new KeyBinding(
-        "componentviewer.keybind.config",
-        InputUtil.Type.KEYSYM,
-        InputUtil.GLFW_KEY_J,
-        "componentviewer.keybind.category"
-    ));
+public final class KeyCombos {
+    private KeyCombos() {}
+
+    public static boolean isCopyAction() {
+        return Screen.hasControlDown() && InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), InputUtil.GLFW_KEY_C);
+    }
 }

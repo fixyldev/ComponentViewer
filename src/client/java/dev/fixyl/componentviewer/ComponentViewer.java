@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import dev.fixyl.componentviewer.config.ConfigManager;
 import dev.fixyl.componentviewer.control.ControlFlow;
 import dev.fixyl.componentviewer.event.TooltipCallback;
-import dev.fixyl.componentviewer.keybind.KeyBindings;
+import dev.fixyl.componentviewer.keyboard.KeyBindings;
 import dev.fixyl.componentviewer.screen.MainConfigScreen;
 
 public final class ComponentViewer implements ClientModInitializer {

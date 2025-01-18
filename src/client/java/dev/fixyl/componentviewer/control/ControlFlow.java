@@ -25,52 +25,102 @@
 package dev.fixyl.componentviewer.control;
 
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.component.Component;
+import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 
-import dev.fixyl.componentviewer.component.ComponentManager;
+import dev.fixyl.componentviewer.clipboard.Clipboard;
 import dev.fixyl.componentviewer.component.Components;
 import dev.fixyl.componentviewer.config.Configs;
+import dev.fixyl.componentviewer.formatting.Formatter;
+import dev.fixyl.componentviewer.formatting.ObjectFormatter;
+import dev.fixyl.componentviewer.formatting.SnbtFormatter;
+import dev.fixyl.componentviewer.option.ClipboardCopy;
 import dev.fixyl.componentviewer.option.TooltipDisplay;
 import dev.fixyl.componentviewer.tooltip.Tooltip;
 
 public final class ControlFlow {
-    private final ComponentManager componentManager;
     private final StateManager stateManager;
+    private final Clipboard clipboard;
+
+    private final Formatter snbtFormatter;
+    private final Formatter objectFormatter;
 
     public ControlFlow() {
-        this.componentManager = new ComponentManager();
         this.stateManager = new StateManager();
+        this.clipboard = new Clipboard();
+
+        this.snbtFormatter = new SnbtFormatter();
+        this.objectFormatter = new ObjectFormatter();
     }
 
     public void onTooltip(ItemStack itemStack, Tooltip tooltip, TooltipType tooltipType) {
-        if (Configs.TOOLTIP_ADVANCED_TOOLTIPS.booleanValue() && !tooltipType.isAdvanced()) {
+        boolean shouldPerformCopyAction = this.stateManager.shouldPerformCopyAction();
+
+        if (Configs.CLIPBOARD_COPY.value() == ClipboardCopy.GIVE_COMMAND && shouldPerformCopyAction) {
+            this.clipboard.copyGiveCommand(itemStack, Configs.CLIPBOARD_PREPEND_SLASH.booleanValue(), Configs.CLIPBOARD_INCLUDE_CLOUNT.booleanValue());
+        }
+
+        if (!this.shouldDisplayToolip(tooltipType)) {
             return;
         }
 
-        TooltipDisplay tooltipDisplay = Configs.TOOLTIP_DISPLAY.value();
-        if (tooltipDisplay == TooltipDisplay.NEVER || tooltipDisplay == TooltipDisplay.HOLD && !Screen.hasControlDown()) {
-            return;
-        }
-
-        Components components;
-        switch (Configs.TOOLTIP_COMPONENTS.value()) {
-            case ALL -> components = this.componentManager.getAllComponents(itemStack);
-            case DEFAULT -> components = this.componentManager.getDefaultComponents(itemStack);
-            case CHANGES -> components = this.componentManager.getChangedComponents(itemStack);
-            default -> throw new IllegalStateException(String.format("Unexpected enum value: %s", Configs.TOOLTIP_COMPONENTS.value()));
-        }
-
-        this.stateManager.cycleSelectedIndex(components.size());
+        Components components = this.getComponents(itemStack);
+        int selectedComponentIndex = this.stateManager.cycleSelectedComponentIndex(components.size());
+        boolean tooltipComponentValues = Configs.TOOLTIP_COMPONENT_VALUES.booleanValue();
 
         if (!tooltip.isEmpty()) {
             tooltip.addSpacer();
         }
 
-        tooltip.addComponentSelection(components, (Configs.TOOLTIP_COMPONENT_VALUES.booleanValue()) ? this.stateManager.getSelectedIndex() : -1);
+        tooltip.addComponentSelection(components, (tooltipComponentValues) ? selectedComponentIndex : -1);
 
-        if (!components.isEmpty() && Configs.TOOLTIP_COMPONENT_VALUES.booleanValue()) {
-            tooltip.addSpacer().addComponentValue(components.get(this.stateManager.getSelectedIndex()), Configs.TOOLTIP_FORMATTING.value(), Configs.TOOLTIP_INDENTATION.intValue(), Configs.TOOLTIP_COLORED_VALUES.booleanValue());
+        if (components.isEmpty() || !tooltipComponentValues) {
+            return;
         }
+
+        Component<?> selectedComponent = components.get(selectedComponentIndex);
+        int tooltipIndentation = Configs.TOOLTIP_INDENTATION.intValue();
+
+        tooltip.addSpacer().addComponentValue(selectedComponent, this.getTooltipFormatter(selectedComponent), tooltipIndentation, Configs.TOOLTIP_COLORED_VALUES.booleanValue());
+
+        if (Configs.CLIPBOARD_COPY.value() == ClipboardCopy.COMPONENT_VALUE && shouldPerformCopyAction) {
+            int clipboardIndentation = Configs.CLIPBOARD_INDENTATION.intValue();
+
+            this.clipboard.copyComponentValue(selectedComponent, this.getClipboardFormatter(selectedComponent), (clipboardIndentation == -1) ? tooltipIndentation : clipboardIndentation);
+        }
+    }
+
+    private boolean shouldDisplayToolip(TooltipType tooltipType) {
+        TooltipDisplay tooltipDisplay = Configs.TOOLTIP_DISPLAY.value();
+        if (tooltipDisplay == TooltipDisplay.NEVER || tooltipDisplay == TooltipDisplay.HOLD && !Screen.hasControlDown()) {
+            return false;
+        }
+
+        return tooltipType.isAdvanced() || !Configs.TOOLTIP_ADVANCED_TOOLTIPS.booleanValue();
+    }
+
+    private Components getComponents(ItemStack itemStack) {
+        return switch (Configs.TOOLTIP_COMPONENTS.value()) {
+            case ALL -> Components.getAllComponents(itemStack);
+            case DEFAULT -> Components.getDefaultComponents(itemStack);
+            case CHANGES -> Components.getChangedComponents(itemStack);
+        };
+    }
+
+    private <T> Formatter getTooltipFormatter(Component<T> component) {
+        return switch (Configs.TOOLTIP_FORMATTING.value()) {
+            case SNBT -> this.snbtFormatter;
+            case OBJECT -> (component.value() instanceof NbtComponent) ? this.snbtFormatter : this.objectFormatter;
+        };
+    }
+
+    private <T> Formatter getClipboardFormatter(Component<T> component) {
+        return switch (Configs.CLIPBOARD_FORMATTING.value()) {
+            case SYNC -> this.getTooltipFormatter(component);
+            case SNBT -> this.snbtFormatter;
+            case OBJECT -> (component.value() instanceof NbtComponent) ? this.snbtFormatter : this.objectFormatter;
+        };
     }
 }

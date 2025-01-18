@@ -367,7 +367,6 @@ public class ObjectFormatter implements Formatter {
                 case DEFAULT -> this.processDefaultTokenizerState();
                 case STRING -> this.processStringTokenizerState();
                 case CURLY_BRACKET_STRING -> this.processCurlyBracketStringTokenizerState();
-                default -> throw new IllegalStateException(String.format("Unexpected enum value: %s", this.tokenizerState));
             }
         }
 
