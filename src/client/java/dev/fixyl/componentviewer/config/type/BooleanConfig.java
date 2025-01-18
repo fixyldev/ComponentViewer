@@ -37,7 +37,7 @@ public class BooleanConfig extends Config<Boolean> {
         this.simpleOption = this.createSimpleOption();
     }
 
-    public static BooleanConfigBuilder builder(String id) {
+    public static BooleanConfigBuilder create(String id) {
         return new BooleanConfigBuilder(id);
     }
 

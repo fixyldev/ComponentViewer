@@ -53,7 +53,7 @@ public class EnumConfig<E extends Enum<E> & TranslatableOption> extends Config<E
         this.simpleOption = this.createSimpleOption();
     }
 
-    public static <E extends Enum<E> & TranslatableOption> EnumConfigBuilder<E> builder(Class<E> enumClass, String id) {
+    public static <E extends Enum<E> & TranslatableOption> EnumConfigBuilder<E> create(Class<E> enumClass, String id) {
         return new EnumConfigBuilder<>(enumClass, id);
     }
 

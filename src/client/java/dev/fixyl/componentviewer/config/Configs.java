@@ -34,38 +34,38 @@ import dev.fixyl.componentviewer.option.TooltipFormatting;
 public final class Configs {
     private Configs() {}
 
-    public static final EnumConfig<TooltipDisplay> TOOLTIP_DISPLAY = EnumConfig.builder(TooltipDisplay.class, "tooltip.display")
+    public static final EnumConfig<TooltipDisplay> TOOLTIP_DISPLAY = EnumConfig.create(TooltipDisplay.class, "tooltip.display")
             .setDefaultValue(TooltipDisplay.HOLD)
             .setTranslationKeys("componentviewer.config.tooltip.display", "componentviewer.config.tooltip.display.description")
             .build();
-    public static final EnumConfig<TooltipComponents> TOOLTIP_COMPONENTS = EnumConfig.builder(TooltipComponents.class, "tooltip.components")
+    public static final EnumConfig<TooltipComponents> TOOLTIP_COMPONENTS = EnumConfig.create(TooltipComponents.class, "tooltip.components")
             .setDefaultValue(TooltipComponents.ALL)
             .setTranslationKeys("componentviewer.config.tooltip.components", "componentviewer.config.tooltip.components.description")
             .setDependency(() -> Configs.TOOLTIP_DISPLAY.value() != TooltipDisplay.NEVER)
             .build();
-    public static final BooleanConfig TOOLTIP_COMPONENT_VALUES = BooleanConfig.builder("tooltip.component_values")
+    public static final BooleanConfig TOOLTIP_COMPONENT_VALUES = BooleanConfig.create("tooltip.component_values")
             .setDefaultValue(true)
             .setTranslationKeys("componentviewer.config.tooltip.component_values", "componentviewer.config.tooltip.component_values.description")
             .setDependency(() -> Configs.TOOLTIP_DISPLAY.value() != TooltipDisplay.NEVER)
             .build();
-    public static final EnumConfig<TooltipFormatting> TOOLTIP_FORMATTING = EnumConfig.builder(TooltipFormatting.class, "tooltip.formatting")
+    public static final EnumConfig<TooltipFormatting> TOOLTIP_FORMATTING = EnumConfig.create(TooltipFormatting.class, "tooltip.formatting")
             .setDefaultValue(TooltipFormatting.SNBT)
             .setTranslationKeys("componentviewer.config.tooltip.formatting", "componentviewer.config.tooltip.formatting.description")
             .setDependency(() -> Configs.TOOLTIP_DISPLAY.value() != TooltipDisplay.NEVER && Configs.TOOLTIP_COMPONENT_VALUES.booleanValue())
             .build();
-    public static final IntegerConfig TOOLTIP_INDENTATION = IntegerConfig.builder("tooltip.indentation")
+    public static final IntegerConfig TOOLTIP_INDENTATION = IntegerConfig.create("tooltip.indentation")
             .setDefaultValue(4)
             .setIntegerRange(0, 8)
             .setTranslationKeys("componentviewer.config.tooltip.indentation", "componentviewer.config.tooltip.indentation.description")
             .setTranslationKeyOverwrite(value -> (value == 0) ? "componentviewer.config.tooltip.indentation.off" : "componentviewer.config.tooltip.indentation.value")
             .setDependency(() -> Configs.TOOLTIP_DISPLAY.value() != TooltipDisplay.NEVER && Configs.TOOLTIP_COMPONENT_VALUES.booleanValue())
             .build();
-    public static final BooleanConfig TOOLTIP_COLORED_VALUES = BooleanConfig.builder("tooltip.colored_values")
+    public static final BooleanConfig TOOLTIP_COLORED_VALUES = BooleanConfig.create("tooltip.colored_values")
             .setDefaultValue(true)
             .setTranslationKeys("componentviewer.config.tooltip.colored_values", "componentviewer.config.tooltip.colored_values.description")
             .setDependency(() -> Configs.TOOLTIP_DISPLAY.value() != TooltipDisplay.NEVER && Configs.TOOLTIP_COMPONENT_VALUES.booleanValue())
             .build();
-    public static final BooleanConfig TOOLTIP_ADVANCED_TOOLTIPS = BooleanConfig.builder("tooltip.advanced_tooltips")
+    public static final BooleanConfig TOOLTIP_ADVANCED_TOOLTIPS = BooleanConfig.create("tooltip.advanced_tooltips")
             .setDefaultValue(false)
             .setTranslationKeys("componentviewer.config.tooltip.advanced_tooltips", "componentviewer.config.tooltip.advanced_tooltips.description")
             .setDependency(() -> Configs.TOOLTIP_DISPLAY.value() != TooltipDisplay.NEVER)
