@@ -27,15 +27,21 @@ package dev.fixyl.componentviewer.screen;
 import net.minecraft.client.gui.screen.Screen;
 
 import dev.fixyl.componentviewer.config.ConfigScreen;
+import dev.fixyl.componentviewer.config.Configs;
 
-public class MainConfigScreen extends ConfigScreen {
-    public MainConfigScreen(Screen parentScreen) {
-        super(parentScreen, "componentviewer.config.title");
+public class ClipboardConfigScreen extends ConfigScreen {
+    public ClipboardConfigScreen(Screen parentScreen) {
+        super(parentScreen, "componentviewer.config.clipboard.title");
     }
 
     @Override
     protected void addElements() {
-        this.addRedirect("componentviewer.config.tooltip", () -> new TooltipConfigScreen(this));
-        this.addRedirect("componentviewer.config.clipboard", () -> new ClipboardConfigScreen(this));
+        this.addConfigs(
+            Configs.CLIPBOARD_COPY,
+            Configs.CLIPBOARD_FORMATTING,
+            Configs.CLIPBOARD_INDENTATION,
+            Configs.CLIPBOARD_PREPEND_SLASH,
+            Configs.CLIPBOARD_INCLUDE_CLOUNT
+        );
     }
 }

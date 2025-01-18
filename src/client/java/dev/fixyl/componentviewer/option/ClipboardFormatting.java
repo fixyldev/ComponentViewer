@@ -22,20 +22,32 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.screen;
+package dev.fixyl.componentviewer.option;
 
-import net.minecraft.client.gui.screen.Screen;
+import com.google.gson.annotations.SerializedName;
 
-import dev.fixyl.componentviewer.config.ConfigScreen;
+import net.minecraft.util.TranslatableOption;
 
-public class MainConfigScreen extends ConfigScreen {
-    public MainConfigScreen(Screen parentScreen) {
-        super(parentScreen, "componentviewer.config.title");
+public enum ClipboardFormatting implements TranslatableOption {
+    @SerializedName("sync") SYNC(0, "componentviewer.config.clipboard.formatting.sync"),
+    @SerializedName("snbt") SNBT(1, "componentviewer.config.clipboard.formatting.snbt"),
+    @SerializedName("object") OBJECT(2, "componentviewer.config.clipboard.formatting.object");
+
+    private final int id;
+    private final String translationKey;
+
+    private ClipboardFormatting(int id, String translationKey) {
+        this.id = id;
+        this.translationKey = translationKey;
     }
 
     @Override
-    protected void addElements() {
-        this.addRedirect("componentviewer.config.tooltip", () -> new TooltipConfigScreen(this));
-        this.addRedirect("componentviewer.config.clipboard", () -> new ClipboardConfigScreen(this));
+    public int getId() {
+        return this.id;
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return this.translationKey;
     }
 }

@@ -27,6 +27,8 @@ package dev.fixyl.componentviewer.config;
 import dev.fixyl.componentviewer.config.type.BooleanConfig;
 import dev.fixyl.componentviewer.config.type.EnumConfig;
 import dev.fixyl.componentviewer.config.type.IntegerConfig;
+import dev.fixyl.componentviewer.option.ClipboardCopy;
+import dev.fixyl.componentviewer.option.ClipboardFormatting;
 import dev.fixyl.componentviewer.option.TooltipComponents;
 import dev.fixyl.componentviewer.option.TooltipDisplay;
 import dev.fixyl.componentviewer.option.TooltipFormatting;
@@ -69,5 +71,36 @@ public final class Configs {
             .setDefaultValue(false)
             .setTranslationKeys("componentviewer.config.tooltip.advanced_tooltips", "componentviewer.config.tooltip.advanced_tooltips.description")
             .setDependency(() -> Configs.TOOLTIP_DISPLAY.value() != TooltipDisplay.NEVER)
+            .build();
+    public static final EnumConfig<ClipboardCopy> CLIPBOARD_COPY = EnumConfig.create(ClipboardCopy.class, "clipboard.copy")
+            .setDefaultValue(ClipboardCopy.COMPONENT_VALUE)
+            .setTranslationKeys("componentviewer.config.clipboard.copy", "componentviewer.config.clipboard.copy.description")
+            .build();
+    public static final EnumConfig<ClipboardFormatting> CLIPBOARD_FORMATTING = EnumConfig.create(ClipboardFormatting.class, "clipboard.formatting")
+            .setDefaultValue(ClipboardFormatting.SYNC)
+            .setTranslationKeys("componentviewer.config.clipboard.formatting", "componentviewer.config.clipboard.formatting.description")
+            .setDependency(() -> Configs.CLIPBOARD_COPY.value() == ClipboardCopy.COMPONENT_VALUE)
+            .build();
+    public static final IntegerConfig CLIPBOARD_INDENTATION = IntegerConfig.create("clipboard.indentation")
+            .setDefaultValue(-1)
+            .setIntegerRange(-1, 8)
+            .setTranslationKeys("componentviewer.config.clipboard.indentation", "componentviewer.config.clipboard.indentation.description")
+            .setTranslationKeyOverwrite(value -> switch (Integer.signum(value)) {
+                case -1 -> "componentviewer.config.clipboard.indentation.sync";
+                case 0 -> "componentviewer.config.clipboard.indentation.off";
+                case 1 -> "componentviewer.config.clipboard.indentation.value";
+                default -> throw new IllegalStateException(String.format("Unexpected int value: %s", value));
+            })
+            .setDependency(() -> Configs.CLIPBOARD_COPY.value() == ClipboardCopy.COMPONENT_VALUE)
+            .build();
+    public static final BooleanConfig CLIPBOARD_PREPEND_SLASH = BooleanConfig.create("clipboard.prepend_slash")
+            .setDefaultValue(true)
+            .setTranslationKeys("componentviewer.config.clipboard.prepend_slash", "componentviewer.config.clipboard.prepend_slash.description")
+            .setDependency(() -> Configs.CLIPBOARD_COPY.value() == ClipboardCopy.GIVE_COMMAND)
+            .build();
+    public static final BooleanConfig CLIPBOARD_INCLUDE_CLOUNT = BooleanConfig.create("clipboard.include_count")
+            .setDefaultValue(false)
+            .setTranslationKeys("componentviewer.config.clipboard.include_count", "componentviewer.config.clipboard.include_count.description")
+            .setDependency(() -> Configs.CLIPBOARD_COPY.value() == ClipboardCopy.GIVE_COMMAND)
             .build();
 }
