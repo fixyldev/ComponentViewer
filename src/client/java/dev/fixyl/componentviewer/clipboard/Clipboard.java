@@ -98,9 +98,9 @@ public class Clipboard {
 
             if (components.isRemovedComponent(index)) {
                 componentString.append('!')
-                        .append(component.type().toString());
+                        .append(component.type());
             } else {
-                componentString.append(component.type().toString())
+                componentString.append(component.type())
                         .append('=')
                         .append(this.snbtFormatter.componentToString(component, 0));
             }
