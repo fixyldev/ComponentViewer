@@ -31,6 +31,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.google.gson.JsonArray;
@@ -51,6 +53,9 @@ import dev.fixyl.componentviewer.util.ResultCache;
 
 public class JsonFormatter implements Formatter {
     private static final String NO_CODEC_REPR = "{}";
+
+    private static final Pattern STRING_ESCAPE_PATTERN = Pattern.compile("[\\\\\"]");
+    private static final String STRING_ESCAPE_REPLACEMENT = "\\\\$0";
 
     private static final Map<JsonType, Style> JSON_STYLES = Map.ofEntries(
             Map.entry(JsonType.SPECIAL, Style.EMPTY.withColor(Formatting.WHITE)),
@@ -264,7 +269,9 @@ public class JsonFormatter implements Formatter {
     }
 
     private static String escapeString(String string) {
-        return string.replace("\"", "\\\"");
+        Matcher matcher = JsonFormatter.STRING_ESCAPE_PATTERN.matcher(string);
+
+        return matcher.replaceAll(JsonFormatter.STRING_ESCAPE_REPLACEMENT);
     }
 
     private enum JsonType {
