@@ -30,7 +30,8 @@ import net.minecraft.util.TranslatableOption;
 
 public enum TooltipFormatting implements TranslatableOption {
     @SerializedName("snbt") SNBT(0, "componentviewer.config.tooltip.formatting.snbt"),
-    @SerializedName("object") OBJECT(1, "componentviewer.config.tooltip.formatting.object");
+    @SerializedName("json") JSON(1, "componentviewer.config.tooltip.formatting.json"),
+    @SerializedName("object") OBJECT(2, "componentviewer.config.tooltip.formatting.object");
 
     private final int id;
     private final String translationKey;

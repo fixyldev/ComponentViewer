@@ -44,24 +44,24 @@ import dev.fixyl.componentviewer.util.ResultCache;
 
 public class ObjectFormatter implements Formatter {
     private static final Map<TokenType, Style> TOKEN_STYLES = Map.ofEntries(
-        Map.entry(TokenType.ANY, Style.EMPTY.withColor(Formatting.AQUA)),
-        Map.entry(TokenType.SPECIAL, Style.EMPTY.withColor(Formatting.WHITE)),
-        Map.entry(TokenType.OPENING_BRACKET, Style.EMPTY.withColor(Formatting.WHITE)),
-        Map.entry(TokenType.CLOSING_BRACKET, Style.EMPTY.withColor(Formatting.WHITE)),
-        Map.entry(TokenType.COMMA, Style.EMPTY.withColor(Formatting.WHITE)),
-        Map.entry(TokenType.QUOTE, Style.EMPTY.withColor(Formatting.WHITE)),
-        Map.entry(TokenType.STRING, Style.EMPTY.withColor(Formatting.GREEN)),
-        Map.entry(TokenType.INTEGER, Style.EMPTY.withColor(Formatting.GOLD)),
-        Map.entry(TokenType.FLOAT, Style.EMPTY.withColor(Formatting.GOLD)),
-        Map.entry(TokenType.HEX, Style.EMPTY.withColor(Formatting.GOLD)),
-        Map.entry(TokenType.BOOLEAN, Style.EMPTY.withColor(Formatting.GOLD)),
-        Map.entry(TokenType.NULL, Style.EMPTY.withColor(Formatting.BLUE))
+            Map.entry(TokenType.ANY, Style.EMPTY.withColor(Formatting.AQUA)),
+            Map.entry(TokenType.SPECIAL, Style.EMPTY.withColor(Formatting.WHITE)),
+            Map.entry(TokenType.OPENING_BRACKET, Style.EMPTY.withColor(Formatting.WHITE)),
+            Map.entry(TokenType.CLOSING_BRACKET, Style.EMPTY.withColor(Formatting.WHITE)),
+            Map.entry(TokenType.COMMA, Style.EMPTY.withColor(Formatting.WHITE)),
+            Map.entry(TokenType.QUOTE, Style.EMPTY.withColor(Formatting.WHITE)),
+            Map.entry(TokenType.STRING, Style.EMPTY.withColor(Formatting.GREEN)),
+            Map.entry(TokenType.INTEGER, Style.EMPTY.withColor(Formatting.GOLD)),
+            Map.entry(TokenType.FLOAT, Style.EMPTY.withColor(Formatting.GOLD)),
+            Map.entry(TokenType.HEX, Style.EMPTY.withColor(Formatting.GOLD)),
+            Map.entry(TokenType.BOOLEAN, Style.EMPTY.withColor(Formatting.GOLD)),
+            Map.entry(TokenType.NULL, Style.EMPTY.withColor(Formatting.BLUE))
     );
 
     private static final Map<Character, Character> BRACKET_PAIR = Map.of(
-        '(', ')',
-        '{', '}',
-        '[', ']'
+            '(', ')',
+            '{', '}',
+            '[', ']'
     );
 
     private final ResultCache<String> stringResultCache;
@@ -209,7 +209,7 @@ public class ObjectFormatter implements Formatter {
         }
 
         if (this.indentLevel != 0) {
-            throw new FormattingException(String.format("Indentation must end up being zero! But it was %s.", this.indentLevel));
+            throw new FormattingException(String.format("Indent level must end up being zero! But it was %s.", this.indentLevel));
         }
     }
 
@@ -269,7 +269,7 @@ public class ObjectFormatter implements Formatter {
                 this.textLine.fillStyle(Formatter.NO_COLOR_STYLE);
             }
         } else {
-            this.stringBuilder.append('\n').append(this.getLineAndIndentPrefixFromLevel(this.indentLevel));
+            this.stringBuilder.append(System.lineSeparator()).append(this.getLineAndIndentPrefixFromLevel(this.indentLevel));
         }
 
         this.state = State.NEW_LINE;

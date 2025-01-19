@@ -31,7 +31,8 @@ import net.minecraft.util.TranslatableOption;
 public enum ClipboardFormatting implements TranslatableOption {
     @SerializedName("sync") SYNC(0, "componentviewer.config.clipboard.formatting.sync"),
     @SerializedName("snbt") SNBT(1, "componentviewer.config.clipboard.formatting.snbt"),
-    @SerializedName("object") OBJECT(2, "componentviewer.config.clipboard.formatting.object");
+    @SerializedName("json") JSON(2, "componentviewer.config.clipboard.formatting.json"),
+    @SerializedName("object") OBJECT(3, "componentviewer.config.clipboard.formatting.object");
 
     private final int id;
     private final String translationKey;

@@ -34,6 +34,7 @@ import dev.fixyl.componentviewer.clipboard.Clipboard;
 import dev.fixyl.componentviewer.component.Components;
 import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.formatting.Formatter;
+import dev.fixyl.componentviewer.formatting.JsonFormatter;
 import dev.fixyl.componentviewer.formatting.ObjectFormatter;
 import dev.fixyl.componentviewer.formatting.SnbtFormatter;
 import dev.fixyl.componentviewer.option.ClipboardCopy;
@@ -45,6 +46,7 @@ public final class ControlFlow {
     private final Clipboard clipboard;
 
     private final Formatter snbtFormatter;
+    private final Formatter jsonFormatter;
     private final Formatter objectFormatter;
 
     public ControlFlow() {
@@ -52,6 +54,7 @@ public final class ControlFlow {
         this.clipboard = new Clipboard();
 
         this.snbtFormatter = new SnbtFormatter();
+        this.jsonFormatter = new JsonFormatter();
         this.objectFormatter = new ObjectFormatter();
     }
 
@@ -112,6 +115,7 @@ public final class ControlFlow {
     private <T> Formatter getTooltipFormatter(Component<T> component) {
         return switch (Configs.TOOLTIP_FORMATTING.value()) {
             case SNBT -> this.snbtFormatter;
+            case JSON -> this.jsonFormatter;
             case OBJECT -> (component.value() instanceof NbtComponent) ? this.snbtFormatter : this.objectFormatter;
         };
     }
@@ -120,6 +124,7 @@ public final class ControlFlow {
         return switch (Configs.CLIPBOARD_FORMATTING.value()) {
             case SYNC -> this.getTooltipFormatter(component);
             case SNBT -> this.snbtFormatter;
+            case JSON -> this.jsonFormatter;
             case OBJECT -> (component.value() instanceof NbtComponent) ? this.snbtFormatter : this.objectFormatter;
         };
     }
