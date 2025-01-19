@@ -68,14 +68,14 @@ public class ObjectFormatter implements Formatter {
     private final ResultCache<List<Text>> textResultCache;
 
     private final Tokenizer tokenizer;
-    private final Map<Integer, String> lineAndIndentPrefixCache;
+    private final Map<Integer, String> newLinePrefixCache;
 
     private int indentation;
     private boolean colored;
 
     private String indentPrefix;
     private String linePrefix;
-    private boolean isLinePrefixAndIndentationSet;
+    private boolean isNewLinePrefixSet;
 
     private List<Token> tokens;
     private int currentIndex;
@@ -94,9 +94,9 @@ public class ObjectFormatter implements Formatter {
         this.textResultCache = new ResultCache<>();
 
         this.tokenizer = new Tokenizer();
-        this.lineAndIndentPrefixCache = new HashMap<>();
+        this.newLinePrefixCache = new HashMap<>();
 
-        this.isLinePrefixAndIndentationSet = false;
+        this.isNewLinePrefixSet = false;
     }
 
     @Override
@@ -169,8 +169,8 @@ public class ObjectFormatter implements Formatter {
         return this.textList;
     }
 
-    private void updateLinePrefixAndIndentation(int indentation, String linePrefix) {
-        if (this.isLinePrefixAndIndentationSet && this.indentation == indentation && this.linePrefix.equals(linePrefix)) {
+    private void updateNewLinePrefix(int indentation, String linePrefix) {
+        if (this.isNewLinePrefixSet && this.indentation == indentation && this.linePrefix.equals(linePrefix)) {
             return;
         }
 
@@ -178,23 +178,23 @@ public class ObjectFormatter implements Formatter {
         this.indentPrefix = " ".repeat(indentation);
         this.linePrefix = linePrefix;
 
-        this.isLinePrefixAndIndentationSet = true;
+        this.isNewLinePrefixSet = true;
 
-        if (this.lineAndIndentPrefixCache != null) {
-            this.lineAndIndentPrefixCache.clear();
+        if (this.newLinePrefixCache != null) {
+            this.newLinePrefixCache.clear();
         }
     }
 
-    private String getLineAndIndentPrefixFromLevel(int indentLevel) {
-        if (indentLevel <= 0) {
+    private String getNewLinePrefix() {
+        if (this.indentLevel <= 0) {
             return this.linePrefix;
         }
 
-        return this.lineAndIndentPrefixCache.computeIfAbsent(indentLevel, key -> this.linePrefix + this.indentPrefix.repeat(key));
+        return this.newLinePrefixCache.computeIfAbsent(this.indentLevel, key -> this.linePrefix + this.indentPrefix.repeat(key));
     }
 
     private void formatTokens(List<Token> tokens, int indentation, String linePrefix) {
-        this.updateLinePrefixAndIndentation(indentation, linePrefix);
+        this.updateNewLinePrefix(indentation, linePrefix);
 
         this.tokens = tokens;
 
@@ -224,7 +224,7 @@ public class ObjectFormatter implements Formatter {
 
     private void processCommaToken() {
         this.addCurrentToken();
-        this.createNewLineBreak(0);
+        this.createNewLine(0);
     }
 
     private void processOpeningBracketToken() {
@@ -237,7 +237,7 @@ public class ObjectFormatter implements Formatter {
             return;
         }
 
-        this.createNewLineBreak(1);
+        this.createNewLine(1);
     }
 
     private void processClosingBracketToken() {
@@ -252,24 +252,24 @@ public class ObjectFormatter implements Formatter {
         if (this.state == State.EMPTY_BRACKETS) {
             this.state = State.DEFAULT;
         } else {
-            this.createNewLineBreak(-1);
+            this.createNewLine(-1);
         }
 
         this.addCurrentToken();
     }
 
-    private void createNewLineBreak(int indentChange) {
+    private void createNewLine(int indentChange) {
         this.indentLevel += indentChange;
 
         if (this.formatAsText) {
             this.textList.add(this.textLine);
-            this.textLine = Text.literal(this.getLineAndIndentPrefixFromLevel(this.indentLevel));
+            this.textLine = Text.literal(this.getNewLinePrefix());
 
             if (!this.colored) {
                 this.textLine.fillStyle(Formatter.NO_COLOR_STYLE);
             }
         } else {
-            this.stringBuilder.append(System.lineSeparator()).append(this.getLineAndIndentPrefixFromLevel(this.indentLevel));
+            this.stringBuilder.append(System.lineSeparator()).append(this.getNewLinePrefix());
         }
 
         this.state = State.NEW_LINE;
