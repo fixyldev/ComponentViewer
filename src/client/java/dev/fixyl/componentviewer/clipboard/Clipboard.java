@@ -81,7 +81,7 @@ public class Clipboard {
     }
 
     private List<String> createGiveCommandComponentList(Components components) {
-        List<String> componentList = new ArrayList<>();
+        List<String> componentList = new ArrayList<>(components.size());
 
         StringBuilder componentString = new StringBuilder();
 
