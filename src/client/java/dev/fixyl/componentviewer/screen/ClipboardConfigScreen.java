@@ -41,7 +41,8 @@ public class ClipboardConfigScreen extends ConfigScreen {
             Configs.CLIPBOARD_FORMATTING,
             Configs.CLIPBOARD_INDENTATION,
             Configs.CLIPBOARD_PREPEND_SLASH,
-            Configs.CLIPBOARD_INCLUDE_CLOUNT
+            Configs.CLIPBOARD_INCLUDE_CLOUNT,
+            Configs.CLIPBOARD_SUCCESS_NOTIFICATION
         );
     }
 }

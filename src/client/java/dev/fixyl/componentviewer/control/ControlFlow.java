@@ -62,7 +62,7 @@ public final class ControlFlow {
         boolean shouldPerformCopyAction = this.stateManager.shouldPerformCopyAction();
 
         if (Configs.CLIPBOARD_COPY.value() == ClipboardCopy.GIVE_COMMAND && shouldPerformCopyAction) {
-            this.clipboard.copyGiveCommand(itemStack, Configs.CLIPBOARD_PREPEND_SLASH.booleanValue(), Configs.CLIPBOARD_INCLUDE_CLOUNT.booleanValue());
+            this.clipboard.copyGiveCommand(itemStack, Configs.CLIPBOARD_PREPEND_SLASH.booleanValue(), Configs.CLIPBOARD_INCLUDE_CLOUNT.booleanValue(), Configs.CLIPBOARD_SUCCESS_NOTIFICATION.booleanValue());
         }
 
         if (!this.shouldDisplayToolip(tooltipType)) {
@@ -91,7 +91,7 @@ public final class ControlFlow {
         if (Configs.CLIPBOARD_COPY.value() == ClipboardCopy.COMPONENT_VALUE && shouldPerformCopyAction) {
             int clipboardIndentation = Configs.CLIPBOARD_INDENTATION.intValue();
 
-            this.clipboard.copyComponentValue(selectedComponent, this.getClipboardFormatter(selectedComponent), (clipboardIndentation == -1) ? tooltipIndentation : clipboardIndentation);
+            this.clipboard.copyComponentValue(selectedComponent, this.getClipboardFormatter(selectedComponent), (clipboardIndentation == -1) ? tooltipIndentation : clipboardIndentation, Configs.CLIPBOARD_SUCCESS_NOTIFICATION.booleanValue());
         }
     }
 

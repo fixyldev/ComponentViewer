@@ -103,4 +103,9 @@ public final class Configs {
             .setTranslationKeys("componentviewer.config.clipboard.include_count", "componentviewer.config.clipboard.include_count.description")
             .setDependency(() -> Configs.CLIPBOARD_COPY.value() == ClipboardCopy.GIVE_COMMAND)
             .build();
+    public static final BooleanConfig CLIPBOARD_SUCCESS_NOTIFICATION = BooleanConfig.create("clipboard.success_notification")
+            .setDefaultValue(true)
+            .setTranslationKeys("componentviewer.config.clipboard.success_notification", "componentviewer.config.clipboard.success_notification.description")
+            .setDependency(() -> Configs.CLIPBOARD_COPY.value() != ClipboardCopy.DISABLED)
+            .build();
 }

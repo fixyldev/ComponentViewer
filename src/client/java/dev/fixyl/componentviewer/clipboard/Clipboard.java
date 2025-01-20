@@ -46,7 +46,7 @@ public class Clipboard {
         this.snbtFormatter = new SnbtFormatter();
     }
 
-    public <T> void copyComponentValue(Component<T> component, Formatter formatter, int indentation) {
+    public <T> void copyComponentValue(Component<T> component, Formatter formatter, int indentation, boolean successNotification) {
         try {
             String componentString = formatter.componentToString(component, indentation);
             this.setClipboard(componentString);
@@ -55,10 +55,12 @@ public class Clipboard {
             return;
         }
 
-        CopyToast.dispatch(CopyToast.Type.COMPONENT_VALUE);
+        if (successNotification) {
+            CopyToast.dispatch(CopyToast.Type.COMPONENT_VALUE);
+        }
     }
 
-    public void copyGiveCommand(ItemStack itemStack, boolean prependSlash, boolean includeCount) {
+    public void copyGiveCommand(ItemStack itemStack, boolean prependSlash, boolean includeCount, boolean successNotification) {
         StringBuilder commandString = new StringBuilder();
 
         if (prependSlash) {
@@ -88,7 +90,9 @@ public class Clipboard {
 
         this.setClipboard(commandString.toString());
 
-        CopyToast.dispatch(CopyToast.Type.GIVE_COMMAND, itemStack);
+        if (successNotification) {
+            CopyToast.dispatch(CopyToast.Type.GIVE_COMMAND, itemStack);
+        }
     }
 
     private void setClipboard(String content) {

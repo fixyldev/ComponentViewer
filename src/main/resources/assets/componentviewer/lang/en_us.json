@@ -21,6 +21,8 @@
     "componentviewer.config.clipboard.indentation.value": "Indentation: %s",
     "componentviewer.config.clipboard.prepend_slash": "Prepend Slash",
     "componentviewer.config.clipboard.prepend_slash.description": "Add a '/' in front of the give command.",
+    "componentviewer.config.clipboard.success_notification": "Success Notification",
+    "componentviewer.config.clipboard.success_notification.description": "Receive toast notifications for successful copy actions. You will always receive toast notifications for failed copy actions, regardless of this config.",
     "componentviewer.config.clipboard.title": "Clipboard",
     "componentviewer.config.tooltip": "Tooltips...",
     "componentviewer.config.tooltip.advanced_tooltips": "Advanced Tooltips",
