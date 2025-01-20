@@ -33,7 +33,9 @@ import java.util.List;
 
 import dev.fixyl.componentviewer.component.Components;
 import dev.fixyl.componentviewer.formatting.Formatter;
+import dev.fixyl.componentviewer.formatting.FormattingException;
 import dev.fixyl.componentviewer.formatting.SnbtFormatter;
+import dev.fixyl.componentviewer.notification.CopyToast;
 
 public class Clipboard {
     private static final String GIVE_COMMAND_BASE = "give @s";
@@ -45,9 +47,15 @@ public class Clipboard {
     }
 
     public <T> void copyComponentValue(Component<T> component, Formatter formatter, int indentation) {
-        String componentString = formatter.componentToString(component, indentation);
+        try {
+            String componentString = formatter.componentToString(component, indentation);
+            this.setClipboard(componentString);
+        } catch (FormattingException e) {
+            CopyToast.dispatch(CopyToast.Type.FORMATTING_EXCEPTION);
+            return;
+        }
 
-        this.setClipboard(componentString);
+        CopyToast.dispatch(CopyToast.Type.COMPONENT_VALUE);
     }
 
     public void copyGiveCommand(ItemStack itemStack, boolean prependSlash, boolean includeCount) {
@@ -64,8 +72,13 @@ public class Clipboard {
         Components components = Components.getChangedComponents(itemStack);
 
         if (!components.isEmpty()) {
-            List<String> componentList = this.createGiveCommandComponentList(components);
-            commandString.append(componentList);
+            try {
+                List<String> componentList = this.createGiveCommandComponentList(components);
+                commandString.append(componentList);
+            } catch (FormattingException e) {
+                CopyToast.dispatch(CopyToast.Type.FORMATTING_EXCEPTION);
+                return;
+            }
         }
 
         if (includeCount) {
@@ -74,6 +87,8 @@ public class Clipboard {
         }
 
         this.setClipboard(commandString.toString());
+
+        CopyToast.dispatch(CopyToast.Type.GIVE_COMMAND, itemStack);
     }
 
     private void setClipboard(String content) {
