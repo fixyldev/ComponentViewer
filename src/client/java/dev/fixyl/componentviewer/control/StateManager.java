@@ -72,9 +72,9 @@ public final class StateManager {
         int newComponentIndex = this.selectedComponentIndex;
 
         if (KeyCombos.isCycleNextPressed()) {
-            newComponentIndex = this.selectedComponentIndex + 1;
+            newComponentIndex++;
         } else if (KeyCombos.isCyclePreviousPressed()) {
-            newComponentIndex = this.selectedComponentIndex - 1;
+            newComponentIndex--;
         } else if (KeyCombos.isCycleFirstPressed()) {
             newComponentIndex = 0;
         } else if (KeyCombos.isCycleLastPressed()) {
