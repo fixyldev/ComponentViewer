@@ -44,7 +44,7 @@ import dev.fixyl.componentviewer.event.TooltipCallback;
 import dev.fixyl.componentviewer.tooltip.Tooltip;
 import dev.fixyl.componentviewer.util.Lists;
 
-@Mixin(ItemStack.class)
+@Mixin(value = ItemStack.class, priority = Integer.MAX_VALUE)
 public abstract class ItemStackMixin {
     @Inject(method = "getTooltip", at = @At(value = "RETURN"), cancellable = true)
     private void getTooltip(TooltipContext context, @Nullable PlayerEntity player, TooltipType type, CallbackInfoReturnable<List<Text>> returnValue) {
