@@ -22,10 +22,11 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.config.type;
+package dev.fixyl.componentviewer.config.option;
 
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.function.Consumer;
 import java.util.function.IntFunction;
 
 import com.mojang.serialization.Codec;
@@ -35,31 +36,38 @@ import net.minecraft.client.option.SimpleOption.ValueTextGetter;
 import net.minecraft.util.TranslatableOption;
 import net.minecraft.util.function.ValueLists;
 
-import dev.fixyl.componentviewer.ComponentViewer;
-import dev.fixyl.componentviewer.config.Config;
-
-public class EnumConfig<E extends Enum<E> & TranslatableOption> extends Config<E> {
+public class EnumOption<E extends Enum<E> & TranslatableOption> extends AdvancedOption<E> {
     private final Class<E> enumClass;
     private final IntFunction<E> enumByIdFunction;
 
-    private EnumConfig(EnumConfigBuilder<E> builder) {
+    private EnumOption(EnumOptionBuilder<E> builder) {
         super(builder);
 
-        Config.assertNull(builder.enumClass);
+        this.enumClass = this.defaultValue.getDeclaringClass();
+        this.enumByIdFunction = ValueLists.createIdToValueFunction(E::getId, this.getEnumConstants(), ValueLists.OutOfBoundsHandling.WRAP);
 
-        this.enumClass = builder.enumClass;
-        this.enumByIdFunction = ValueLists.createIdToValueFunction(E::getId, this.enumValues(), ValueLists.OutOfBoundsHandling.WRAP);
-
-        this.simpleOption = this.createSimpleOption();
-    }
-
-    public static <E extends Enum<E> & TranslatableOption> EnumConfigBuilder<E> create(Class<E> enumClass, String id) {
-        return new EnumConfigBuilder<>(enumClass, id);
+        this.postConstruct();
     }
 
     @Override
-    public Type type() {
+    public Type getType() {
         return this.enumClass;
+    }
+
+    public E[] getEnumConstants() {
+        return this.enumClass.getEnumConstants();
+    }
+
+    @Override
+    protected SimpleOption<E> createSimpleOption(String translationkey, SimpleOption.TooltipFactory<E> tooltipFactory, SimpleOption.ValueTextGetter<E> valueTextGetter, E defaultValue, Consumer<E> changeCallback) {
+        return new SimpleOption<>(
+                translationkey,
+                tooltipFactory,
+                valueTextGetter,
+                new SimpleOption.PotentialValuesBasedCallbacks<>(Arrays.asList(this.getEnumConstants()), Codec.INT.xmap(this::getEnumById, E::getId)),
+                defaultValue,
+                changeCallback
+        );
     }
 
     @Override
@@ -67,42 +75,26 @@ public class EnumConfig<E extends Enum<E> & TranslatableOption> extends Config<E
         return SimpleOption.enumValueText();
     }
 
-    @Override
-    protected SimpleOption<E> createSimpleOption() {
-        return new SimpleOption<>(
-            this.nameTranslationKey,
-            this.tooltipFactory,
-            this.valueTextGetter,
-            new SimpleOption.PotentialValuesBasedCallbacks<>(Arrays.asList(this.enumValues()), Codec.INT.xmap(this::enumById, E::getId)),
-            this.defaultValue,
-            value -> ComponentViewer.CONFIG_MANAGER.writeConfigFile()
-        );
-    }
-
-    private E[] enumValues() {
-        return this.enumClass.getEnumConstants();
-    }
-
-    private E enumById(int id) {
+    private E getEnumById(int id) {
         return this.enumByIdFunction.apply(id);
     }
 
-    public static class EnumConfigBuilder<E extends Enum<E> & TranslatableOption> extends AbstractConfigBuilder<E, EnumConfig<E>, EnumConfigBuilder<E>> {
-        private Class<E> enumClass;
+    public static <E extends Enum<E> & TranslatableOption> EnumOptionBuilder<E> create(String id) {
+        return new EnumOptionBuilder<>(id);
+    }
 
-        private EnumConfigBuilder(Class<E> enumClass, String id) {
+    public static class EnumOptionBuilder<E extends Enum<E> & TranslatableOption> extends AdvancedOptionBuilder<E, EnumOption<E>, EnumOptionBuilder<E>> {
+        public EnumOptionBuilder(String id) {
             super(id);
-
-            this.enumClass = enumClass;
         }
 
         @Override
-        public EnumConfig<E> build() {
-            return new EnumConfig<>(this);
+        public EnumOption<E> build() {
+            return new EnumOption<>(this);
         }
 
         @Override
-        protected EnumConfigBuilder<E> self() {
+        protected EnumOptionBuilder<E> self() {
             return this;
         }
     }

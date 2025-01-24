@@ -22,30 +22,12 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.screen;
+package dev.fixyl.componentviewer.config.option;
 
-import net.minecraft.client.gui.screen.Screen;
-
-import dev.fixyl.componentviewer.ComponentViewer;
-import dev.fixyl.componentviewer.config.ConfigScreen;
-import dev.fixyl.componentviewer.config.Configs;
-
-public class ClipboardConfigScreen extends ConfigScreen {
-    public ClipboardConfigScreen(Screen parentScreen) {
-        super(parentScreen, "componentviewer.config.clipboard.title");
-    }
-
-    @Override
-    protected void addElements() {
-        Configs configs = ComponentViewer.getInstance().configs;
-
-        this.addConfigs(
-                configs.clipboardCopy,
-                configs.clipboardFormatting,
-                configs.clipboardIndentation,
-                configs.clipboardPrependSlash,
-                configs.clipboardIncludeCount,
-                configs.clipboardSuccessNotification
-        );
-    }
+public interface Options {
+    // Suppress the generic wildcard warning for SonarQube
+    // since it's and array of mixed types and the actual
+    // type doesn't matter
+    @SuppressWarnings("java:S1452")
+    public AdvancedOption<?>[] getOptions();
 }

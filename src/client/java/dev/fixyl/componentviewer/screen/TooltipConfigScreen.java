@@ -26,6 +26,7 @@ package dev.fixyl.componentviewer.screen;
 
 import net.minecraft.client.gui.screen.Screen;
 
+import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.ConfigScreen;
 import dev.fixyl.componentviewer.config.Configs;
 
@@ -36,14 +37,16 @@ public class TooltipConfigScreen extends ConfigScreen {
 
     @Override
     protected void addElements() {
+        Configs configs = ComponentViewer.getInstance().configs;
+
         this.addConfigs(
-            Configs.TOOLTIP_DISPLAY,
-            Configs.TOOLTIP_COMPONENTS,
-            Configs.TOOLTIP_COMPONENT_VALUES,
-            Configs.TOOLTIP_FORMATTING,
-            Configs.TOOLTIP_INDENTATION,
-            Configs.TOOLTIP_COLORED_VALUES,
-            Configs.TOOLTIP_ADVANCED_TOOLTIPS
+                configs.tooltipDisplay,
+                configs.tooltipComponents,
+                configs.tooltipComponentValues,
+                configs.tooltipFormatting,
+                configs.tooltipIndentation,
+                configs.tooltipColoredValues,
+                configs.tooltipAdvancedTooltips
         );
     }
 }

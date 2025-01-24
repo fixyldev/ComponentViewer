@@ -30,32 +30,50 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dev.fixyl.componentviewer.config.ConfigManager;
+import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.control.ControlFlow;
 import dev.fixyl.componentviewer.event.TooltipCallback;
 import dev.fixyl.componentviewer.keyboard.KeyBindings;
 import dev.fixyl.componentviewer.screen.MainConfigScreen;
 
 public final class ComponentViewer implements ClientModInitializer {
-    public static final Logger LOGGER = LoggerFactory.getLogger("ComponentViewer");
-    public static final ConfigManager CONFIG_MANAGER = new ConfigManager("componentviewer-config.json");
+    private static ComponentViewer instance;
 
-    private final ControlFlow controlFlow;
-    private final KeyBindings keyBindings;
+    public final Logger logger;
+    public final Configs configs;
 
     public ComponentViewer() {
-        this.controlFlow = new ControlFlow();
-        this.keyBindings = new KeyBindings();
+        ComponentViewer.setInstance(this);
+
+        this.logger = LoggerFactory.getLogger(this.getClass());
+        this.configs = new Configs();
     }
 
     @Override
     public void onInitializeClient() {
-        TooltipCallback.EVENT.register(this.controlFlow::onTooltip);
+        ControlFlow controlFlow = new ControlFlow(this.configs);
+        TooltipCallback.EVENT.register(controlFlow::onTooltip);
 
+        KeyBindings keyBindings = new KeyBindings();
         ClientTickEvents.END_CLIENT_TICK.register(minecraftClient -> {
-            if (this.keyBindings.configKey.isPressed()) {
+            if (keyBindings.configKey.isPressed()) {
                 minecraftClient.setScreen(new MainConfigScreen(null));
             }
         });
+    }
+
+    public static ComponentViewer getInstance() {
+        return ComponentViewer.instance;
+    }
+
+    private static void setInstance(ComponentViewer instance) {
+        if (ComponentViewer.instance != null) {
+            throw new IllegalStateException(String.format(
+                    "Cannot instantiate '%s' twice!",
+                    ComponentViewer.class.getName()
+            ));
+        }
+
+        ComponentViewer.instance = instance;
     }
 }

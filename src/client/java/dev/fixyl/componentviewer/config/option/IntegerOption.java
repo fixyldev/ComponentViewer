@@ -22,7 +22,10 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.config.type;
+package dev.fixyl.componentviewer.config.option;
+
+import java.util.Objects;
+import java.util.function.Consumer;
 
 import com.mojang.serialization.Codec;
 
@@ -30,52 +33,50 @@ import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.option.SimpleOption.ValueTextGetter;
 import net.minecraft.text.Text;
 
-import dev.fixyl.componentviewer.ComponentViewer;
-import dev.fixyl.componentviewer.config.Config;
-
-public class IntegerConfig extends Config<Integer> {
+public class IntegerOption extends AdvancedOption<Integer> {
     private final Integer minValue;
     private final Integer maxValue;
 
-    private IntegerConfig(IntegerConfigBuilder builder) {
+    private IntegerOption(IntegerOptionBuilder builder) {
         super(builder);
 
-        Config.assertNull(builder.minValue, builder.maxValue);
+        Objects.requireNonNull(builder.minValue, "Min value not specified");
+        Objects.requireNonNull(builder.maxValue, "Max value not specified");
 
         if (builder.minValue > builder.maxValue) {
-            ComponentViewer.LOGGER.error("Invalid integer range {}-{}! The min value must be less than or equal to the max value.", builder.minValue, builder.maxValue);
-            throw new IllegalArgumentException("Invalid integer range");
+            throw new IllegalArgumentException("Min value is greater than max value");
         }
 
         if (this.defaultValue < builder.minValue || this.defaultValue > builder.maxValue) {
-            ComponentViewer.LOGGER.error("Invalid default value {}! The default value must be within the valid integer range {}-{}.", this.defaultValue, builder.minValue, builder.maxValue);
-            throw new IllegalArgumentException("Invalid default value");
+            throw new IllegalArgumentException(String.format("Default value not within specified range: %s to %s", builder.minValue, builder.maxValue));
         }
 
         this.minValue = builder.minValue;
         this.maxValue = builder.maxValue;
 
-        this.simpleOption = this.createSimpleOption();
+        this.postConstruct();
     }
 
-    public static IntegerConfigBuilder create(String id) {
-        return new IntegerConfigBuilder(id);
-    }
-
-    public int intValue() {
-        Integer value = this.value();
+    public int getIntValue() {
+        Integer value = this.getValue();
         return (value != null) ? value.intValue() : 0;
     }
 
-    public int intDefaultValue() {
+    public int getIntDefaultValue() {
         return (this.defaultValue != null) ? this.defaultValue.intValue() : 0;
     }
 
     @Override
-    public void setValue(Integer value) {
-        value = Math.clamp(value, this.minValue, this.maxValue);
-
-        super.setValue(value);
+    protected SimpleOption<Integer> createSimpleOption(String translationkey, SimpleOption.TooltipFactory<Integer> tooltipFactory, SimpleOption.ValueTextGetter<Integer> valueTextGetter, Integer defaultValue, Consumer<Integer> changeCallback) {
+        return new SimpleOption<>(
+                translationkey,
+                tooltipFactory,
+                valueTextGetter,
+                new SimpleOption.ValidatingIntSliderCallbacks(this.minValue, this.maxValue),
+                Codec.intRange(this.minValue, this.maxValue),
+                defaultValue,
+                changeCallback
+        );
     }
 
     @Override
@@ -83,40 +84,31 @@ public class IntegerConfig extends Config<Integer> {
         return (optionText, value) -> Text.empty();
     }
 
-    @Override
-    protected SimpleOption<Integer> createSimpleOption() {
-        return new SimpleOption<>(
-            this.nameTranslationKey,
-            this.tooltipFactory,
-            this.valueTextGetter,
-            new SimpleOption.ValidatingIntSliderCallbacks(this.minValue, this.maxValue),
-            Codec.intRange(this.minValue, this.maxValue),
-            this.defaultValue,
-            value -> ComponentViewer.CONFIG_MANAGER.writeConfigFile()
-        );
+    public static IntegerOptionBuilder create(String id) {
+        return new IntegerOptionBuilder(id);
     }
 
-    public static class IntegerConfigBuilder extends AbstractConfigBuilder<Integer, IntegerConfig, IntegerConfigBuilder> {
+    public static class IntegerOptionBuilder extends AdvancedOptionBuilder<Integer, IntegerOption, IntegerOptionBuilder> {
         private Integer minValue;
         private Integer maxValue;
 
-        private IntegerConfigBuilder(String id) {
+        public IntegerOptionBuilder(String id) {
             super(id);
         }
 
-        public IntegerConfigBuilder setIntegerRange(Integer minValue, Integer maxValue) {
+        public IntegerOptionBuilder setIntegerRange(Integer minValue, Integer maxValue) {
             this.minValue = minValue;
             this.maxValue = maxValue;
             return this;
         }
 
         @Override
-        public IntegerConfig build() {
-            return new IntegerConfig(this);
+        public IntegerOption build() {
+            return new IntegerOption(this);
         }
 
         @Override
-        protected IntegerConfigBuilder self() {
+        protected IntegerOptionBuilder self() {
             return this;
         }
     }

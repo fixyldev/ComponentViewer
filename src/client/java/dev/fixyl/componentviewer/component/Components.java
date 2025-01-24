@@ -71,7 +71,9 @@ public class Components {
         return this.componentsList.isEmpty();
     }
 
-    // Suppresses the generic wildcard warning for SonarQube
+    // Suppress the generic wildcard warning for SonarQube
+    // since the actual component type doesn't matter
+    // and is not known
     @SuppressWarnings("java:S1452")
     public Component<?> get(int index) {
         return this.componentsList.get(index);

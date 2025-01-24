@@ -42,6 +42,8 @@ import dev.fixyl.componentviewer.option.TooltipDisplay;
 import dev.fixyl.componentviewer.tooltip.Tooltip;
 
 public final class ControlFlow {
+    private final Configs configs;
+
     private final StateManager stateManager;
     private final Clipboard clipboard;
 
@@ -49,7 +51,9 @@ public final class ControlFlow {
     private final Formatter jsonFormatter;
     private final Formatter objectFormatter;
 
-    public ControlFlow() {
+    public ControlFlow(Configs configs) {
+        this.configs = configs;
+
         this.stateManager = new StateManager();
         this.clipboard = new Clipboard();
 
@@ -61,8 +65,13 @@ public final class ControlFlow {
     public void onTooltip(ItemStack itemStack, Tooltip tooltip, TooltipType tooltipType) {
         boolean shouldPerformCopyAction = this.stateManager.shouldPerformCopyAction();
 
-        if (Configs.CLIPBOARD_COPY.value() == ClipboardCopy.GIVE_COMMAND && shouldPerformCopyAction) {
-            this.clipboard.copyGiveCommand(itemStack, Configs.CLIPBOARD_PREPEND_SLASH.booleanValue(), Configs.CLIPBOARD_INCLUDE_CLOUNT.booleanValue(), Configs.CLIPBOARD_SUCCESS_NOTIFICATION.booleanValue());
+        if (this.configs.clipboardCopy.getValue() == ClipboardCopy.GIVE_COMMAND && shouldPerformCopyAction) {
+            this.clipboard.copyGiveCommand(
+                    itemStack,
+                    this.configs.clipboardPrependSlash.getBooleanValue(),
+                    this.configs.clipboardIncludeCount.getBooleanValue(),
+                    this.configs.clipboardSuccessNotification.getBooleanValue()
+            );
         }
 
         if (!this.shouldDisplayToolip(tooltipType)) {
@@ -71,7 +80,7 @@ public final class ControlFlow {
 
         Components components = this.getComponents(itemStack);
         int selectedComponentIndex = this.stateManager.cycleSelectedComponentIndex(components.size());
-        boolean tooltipComponentValues = Configs.TOOLTIP_COMPONENT_VALUES.booleanValue();
+        boolean tooltipComponentValues = this.configs.tooltipComponentValues.getBooleanValue();
 
         if (!tooltip.isEmpty()) {
             tooltip.addSpacer();
@@ -84,28 +93,38 @@ public final class ControlFlow {
         }
 
         Component<?> selectedComponent = components.get(selectedComponentIndex);
-        int tooltipIndentation = Configs.TOOLTIP_INDENTATION.intValue();
+        int tooltipIndentation = this.configs.tooltipIndentation.getIntValue();
 
-        tooltip.addSpacer().addComponentValue(selectedComponent, this.getTooltipFormatter(selectedComponent), tooltipIndentation, Configs.TOOLTIP_COLORED_VALUES.booleanValue());
+        tooltip.addSpacer().addComponentValue(
+                selectedComponent,
+                this.getTooltipFormatter(selectedComponent),
+                tooltipIndentation,
+                this.configs.tooltipColoredValues.getBooleanValue()
+        );
 
-        if (Configs.CLIPBOARD_COPY.value() == ClipboardCopy.COMPONENT_VALUE && shouldPerformCopyAction) {
-            int clipboardIndentation = Configs.CLIPBOARD_INDENTATION.intValue();
+        if (this.configs.clipboardCopy.getValue() == ClipboardCopy.COMPONENT_VALUE && shouldPerformCopyAction) {
+            int clipboardIndentation = this.configs.clipboardIndentation.getIntValue();
 
-            this.clipboard.copyComponentValue(selectedComponent, this.getClipboardFormatter(selectedComponent), (clipboardIndentation == -1) ? tooltipIndentation : clipboardIndentation, Configs.CLIPBOARD_SUCCESS_NOTIFICATION.booleanValue());
+            this.clipboard.copyComponentValue(
+                    selectedComponent,
+                    this.getClipboardFormatter(selectedComponent),
+                    (clipboardIndentation == -1) ? tooltipIndentation : clipboardIndentation,
+                    this.configs.clipboardSuccessNotification.getBooleanValue()
+            );
         }
     }
 
     private boolean shouldDisplayToolip(TooltipType tooltipType) {
-        TooltipDisplay tooltipDisplay = Configs.TOOLTIP_DISPLAY.value();
+        TooltipDisplay tooltipDisplay = this.configs.tooltipDisplay.getValue();
         if (tooltipDisplay == TooltipDisplay.NEVER || tooltipDisplay == TooltipDisplay.HOLD && !Screen.hasControlDown()) {
             return false;
         }
 
-        return tooltipType.isAdvanced() || !Configs.TOOLTIP_ADVANCED_TOOLTIPS.booleanValue();
+        return tooltipType.isAdvanced() || !this.configs.tooltipAdvancedTooltips.getBooleanValue();
     }
 
     private Components getComponents(ItemStack itemStack) {
-        return switch (Configs.TOOLTIP_COMPONENTS.value()) {
+        return switch (this.configs.tooltipComponents.getValue()) {
             case ALL -> Components.getAllComponents(itemStack);
             case DEFAULT -> Components.getDefaultComponents(itemStack);
             case CHANGES -> Components.getChangedComponents(itemStack);
@@ -113,7 +132,7 @@ public final class ControlFlow {
     }
 
     private <T> Formatter getTooltipFormatter(Component<T> component) {
-        return switch (Configs.TOOLTIP_FORMATTING.value()) {
+        return switch (this.configs.tooltipFormatting.getValue()) {
             case SNBT -> this.snbtFormatter;
             case JSON -> this.jsonFormatter;
             case OBJECT -> (component.value() instanceof NbtComponent) ? this.snbtFormatter : this.objectFormatter;
@@ -121,7 +140,7 @@ public final class ControlFlow {
     }
 
     private <T> Formatter getClipboardFormatter(Component<T> component) {
-        return switch (Configs.CLIPBOARD_FORMATTING.value()) {
+        return switch (this.configs.clipboardFormatting.getValue()) {
             case SYNC -> this.getTooltipFormatter(component);
             case SNBT -> this.snbtFormatter;
             case JSON -> this.jsonFormatter;

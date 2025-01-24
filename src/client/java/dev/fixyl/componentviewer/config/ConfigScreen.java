@@ -28,7 +28,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
+
+import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
@@ -37,43 +40,52 @@ import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
 
+import dev.fixyl.componentviewer.config.option.AdvancedOption;
+
 public abstract class ConfigScreen extends GameOptionsScreen {
     private static final int WIDGET_WIDTH = 150;
 
-    private List<ClickableWidget> queuedWidgets = new ArrayList<>();
-    private Map<ClickableWidget, Config<?>> dependentConfigWidgets = new HashMap<>();
+    private final List<ClickableWidget> queuedWidgets;
+    private final Map<ClickableWidget, AdvancedOption<?>> options;
 
-    protected ConfigScreen(Screen parentScreen, String titleTranslationKey) {
-        super(parentScreen, MinecraftClient.getInstance().options, Text.translatable(String.valueOf(titleTranslationKey)));
+    protected ConfigScreen(Screen parentScreen, @Nullable String translationKey) {
+        super(
+                parentScreen,
+                MinecraftClient.getInstance().options,
+                Text.translatable(Objects.toString(translationKey))
+        );
+
+        this.queuedWidgets = new ArrayList<>();
+        this.options = new HashMap<>();
     }
 
-    protected final void addConfig(Config<?> config) {
-        ClickableWidget configWidget = config.simpleOption.createWidget(this.gameOptions, 0, 0, ConfigScreen.WIDGET_WIDTH, value -> this.updateDependentConfigWidgets());
+    protected final void addConfig(AdvancedOption<?> option) {
+        ClickableWidget optionWidget = option.getSimpleOption().createWidget(
+                this.gameOptions,
+                0,
+                0,
+                ConfigScreen.WIDGET_WIDTH,
+                value -> this.updateOptionWidgets()
+        );
 
-        if (config.isDependent()) {
-            this.updateDependentConfigWidgetState(configWidget, config);
-            this.dependentConfigWidgets.put(configWidget, config);
+        ConfigScreen.updateOptionWidget(optionWidget, option);
+
+        this.queuedWidgets.add(optionWidget);
+        this.options.put(optionWidget, option);
+    }
+
+    protected final void addConfigs(AdvancedOption<?>... options) {
+        for (AdvancedOption<?> option : options) {
+            this.addConfig(option);
         }
-
-        this.queuedWidgets.add(configWidget);
     }
 
-    protected final void addConfigs(Config<?>... configs) {
-        for (Config<?> config : configs) {
-            this.addConfig(config);
-        }
+    protected final void addRedirect(@Nullable String translationKey, Supplier<Screen> screenSupplier) {
+        this.queuedWidgets.add(ButtonWidget.builder(
+                Text.translatable(Objects.toString(translationKey)),
+                buttonWidget -> this.client.setScreen(screenSupplier.get())
+        ).build());
     }
-
-    protected final void addRedirect(String nameTranslationKey, Supplier<Screen> screenSupplier) {
-        this.queuedWidgets.add(ButtonWidget.builder(Text.translatable(String.valueOf(nameTranslationKey)), buttonWidget -> this.client.setScreen(screenSupplier.get())).build());
-    }
-
-    private void deployWidgets() {
-        this.body.addAll(this.queuedWidgets);
-        this.queuedWidgets.clear();
-    }
-
-    protected abstract void addElements();
 
     @Override
     protected final void addOptions() {
@@ -81,14 +93,21 @@ public abstract class ConfigScreen extends GameOptionsScreen {
         this.deployWidgets();
     }
 
-    private void updateDependentConfigWidgetState(ClickableWidget configWidget, Config<?> config) {
-        boolean active = config.dependencyFulfilledSupplier.getAsBoolean();
+    protected abstract void addElements();
 
-        configWidget.active = active;
-        configWidget.setTooltip((active) ? config.getTooltip() : null);
+    private void deployWidgets() {
+        this.body.addAll(this.queuedWidgets);
+        this.queuedWidgets.clear();
     }
 
-    private void updateDependentConfigWidgets() {
-        this.dependentConfigWidgets.forEach(this::updateDependentConfigWidgetState);
+    private void updateOptionWidgets() {
+        this.options.forEach(ConfigScreen::updateOptionWidget);
+    }
+
+    private static <T> void updateOptionWidget(ClickableWidget optionWidget, AdvancedOption<T> option) {
+        boolean active = option.isDependencyFulfilled();
+
+        optionWidget.active = active;
+        optionWidget.setTooltip((active) ? option.getTooltip() : null);
     }
 }

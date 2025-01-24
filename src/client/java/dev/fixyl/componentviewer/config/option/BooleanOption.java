@@ -22,32 +22,38 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.config.type;
+package dev.fixyl.componentviewer.config.option;
+
+import java.util.function.Consumer;
 
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.client.option.SimpleOption.ValueTextGetter;
 
-import dev.fixyl.componentviewer.ComponentViewer;
-import dev.fixyl.componentviewer.config.Config;
-
-public class BooleanConfig extends Config<Boolean> {
-    private BooleanConfig(BooleanConfigBuilder builder) {
+public class BooleanOption extends AdvancedOption<Boolean> {
+    private BooleanOption(BooleanOptionBuilder builder) {
         super(builder);
 
-        this.simpleOption = this.createSimpleOption();
+        this.postConstruct();
     }
 
-    public static BooleanConfigBuilder create(String id) {
-        return new BooleanConfigBuilder(id);
-    }
-
-    public boolean booleanValue() {
-        Boolean value = this.value();
+    public boolean getBooleanValue() {
+        Boolean value = this.getValue();
         return (value != null) && value.booleanValue();
     }
 
-    public boolean booleanDefaultValue() {
+    public boolean getBooleanDefaultValue() {
         return (this.defaultValue != null) && this.defaultValue.booleanValue();
+    }
+
+    @Override
+    protected SimpleOption<Boolean> createSimpleOption(String translationkey, SimpleOption.TooltipFactory<Boolean> tooltipFactory, SimpleOption.ValueTextGetter<Boolean> valueTextGetter, Boolean defaultValue, Consumer<Boolean> changeCallback) {
+        return SimpleOption.ofBoolean(
+                translationkey,
+                tooltipFactory,
+                valueTextGetter,
+                defaultValue,
+                changeCallback
+        );
     }
 
     @Override
@@ -55,29 +61,22 @@ public class BooleanConfig extends Config<Boolean> {
         return SimpleOption.BOOLEAN_TEXT_GETTER;
     }
 
-    @Override
-    protected SimpleOption<Boolean> createSimpleOption() {
-        return SimpleOption.ofBoolean(
-            this.nameTranslationKey,
-            this.tooltipFactory,
-            this.valueTextGetter,
-            this.defaultValue,
-            value -> ComponentViewer.CONFIG_MANAGER.writeConfigFile()
-        );
+    public static BooleanOptionBuilder create(String id) {
+        return new BooleanOptionBuilder(id);
     }
 
-    public static class BooleanConfigBuilder extends AbstractConfigBuilder<Boolean, BooleanConfig, BooleanConfigBuilder> {
-        private BooleanConfigBuilder(String id) {
+    public static class BooleanOptionBuilder extends AdvancedOptionBuilder<Boolean, BooleanOption, BooleanOptionBuilder> {
+        public BooleanOptionBuilder(String id) {
             super(id);
         }
 
         @Override
-        public BooleanConfig build() {
-            return new BooleanConfig(this);
+        public BooleanOption build() {
+            return new BooleanOption(this);
         }
 
         @Override
-        protected BooleanConfigBuilder self() {
+        protected BooleanOptionBuilder self() {
             return this;
         }
     }
