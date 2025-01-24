@@ -60,7 +60,7 @@ public abstract class AdvancedOption<T> {
 
         this.id = builder.id;
         this.defaultValue = Objects.requireNonNull(builder.defaultValue, "Default value not specified");
-        this.translationKey = Objects.requireNonNullElse(builder.translationKey, Objects.toString(null));
+        this.translationKey = Objects.toString(builder.translationKey);
         this.tooltipFactory = (builder.descriptionTranslationKey != null) ? SimpleOption.constantTooltip(Text.translatable(builder.descriptionTranslationKey)) : SimpleOption.emptyTooltip();
         this.translationKeyOverwrite = builder.translationKeyOverwrite;
         this.dependencyFulfillmentSupplier = builder.dependencyFulfillmentSupplier;
