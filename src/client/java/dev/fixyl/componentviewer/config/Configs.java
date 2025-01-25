@@ -69,101 +69,101 @@ public final class Configs implements Options {
     }
 
     public final EnumOption<TooltipDisplay> tooltipDisplay = EnumOption.<TooltipDisplay>create("tooltip.display")
-            .setDefaultValue(TooltipDisplay.HOLD)
-            .setTranslationKey("componentviewer.config.tooltip.display")
-            .setDescriptionTranslationKey("componentviewer.config.tooltip.display.description")
-            .setChangeCallback(this::changeCallback)
-            .build();
+        .setDefaultValue(TooltipDisplay.HOLD)
+        .setTranslationKey("componentviewer.config.tooltip.display")
+        .setDescriptionTranslationKey("componentviewer.config.tooltip.display.description")
+        .setChangeCallback(this::changeCallback)
+        .build();
     public final EnumOption<TooltipComponents> tooltipComponents = EnumOption.<TooltipComponents>create("tooltip.components")
-            .setDefaultValue(TooltipComponents.ALL)
-            .setTranslationKey("componentviewer.config.tooltip.components")
-            .setDescriptionTranslationKey("componentviewer.config.tooltip.components.description")
-            .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER)
-            .setChangeCallback(this::changeCallback)
-            .build();
+        .setDefaultValue(TooltipComponents.ALL)
+        .setTranslationKey("componentviewer.config.tooltip.components")
+        .setDescriptionTranslationKey("componentviewer.config.tooltip.components.description")
+        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER)
+        .setChangeCallback(this::changeCallback)
+        .build();
     public final BooleanOption tooltipComponentValues = BooleanOption.create("tooltip.component_values")
-            .setDefaultValue(true)
-            .setTranslationKey("componentviewer.config.tooltip.component_values")
-            .setDescriptionTranslationKey("componentviewer.config.tooltip.component_values.description")
-            .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER)
-            .setChangeCallback(this::changeCallback)
-            .build();
+        .setDefaultValue(true)
+        .setTranslationKey("componentviewer.config.tooltip.component_values")
+        .setDescriptionTranslationKey("componentviewer.config.tooltip.component_values.description")
+        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER)
+        .setChangeCallback(this::changeCallback)
+        .build();
     public final EnumOption<TooltipFormatting> tooltipFormatting = EnumOption.<TooltipFormatting>create("tooltip.formatting")
-            .setDefaultValue(TooltipFormatting.SNBT)
-            .setTranslationKey("componentviewer.config.tooltip.formatting")
-            .setDescriptionTranslationKey("componentviewer.config.tooltip.formatting.description")
-            .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipComponentValues.getBooleanValue())
-            .setChangeCallback(this::changeCallback)
-            .build();
+        .setDefaultValue(TooltipFormatting.SNBT)
+        .setTranslationKey("componentviewer.config.tooltip.formatting")
+        .setDescriptionTranslationKey("componentviewer.config.tooltip.formatting.description")
+        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipComponentValues.getBooleanValue())
+        .setChangeCallback(this::changeCallback)
+        .build();
     public final IntegerOption tooltipIndentation = IntegerOption.create("tooltip.indentation")
-            .setDefaultValue(4)
-            .setIntegerRange(0, 8)
-            .setTranslationKey("componentviewer.config.tooltip.indentation")
-            .setDescriptionTranslationKey("componentviewer.config.tooltip.indentation.description")
-            .setTranslationKeyOverwrite(value -> (value == 0) ? "componentviewer.config.tooltip.indentation.off" : "componentviewer.config.tooltip.indentation.value")
-            .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipComponentValues.getBooleanValue())
-            .setChangeCallback(this::changeCallback)
-            .build();
+        .setDefaultValue(4)
+        .setIntegerRange(0, 8)
+        .setTranslationKey("componentviewer.config.tooltip.indentation")
+        .setDescriptionTranslationKey("componentviewer.config.tooltip.indentation.description")
+        .setTranslationKeyOverwrite(value -> (value == 0) ? "componentviewer.config.tooltip.indentation.off" : "componentviewer.config.tooltip.indentation.value")
+        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipComponentValues.getBooleanValue())
+        .setChangeCallback(this::changeCallback)
+        .build();
     public final BooleanOption tooltipColoredValues = BooleanOption.create("tooltip.colored_values")
-            .setDefaultValue(true)
-            .setTranslationKey("componentviewer.config.tooltip.colored_values")
-            .setDescriptionTranslationKey("componentviewer.config.tooltip.colored_values.description")
-            .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipComponentValues.getBooleanValue())
-            .setChangeCallback(this::changeCallback)
-            .build();
+        .setDefaultValue(true)
+        .setTranslationKey("componentviewer.config.tooltip.colored_values")
+        .setDescriptionTranslationKey("componentviewer.config.tooltip.colored_values.description")
+        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipComponentValues.getBooleanValue())
+        .setChangeCallback(this::changeCallback)
+        .build();
     public final BooleanOption tooltipAdvancedTooltips = BooleanOption.create("tooltip.advanced_tooltips")
-            .setDefaultValue(false)
-            .setTranslationKey("componentviewer.config.tooltip.advanced_tooltips")
-            .setDescriptionTranslationKey("componentviewer.config.tooltip.advanced_tooltips.description")
-            .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER)
-            .setChangeCallback(this::changeCallback)
-            .build();
+        .setDefaultValue(false)
+        .setTranslationKey("componentviewer.config.tooltip.advanced_tooltips")
+        .setDescriptionTranslationKey("componentviewer.config.tooltip.advanced_tooltips.description")
+        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER)
+        .setChangeCallback(this::changeCallback)
+        .build();
     public final EnumOption<ClipboardCopy> clipboardCopy = EnumOption.<ClipboardCopy>create("clipboard.copy")
-            .setDefaultValue(ClipboardCopy.COMPONENT_VALUE)
-            .setTranslationKey("componentviewer.config.clipboard.copy")
-            .setDescriptionTranslationKey("componentviewer.config.clipboard.copy.description")
-            .setChangeCallback(this::changeCallback)
-            .build();
+        .setDefaultValue(ClipboardCopy.COMPONENT_VALUE)
+        .setTranslationKey("componentviewer.config.clipboard.copy")
+        .setDescriptionTranslationKey("componentviewer.config.clipboard.copy.description")
+        .setChangeCallback(this::changeCallback)
+        .build();
     public final EnumOption<ClipboardFormatting> clipboardFormatting = EnumOption.<ClipboardFormatting>create("clipboard.formatting")
-            .setDefaultValue(ClipboardFormatting.SYNC)
-            .setTranslationKey("componentviewer.config.clipboard.formatting")
-            .setDescriptionTranslationKey("componentviewer.config.clipboard.formatting.description")
-            .setDependency(() -> this.clipboardCopy.getValue() == ClipboardCopy.COMPONENT_VALUE)
-            .setChangeCallback(this::changeCallback)
-            .build();
+        .setDefaultValue(ClipboardFormatting.SYNC)
+        .setTranslationKey("componentviewer.config.clipboard.formatting")
+        .setDescriptionTranslationKey("componentviewer.config.clipboard.formatting.description")
+        .setDependency(() -> this.clipboardCopy.getValue() == ClipboardCopy.COMPONENT_VALUE)
+        .setChangeCallback(this::changeCallback)
+        .build();
     public final IntegerOption clipboardIndentation = IntegerOption.create("clipboard.indentation")
-            .setDefaultValue(-1)
-            .setIntegerRange(-1, 8)
-            .setTranslationKey("componentviewer.config.clipboard.indentation")
-            .setDescriptionTranslationKey("componentviewer.config.clipboard.indentation.description")
-            .setTranslationKeyOverwrite(value -> switch (Integer.signum(value)) {
-                case -1 -> "componentviewer.config.clipboard.indentation.sync";
-                case 0 -> "componentviewer.config.clipboard.indentation.off";
-                case 1 -> "componentviewer.config.clipboard.indentation.value";
-                default -> throw new IllegalStateException(String.format("Unexpected int value: %s", value));
-            })
-            .setDependency(() -> this.clipboardCopy.getValue() == ClipboardCopy.COMPONENT_VALUE)
-            .setChangeCallback(this::changeCallback)
-            .build();
+        .setDefaultValue(-1)
+        .setIntegerRange(-1, 8)
+        .setTranslationKey("componentviewer.config.clipboard.indentation")
+        .setDescriptionTranslationKey("componentviewer.config.clipboard.indentation.description")
+        .setTranslationKeyOverwrite(value -> switch (Integer.signum(value)) {
+            case -1 -> "componentviewer.config.clipboard.indentation.sync";
+            case 0 -> "componentviewer.config.clipboard.indentation.off";
+            case 1 -> "componentviewer.config.clipboard.indentation.value";
+            default -> throw new IllegalStateException(String.format("Unexpected int value: %s", value));
+        })
+        .setDependency(() -> this.clipboardCopy.getValue() == ClipboardCopy.COMPONENT_VALUE)
+        .setChangeCallback(this::changeCallback)
+        .build();
     public final BooleanOption clipboardPrependSlash = BooleanOption.create("clipboard.prepend_slash")
-            .setDefaultValue(true)
-            .setTranslationKey("componentviewer.config.clipboard.prepend_slash")
-            .setDescriptionTranslationKey("componentviewer.config.clipboard.prepend_slash.description")
-            .setDependency(() -> this.clipboardCopy.getValue() == ClipboardCopy.GIVE_COMMAND)
-            .setChangeCallback(this::changeCallback)
-            .build();
+        .setDefaultValue(true)
+        .setTranslationKey("componentviewer.config.clipboard.prepend_slash")
+        .setDescriptionTranslationKey("componentviewer.config.clipboard.prepend_slash.description")
+        .setDependency(() -> this.clipboardCopy.getValue() == ClipboardCopy.GIVE_COMMAND)
+        .setChangeCallback(this::changeCallback)
+        .build();
     public final BooleanOption clipboardIncludeCount = BooleanOption.create("clipboard.include_count")
-            .setDefaultValue(false)
-            .setTranslationKey("componentviewer.config.clipboard.include_count")
-            .setDescriptionTranslationKey("componentviewer.config.clipboard.include_count.description")
-            .setDependency(() -> this.clipboardCopy.getValue() == ClipboardCopy.GIVE_COMMAND)
-            .setChangeCallback(this::changeCallback)
-            .build();
+        .setDefaultValue(false)
+        .setTranslationKey("componentviewer.config.clipboard.include_count")
+        .setDescriptionTranslationKey("componentviewer.config.clipboard.include_count.description")
+        .setDependency(() -> this.clipboardCopy.getValue() == ClipboardCopy.GIVE_COMMAND)
+        .setChangeCallback(this::changeCallback)
+        .build();
     public final BooleanOption clipboardSuccessNotification = BooleanOption.create("clipboard.success_notification")
-            .setDefaultValue(true)
-            .setTranslationKey("componentviewer.config.clipboard.success_notification")
-            .setDescriptionTranslationKey("componentviewer.config.clipboard.success_notification.description")
-            .setDependency(() -> this.clipboardCopy.getValue() != ClipboardCopy.DISABLED)
-            .setChangeCallback(this::changeCallback)
-            .build();
+        .setDefaultValue(true)
+        .setTranslationKey("componentviewer.config.clipboard.success_notification")
+        .setDescriptionTranslationKey("componentviewer.config.clipboard.success_notification.description")
+        .setDependency(() -> this.clipboardCopy.getValue() != ClipboardCopy.DISABLED)
+        .setChangeCallback(this::changeCallback)
+        .build();
 }

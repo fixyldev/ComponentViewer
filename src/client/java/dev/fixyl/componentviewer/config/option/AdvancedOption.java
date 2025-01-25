@@ -32,11 +32,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
+
+import org.jetbrains.annotations.Nullable;
 
 public abstract class AdvancedOption<T> {
     private static final String ID_REGEX = "^[a-z]++(?:_[a-z]++)*+(?:\\.[a-z]++(?:_[a-z]++)*+)*+$";
@@ -69,11 +69,11 @@ public abstract class AdvancedOption<T> {
 
     protected final void postConstruct() {
         this.simpleOption = this.createSimpleOption(
-                this.translationKey,
-                this.tooltipFactory,
-                AdvancedOption.createValueTextGetter(this.translationKeyOverwrite, this::getDefaultValueTextGetter),
-                this.defaultValue,
-                this.changeCallback
+            this.translationKey,
+            this.tooltipFactory,
+            AdvancedOption.createValueTextGetter(this.translationKeyOverwrite, this::getDefaultValueTextGetter),
+            this.defaultValue,
+            this.changeCallback
         );
     }
 

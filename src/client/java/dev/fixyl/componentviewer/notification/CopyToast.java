@@ -24,8 +24,6 @@
 
 package dev.fixyl.componentviewer.notification;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -36,6 +34,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+
+import org.jetbrains.annotations.Nullable;
 
 public class CopyToast implements Toast {
     private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("toast/advancement");
@@ -100,14 +100,40 @@ public class CopyToast implements Toast {
 
     @Override
     public void draw(DrawContext drawContext, TextRenderer textRenderer, long startTime) {
-        drawContext.drawGuiTexture(RenderLayer::getGuiTextured, CopyToast.BACKGROUND_TEXTURE, 0, 0, this.getWidth(), this.getHeight());
+        drawContext.drawGuiTexture(
+            RenderLayer::getGuiTextured,
+            CopyToast.BACKGROUND_TEXTURE,
+            0,
+            0,
+            this.getWidth(),
+            this.getHeight()
+        );
 
         if (this.itemStack != null) {
-            drawContext.drawItemWithoutEntity(this.itemStack, CopyToast.ITEM_LEFT_MARGIN, CopyToast.ITEM_TOP_MARGIN);
+            drawContext.drawItemWithoutEntity(
+                this.itemStack,
+                CopyToast.ITEM_LEFT_MARGIN,
+                CopyToast.ITEM_TOP_MARGIN
+            );
         }
 
-        drawContext.drawText(textRenderer, Text.translatable(this.translationKey), this.textLeftMargin, CopyToast.TEXT_FIRST_ROW, this.firstRowColor, false);
-        drawContext.drawText(textRenderer, Text.translatable(this.toastType.translationKey), this.textLeftMargin, CopyToast.TEXT_SECOND_ROW, this.secondRowColor, false);
+        drawContext.drawText(
+            textRenderer,
+            Text.translatable(this.translationKey),
+            this.textLeftMargin,
+            CopyToast.TEXT_FIRST_ROW,
+            this.firstRowColor,
+            false
+        );
+
+        drawContext.drawText(
+            textRenderer,
+            Text.translatable(this.toastType.translationKey),
+            this.textLeftMargin,
+            CopyToast.TEXT_SECOND_ROW,
+            this.secondRowColor,
+            false
+        );
     }
 
     @Override

@@ -24,12 +24,12 @@
 
 package dev.fixyl.componentviewer.clipboard;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.Component;
 import net.minecraft.item.ItemStack;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import dev.fixyl.componentviewer.component.Components;
 import dev.fixyl.componentviewer.formatting.Formatter;
@@ -68,8 +68,8 @@ public class Clipboard {
         }
 
         commandString.append(Clipboard.GIVE_COMMAND_BASE)
-                .append(' ')
-                .append(itemStack.getItem());
+                     .append(' ')
+                     .append(itemStack.getItem());
 
         Components components = Components.getChangedComponents(itemStack);
 
@@ -85,7 +85,7 @@ public class Clipboard {
 
         if (includeCount) {
             commandString.append(' ')
-                    .append(itemStack.getCount());
+                         .append(itemStack.getCount());
         }
 
         this.setClipboard(commandString.toString());
@@ -117,11 +117,11 @@ public class Clipboard {
 
             if (components.isRemovedComponent(index)) {
                 componentString.append('!')
-                        .append(component.type());
+                               .append(component.type());
             } else {
                 componentString.append(component.type())
-                        .append('=')
-                        .append(this.snbtFormatter.componentToString(component, 0));
+                               .append('=')
+                               .append(this.snbtFormatter.componentToString(component, 0));
             }
 
             componentList.add(componentString.toString());

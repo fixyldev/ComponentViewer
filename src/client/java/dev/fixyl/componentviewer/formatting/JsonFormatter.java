@@ -58,12 +58,12 @@ public class JsonFormatter implements Formatter {
     private static final String STRING_ESCAPE_REPLACEMENT = "\\\\$0";
 
     private static final Map<JsonType, Style> JSON_STYLES = Map.ofEntries(
-            Map.entry(JsonType.SPECIAL, Style.EMPTY.withColor(Formatting.WHITE)),
-            Map.entry(JsonType.KEY, Style.EMPTY.withColor(Formatting.AQUA)),
-            Map.entry(JsonType.STRING, Style.EMPTY.withColor(Formatting.GREEN)),
-            Map.entry(JsonType.NUMBER, Style.EMPTY.withColor(Formatting.GOLD)),
-            Map.entry(JsonType.BOOLEAN, Style.EMPTY.withColor(Formatting.GOLD)),
-            Map.entry(JsonType.NULL, Style.EMPTY.withColor(Formatting.BLUE))
+        Map.entry(JsonType.SPECIAL, Style.EMPTY.withColor(Formatting.WHITE)),
+        Map.entry(JsonType.KEY, Style.EMPTY.withColor(Formatting.AQUA)),
+        Map.entry(JsonType.STRING, Style.EMPTY.withColor(Formatting.GREEN)),
+        Map.entry(JsonType.NUMBER, Style.EMPTY.withColor(Formatting.GOLD)),
+        Map.entry(JsonType.BOOLEAN, Style.EMPTY.withColor(Formatting.GOLD)),
+        Map.entry(JsonType.NULL, Style.EMPTY.withColor(Formatting.BLUE))
     );
 
     private final ResultCache<String> stringResultCache;
@@ -160,7 +160,10 @@ public class JsonFormatter implements Formatter {
         this.walkJson(jsonElement);
 
         if (this.indentLevel != 0) {
-            throw new FormattingException(String.format("Indent level must end up being zero! But it was %s.", this.indentLevel));
+            throw new FormattingException(String.format(
+                "Indent level must end up being zero! But it was %s.",
+                this.indentLevel
+            ));
         }
 
         if (!this.textLine.getString().isEmpty()) {
@@ -195,8 +198,8 @@ public class JsonFormatter implements Formatter {
                 Entry<String, JsonElement> entry = iterator.next();
 
                 this.textLine.append(Text.literal("\"").fillStyle(this.getStyle()))
-                        .append(Text.literal(entry.getKey()).fillStyle(this.getStyle(JsonType.KEY)))
-                        .append(Text.literal("\": ").fillStyle(this.getStyle()));
+                             .append(Text.literal(entry.getKey()).fillStyle(this.getStyle(JsonType.KEY)))
+                             .append(Text.literal("\": ").fillStyle(this.getStyle()));
                 this.walkJson(entry.getValue());
 
                 if (!iterator.hasNext()) {
@@ -242,8 +245,8 @@ public class JsonFormatter implements Formatter {
     private void processJsonPrimitive(JsonPrimitive jsonPrimitive) {
         if (jsonPrimitive.isString()) {
             this.textLine.append(Text.literal("\"").fillStyle(this.getStyle()))
-                    .append(Text.literal(JsonFormatter.escapeString(jsonPrimitive.getAsString())).fillStyle(this.getStyle(JsonType.STRING)))
-                    .append(Text.literal("\"").fillStyle(this.getStyle()));
+                         .append(Text.literal(JsonFormatter.escapeString(jsonPrimitive.getAsString())).fillStyle(this.getStyle(JsonType.STRING)))
+                         .append(Text.literal("\"").fillStyle(this.getStyle()));
         } else if (jsonPrimitive.isNumber()) {
             this.textLine.append(Text.literal(jsonPrimitive.getAsString()).fillStyle(this.getStyle(JsonType.NUMBER)));
         } else if (jsonPrimitive.isBoolean()) {

@@ -30,7 +30,6 @@ import java.util.function.Consumer;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.client.option.SimpleOption;
-import net.minecraft.client.option.SimpleOption.ValueTextGetter;
 import net.minecraft.text.Text;
 
 public class IntegerOption extends AdvancedOption<Integer> {
@@ -69,18 +68,18 @@ public class IntegerOption extends AdvancedOption<Integer> {
     @Override
     protected SimpleOption<Integer> createSimpleOption(String translationkey, SimpleOption.TooltipFactory<Integer> tooltipFactory, SimpleOption.ValueTextGetter<Integer> valueTextGetter, Integer defaultValue, Consumer<Integer> changeCallback) {
         return new SimpleOption<>(
-                translationkey,
-                tooltipFactory,
-                valueTextGetter,
-                new SimpleOption.ValidatingIntSliderCallbacks(this.minValue, this.maxValue),
-                Codec.intRange(this.minValue, this.maxValue),
-                defaultValue,
-                changeCallback
+            translationkey,
+            tooltipFactory,
+            valueTextGetter,
+            new SimpleOption.ValidatingIntSliderCallbacks(this.minValue, this.maxValue),
+            Codec.intRange(this.minValue, this.maxValue),
+            defaultValue,
+            changeCallback
         );
     }
 
     @Override
-    protected ValueTextGetter<Integer> getDefaultValueTextGetter() {
+    protected SimpleOption.ValueTextGetter<Integer> getDefaultValueTextGetter() {
         return (optionText, value) -> Text.empty();
     }
 

@@ -64,8 +64,8 @@ public final class ComponentViewer implements ClientModInitializer {
     private static void setInstance(ComponentViewer instance) {
         if (ComponentViewer.instance != null) {
             throw new IllegalStateException(String.format(
-                    "Cannot instantiate '%s' twice!",
-                    ComponentViewer.class.getName()
+                "Cannot instantiate '%s' twice!",
+                ComponentViewer.class.getName()
             ));
         }
 

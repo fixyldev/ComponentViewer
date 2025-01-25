@@ -27,7 +27,6 @@ package dev.fixyl.componentviewer.config.option;
 import java.util.function.Consumer;
 
 import net.minecraft.client.option.SimpleOption;
-import net.minecraft.client.option.SimpleOption.ValueTextGetter;
 
 public class BooleanOption extends AdvancedOption<Boolean> {
     private BooleanOption(BooleanOptionBuilder builder) {
@@ -48,16 +47,16 @@ public class BooleanOption extends AdvancedOption<Boolean> {
     @Override
     protected SimpleOption<Boolean> createSimpleOption(String translationkey, SimpleOption.TooltipFactory<Boolean> tooltipFactory, SimpleOption.ValueTextGetter<Boolean> valueTextGetter, Boolean defaultValue, Consumer<Boolean> changeCallback) {
         return SimpleOption.ofBoolean(
-                translationkey,
-                tooltipFactory,
-                valueTextGetter,
-                defaultValue,
-                changeCallback
+            translationkey,
+            tooltipFactory,
+            valueTextGetter,
+            defaultValue,
+            changeCallback
         );
     }
 
     @Override
-    protected ValueTextGetter<Boolean> getDefaultValueTextGetter() {
+    protected SimpleOption.ValueTextGetter<Boolean> getDefaultValueTextGetter() {
         return SimpleOption.BOOLEAN_TEXT_GETTER;
     }
 

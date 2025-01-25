@@ -67,10 +67,10 @@ public final class ControlFlow {
 
         if (this.configs.clipboardCopy.getValue() == ClipboardCopy.GIVE_COMMAND && shouldPerformCopyAction) {
             this.clipboard.copyGiveCommand(
-                    itemStack,
-                    this.configs.clipboardPrependSlash.getBooleanValue(),
-                    this.configs.clipboardIncludeCount.getBooleanValue(),
-                    this.configs.clipboardSuccessNotification.getBooleanValue()
+                itemStack,
+                this.configs.clipboardPrependSlash.getBooleanValue(),
+                this.configs.clipboardIncludeCount.getBooleanValue(),
+                this.configs.clipboardSuccessNotification.getBooleanValue()
             );
         }
 
@@ -96,20 +96,20 @@ public final class ControlFlow {
         int tooltipIndentation = this.configs.tooltipIndentation.getIntValue();
 
         tooltip.addSpacer().addComponentValue(
-                selectedComponent,
-                this.getTooltipFormatter(selectedComponent),
-                tooltipIndentation,
-                this.configs.tooltipColoredValues.getBooleanValue()
+            selectedComponent,
+            this.getTooltipFormatter(selectedComponent),
+            tooltipIndentation,
+            this.configs.tooltipColoredValues.getBooleanValue()
         );
 
         if (this.configs.clipboardCopy.getValue() == ClipboardCopy.COMPONENT_VALUE && shouldPerformCopyAction) {
             int clipboardIndentation = this.configs.clipboardIndentation.getIntValue();
 
             this.clipboard.copyComponentValue(
-                    selectedComponent,
-                    this.getClipboardFormatter(selectedComponent),
-                    (clipboardIndentation == -1) ? tooltipIndentation : clipboardIndentation,
-                    this.configs.clipboardSuccessNotification.getBooleanValue()
+                selectedComponent,
+                this.getClipboardFormatter(selectedComponent),
+                (clipboardIndentation == -1) ? tooltipIndentation : clipboardIndentation,
+                this.configs.clipboardSuccessNotification.getBooleanValue()
             );
         }
     }

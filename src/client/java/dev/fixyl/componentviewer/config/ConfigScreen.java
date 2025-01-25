@@ -31,14 +31,14 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import org.jetbrains.annotations.Nullable;
-
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.option.GameOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.text.Text;
+
+import org.jetbrains.annotations.Nullable;
 
 import dev.fixyl.componentviewer.config.option.AdvancedOption;
 
@@ -50,9 +50,9 @@ public abstract class ConfigScreen extends GameOptionsScreen {
 
     protected ConfigScreen(Screen parentScreen, @Nullable String translationKey) {
         super(
-                parentScreen,
-                MinecraftClient.getInstance().options,
-                Text.translatable(Objects.toString(translationKey))
+            parentScreen,
+            MinecraftClient.getInstance().options,
+            Text.translatable(Objects.toString(translationKey))
         );
 
         this.queuedWidgets = new ArrayList<>();
@@ -61,11 +61,11 @@ public abstract class ConfigScreen extends GameOptionsScreen {
 
     protected final void addConfig(AdvancedOption<?> option) {
         ClickableWidget optionWidget = option.getSimpleOption().createWidget(
-                this.gameOptions,
-                0,
-                0,
-                ConfigScreen.WIDGET_WIDTH,
-                value -> this.updateOptionWidgets()
+            this.gameOptions,
+            0,
+            0,
+            ConfigScreen.WIDGET_WIDTH,
+            value -> this.updateOptionWidgets()
         );
 
         ConfigScreen.updateOptionWidget(optionWidget, option);
@@ -82,8 +82,8 @@ public abstract class ConfigScreen extends GameOptionsScreen {
 
     protected final void addRedirect(@Nullable String translationKey, Supplier<Screen> screenSupplier) {
         this.queuedWidgets.add(ButtonWidget.builder(
-                Text.translatable(Objects.toString(translationKey)),
-                buttonWidget -> this.client.setScreen(screenSupplier.get())
+            Text.translatable(Objects.toString(translationKey)),
+            buttonWidget -> this.client.setScreen(screenSupplier.get())
         ).build());
     }
 
@@ -95,16 +95,16 @@ public abstract class ConfigScreen extends GameOptionsScreen {
 
     protected abstract void addElements();
 
-    private void deployWidgets() {
+    private final void deployWidgets() {
         this.body.addAll(this.queuedWidgets);
         this.queuedWidgets.clear();
     }
 
-    private void updateOptionWidgets() {
+    private final void updateOptionWidgets() {
         this.options.forEach(ConfigScreen::updateOptionWidget);
     }
 
-    private static <T> void updateOptionWidget(ClickableWidget optionWidget, AdvancedOption<T> option) {
+    private static final <T> void updateOptionWidget(ClickableWidget optionWidget, AdvancedOption<T> option) {
         boolean active = option.isDependencyFulfilled();
 
         optionWidget.active = active;

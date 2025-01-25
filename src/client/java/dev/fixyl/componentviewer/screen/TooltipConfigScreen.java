@@ -40,13 +40,13 @@ public class TooltipConfigScreen extends ConfigScreen {
         Configs configs = ComponentViewer.getInstance().configs;
 
         this.addConfigs(
-                configs.tooltipDisplay,
-                configs.tooltipComponents,
-                configs.tooltipComponentValues,
-                configs.tooltipFormatting,
-                configs.tooltipIndentation,
-                configs.tooltipColoredValues,
-                configs.tooltipAdvancedTooltips
+            configs.tooltipDisplay,
+            configs.tooltipComponents,
+            configs.tooltipComponentValues,
+            configs.tooltipFormatting,
+            configs.tooltipIndentation,
+            configs.tooltipColoredValues,
+            configs.tooltipAdvancedTooltips
         );
     }
 }

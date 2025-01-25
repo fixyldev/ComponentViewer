@@ -44,24 +44,24 @@ import dev.fixyl.componentviewer.util.ResultCache;
 
 public class ObjectFormatter implements Formatter {
     private static final Map<TokenType, Style> TOKEN_STYLES = Map.ofEntries(
-            Map.entry(TokenType.ANY, Style.EMPTY.withColor(Formatting.AQUA)),
-            Map.entry(TokenType.SPECIAL, Style.EMPTY.withColor(Formatting.WHITE)),
-            Map.entry(TokenType.OPENING_BRACKET, Style.EMPTY.withColor(Formatting.WHITE)),
-            Map.entry(TokenType.CLOSING_BRACKET, Style.EMPTY.withColor(Formatting.WHITE)),
-            Map.entry(TokenType.COMMA, Style.EMPTY.withColor(Formatting.WHITE)),
-            Map.entry(TokenType.QUOTE, Style.EMPTY.withColor(Formatting.WHITE)),
-            Map.entry(TokenType.STRING, Style.EMPTY.withColor(Formatting.GREEN)),
-            Map.entry(TokenType.INTEGER, Style.EMPTY.withColor(Formatting.GOLD)),
-            Map.entry(TokenType.FLOAT, Style.EMPTY.withColor(Formatting.GOLD)),
-            Map.entry(TokenType.HEX, Style.EMPTY.withColor(Formatting.GOLD)),
-            Map.entry(TokenType.BOOLEAN, Style.EMPTY.withColor(Formatting.GOLD)),
-            Map.entry(TokenType.NULL, Style.EMPTY.withColor(Formatting.BLUE))
+        Map.entry(TokenType.ANY, Style.EMPTY.withColor(Formatting.AQUA)),
+        Map.entry(TokenType.SPECIAL, Style.EMPTY.withColor(Formatting.WHITE)),
+        Map.entry(TokenType.OPENING_BRACKET, Style.EMPTY.withColor(Formatting.WHITE)),
+        Map.entry(TokenType.CLOSING_BRACKET, Style.EMPTY.withColor(Formatting.WHITE)),
+        Map.entry(TokenType.COMMA, Style.EMPTY.withColor(Formatting.WHITE)),
+        Map.entry(TokenType.QUOTE, Style.EMPTY.withColor(Formatting.WHITE)),
+        Map.entry(TokenType.STRING, Style.EMPTY.withColor(Formatting.GREEN)),
+        Map.entry(TokenType.INTEGER, Style.EMPTY.withColor(Formatting.GOLD)),
+        Map.entry(TokenType.FLOAT, Style.EMPTY.withColor(Formatting.GOLD)),
+        Map.entry(TokenType.HEX, Style.EMPTY.withColor(Formatting.GOLD)),
+        Map.entry(TokenType.BOOLEAN, Style.EMPTY.withColor(Formatting.GOLD)),
+        Map.entry(TokenType.NULL, Style.EMPTY.withColor(Formatting.BLUE))
     );
 
     private static final Map<Character, Character> BRACKET_PAIR = Map.of(
-            '(', ')',
-            '{', '}',
-            '[', ']'
+        '(', ')',
+        '{', '}',
+        '[', ']'
     );
 
     private final ResultCache<String> stringResultCache;
@@ -209,7 +209,10 @@ public class ObjectFormatter implements Formatter {
         }
 
         if (this.indentLevel != 0) {
-            throw new FormattingException(String.format("Indent level must end up being zero! But it was %s.", this.indentLevel));
+            throw new FormattingException(String.format(
+                "Indent level must end up being zero! But it was %s.",
+                this.indentLevel
+            ));
         }
     }
 
@@ -244,7 +247,10 @@ public class ObjectFormatter implements Formatter {
         char bracketCharacter = this.currentToken.content().charAt(0);
 
         if (this.bracketHistory.isEmpty() || !ObjectFormatter.BRACKET_PAIR.get(this.bracketHistory.getLast()).equals(bracketCharacter)) {
-            throw new FormattingException(String.format("Unexpected bracket '%s' encountered! Either no pair was to be closed, or a different bracket opened this pair.", bracketCharacter));
+            throw new FormattingException(String.format(
+                "Unexpected bracket '%s' encountered! Either no pair was to be closed, or a different bracket opened this pair.",
+                bracketCharacter
+            ));
         }
 
         this.bracketHistory.removeLast();
@@ -355,11 +361,7 @@ public class ObjectFormatter implements Formatter {
         }
 
         private Matcher getMatcherFromPattern(Pattern pattern) {
-            if (!this.patternMatcherMap.containsKey(pattern)) {
-                this.patternMatcherMap.put(pattern, pattern.matcher(this.currentString));
-            }
-
-            return this.patternMatcherMap.get(pattern);
+            return this.patternMatcherMap.computeIfAbsent(pattern, key -> key.matcher(this.currentString));
         }
 
         private void processCharacter() {
@@ -487,9 +489,9 @@ public class ObjectFormatter implements Formatter {
         }
 
         private boolean matchNumber() {
-            return this.matchRegex(Tokenizer.NON_WORD_DOT_DASH_CHAR_PATTERN, Tokenizer.INTEGER_PATTERN, TokenType.INTEGER) ||
-                   this.matchRegex(Tokenizer.NON_WORD_DOT_DASH_CHAR_PATTERN, Tokenizer.FLOAT_PATTERN, TokenType.FLOAT) ||
-                   this.matchRegex(Tokenizer.NON_WORD_DOT_CHAR_PATTERN, Tokenizer.HEX_PATTERN, TokenType.HEX);
+            return this.matchRegex(Tokenizer.NON_WORD_DOT_DASH_CHAR_PATTERN, Tokenizer.INTEGER_PATTERN, TokenType.INTEGER)
+                || this.matchRegex(Tokenizer.NON_WORD_DOT_DASH_CHAR_PATTERN, Tokenizer.FLOAT_PATTERN, TokenType.FLOAT)
+                || this.matchRegex(Tokenizer.NON_WORD_DOT_CHAR_PATTERN, Tokenizer.HEX_PATTERN, TokenType.HEX);
         }
 
         private boolean matchBoolean() {
@@ -557,26 +559,26 @@ public class ObjectFormatter implements Formatter {
         }
 
         private static boolean isQuoteCharacter(char ch) {
-            return ch == '"' ||
-                   ch == '\'';
+            return ch == '"'
+                || ch == '\'';
         }
 
         private static boolean isCurlyBracketStringBeginCharacter(char ch) {
-            return ch == 'k' ||
-                   ch == 'l' ||
-                   ch == 'p';
+            return ch == 'k'
+                || ch == 'l'
+                || ch == 'p';
         }
 
         private static boolean isNumberCharacter(char ch) {
-            return ch >= '0' && ch <= '9' ||
-                   ch >= 'A' && ch <= 'F' ||
-                   ch >= 'a' && ch <= 'f' ||
-                   ch == '-';
+            return ch >= '0' && ch <= '9'
+                || ch >= 'A' && ch <= 'F'
+                || ch >= 'a' && ch <= 'f'
+                || ch == '-';
         }
 
         private static boolean isBooleanCharacter(char ch) {
-            return ch == 'f' ||
-                   ch == 't';
+            return ch == 'f'
+                || ch == 't';
         }
 
         private static boolean isNullCharacter(char ch) {

@@ -24,6 +24,8 @@
 
 package dev.fixyl.componentviewer.notification;
 
+import java.util.Objects;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
@@ -34,8 +36,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.TranslatableOption;
-
-import java.util.Objects;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -91,10 +91,32 @@ public class EnumOptionToast<E extends Enum<E> & TranslatableOption> implements 
 
     @Override
     public void draw(DrawContext drawContext, TextRenderer textRenderer, long startTime) {
-        drawContext.drawGuiTexture(RenderLayer::getGuiTextured, EnumOptionToast.BACKGROUND_TEXTURE, 0, 0, this.getWidth(), this.getHeight());
+        drawContext.drawGuiTexture(
+            RenderLayer::getGuiTextured,
+            EnumOptionToast.BACKGROUND_TEXTURE,
+            0,
+            0,
+            this.getWidth(),
+            this.getHeight()
+        );
 
-        drawContext.drawText(textRenderer, Text.translatable(this.translationKey), EnumOptionToast.TEXT_LEFT_MARGIN, EnumOptionToast.TEXT_FIRST_ROW, EnumOptionToast.FIRST_ROW_COLOR, false);
-        drawContext.drawText(textRenderer, Text.translatable(this.option.getValue().getTranslationKey()), EnumOptionToast.TEXT_LEFT_MARGIN, EnumOptionToast.TEXT_SECOND_ROW, EnumOptionToast.SECOND_ROW_COLOR, false);
+        drawContext.drawText(
+            textRenderer,
+            Text.translatable(this.translationKey),
+            EnumOptionToast.TEXT_LEFT_MARGIN,
+            EnumOptionToast.TEXT_FIRST_ROW,
+            EnumOptionToast.FIRST_ROW_COLOR,
+            false
+        );
+
+        drawContext.drawText(
+            textRenderer,
+            Text.translatable(this.option.getValue().getTranslationKey()),
+            EnumOptionToast.TEXT_LEFT_MARGIN,
+            EnumOptionToast.TEXT_SECOND_ROW,
+            EnumOptionToast.SECOND_ROW_COLOR,
+            false
+        );
     }
 
     public static <E extends Enum<E> & TranslatableOption> EnumOptionToast<E> dispatch(EnumOption<E> option, @Nullable String translationKey) {

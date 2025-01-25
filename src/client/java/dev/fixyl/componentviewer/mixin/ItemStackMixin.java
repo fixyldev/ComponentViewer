@@ -27,18 +27,18 @@ package dev.fixyl.componentviewer.mixin;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
+import net.minecraft.text.Text;
+
 import org.jetbrains.annotations.Nullable;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item.TooltipContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
-import net.minecraft.text.Text;
 
 import dev.fixyl.componentviewer.event.TooltipCallback;
 import dev.fixyl.componentviewer.tooltip.Tooltip;
@@ -47,7 +47,7 @@ import dev.fixyl.componentviewer.util.Lists;
 @Mixin(value = ItemStack.class, priority = Integer.MAX_VALUE)
 public abstract class ItemStackMixin {
     @Inject(method = "getTooltip", at = @At(value = "RETURN"), cancellable = true)
-    private void getTooltip(TooltipContext context, @Nullable PlayerEntity player, TooltipType type, CallbackInfoReturnable<List<Text>> returnValue) {
+    private void getTooltip(Item.TooltipContext context, @Nullable PlayerEntity player, TooltipType type, CallbackInfoReturnable<List<Text>> returnValue) {
         if (player == null) {
             return;
         }

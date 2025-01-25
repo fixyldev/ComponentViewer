@@ -67,9 +67,9 @@ public final class ConfigManager {
         this.configFile = FabricLoader.getInstance().getConfigDir().resolve(configFilename).toFile();
         this.configAdapter = new ConfigAdapter();
         this.gson = new GsonBuilder()
-                .registerTypeAdapter(ConfigHelper.class, this.configAdapter)
-                .setPrettyPrinting()
-                .create();
+            .registerTypeAdapter(ConfigHelper.class, this.configAdapter)
+            .setPrettyPrinting()
+            .create();
     }
 
     public void addOptions(Options options) {
@@ -80,8 +80,8 @@ public final class ConfigManager {
             }
 
             ComponentViewer.getInstance().logger.warn(
-                    "Duplicate config identifier '{}' present! All config identifiers within a ConfigManager's context frame should be unique!",
-                    option.getId()
+                "Duplicate config identifier '{}' present! All config identifiers within a ConfigManager's context frame should be unique!",
+                option.getId()
             );
         }
     }
@@ -89,8 +89,8 @@ public final class ConfigManager {
     public void readFromFile() {
         if (!this.configFile.exists()) {
             ComponentViewer.getInstance().logger.info(
-                    "Config file '{}' not found! Creating new config file.",
-                    this.configFile.getAbsolutePath()
+                "Config file '{}' not found! Creating new config file.",
+                this.configFile.getAbsolutePath()
             );
             this.writeToFile();
             return;
@@ -105,15 +105,15 @@ public final class ConfigManager {
 
             if (configHelper.doConfigRewrite()) {
                 ComponentViewer.getInstance().logger.info(
-                        "Re-writing config file '{}'.",
-                        this.configFile.getAbsolutePath()
+                    "Re-writing config file '{}'.",
+                    this.configFile.getAbsolutePath()
                 );
                 this.writeToFile();
             }
         } catch (IOException | JsonParseException e) {
             ComponentViewer.getInstance().logger.error(String.format(
-                    "Error when reading config file '%s'! Re-writing config file.",
-                    this.configFile.getAbsoluteFile()
+                "Error when reading config file '%s'! Re-writing config file.",
+                this.configFile.getAbsoluteFile()
             ), e);
             this.writeToFile();
         }
@@ -124,8 +124,8 @@ public final class ConfigManager {
             this.gson.toJson(new ConfigHelper(), configFileWriter);
         } catch (IOException | JsonIOException e) {
             ComponentViewer.getInstance().logger.error(String.format(
-                    "Error when writing config file '%s'! Some configs won't be saved across sessions!",
-                    this.configFile.getAbsolutePath()
+                "Error when writing config file '%s'! Some configs won't be saved across sessions!",
+                this.configFile.getAbsolutePath()
             ), e);
         }
     }
@@ -149,8 +149,8 @@ public final class ConfigManager {
                             node.add(path[index], nextNode);
                         } else if (!nextNode.isJsonObject()) {
                             throw new JsonSyntaxException(String.format(
-                                    "Equally named key '%s' as non-JSON object already present",
-                                    path[index]
+                                "Equally named key '%s' as non-JSON object already present",
+                                path[index]
                             ));
                         }
 
@@ -158,8 +158,8 @@ public final class ConfigManager {
                     }
                 } catch (JsonSyntaxException e) {
                     ComponentViewer.getInstance().logger.error(String.format(
-                            "Can't serialize config '%s'! Config won't be saved across sessions!",
-                            option.getId()
+                        "Can't serialize config '%s'! Config won't be saved across sessions!",
+                        option.getId()
                     ), e);
                     continue;
                 }
@@ -205,8 +205,8 @@ public final class ConfigManager {
                     config.setValue(context.deserialize(keyNode, config.getType()));
                 } catch (JsonParseException e) {
                     ComponentViewer.getInstance().logger.error(String.format(
-                            "Can't parse config '%s'! Using in-memory reference instead.",
-                            config.getId()
+                        "Can't parse config '%s'! Using in-memory reference instead.",
+                        config.getId()
                     ), e);
                     doConfigRewrite = true;
                 }

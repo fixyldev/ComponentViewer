@@ -32,7 +32,6 @@ import java.util.function.IntFunction;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.client.option.SimpleOption;
-import net.minecraft.client.option.SimpleOption.ValueTextGetter;
 import net.minecraft.util.TranslatableOption;
 import net.minecraft.util.function.ValueLists;
 
@@ -67,17 +66,17 @@ public class EnumOption<E extends Enum<E> & TranslatableOption> extends Advanced
     @Override
     protected SimpleOption<E> createSimpleOption(String translationkey, SimpleOption.TooltipFactory<E> tooltipFactory, SimpleOption.ValueTextGetter<E> valueTextGetter, E defaultValue, Consumer<E> changeCallback) {
         return new SimpleOption<>(
-                translationkey,
-                tooltipFactory,
-                valueTextGetter,
-                new SimpleOption.PotentialValuesBasedCallbacks<>(Arrays.asList(this.getEnumConstants()), Codec.INT.xmap(this::getEnumById, E::getId)),
-                defaultValue,
-                changeCallback
+            translationkey,
+            tooltipFactory,
+            valueTextGetter,
+            new SimpleOption.PotentialValuesBasedCallbacks<>(Arrays.asList(this.getEnumConstants()), Codec.INT.xmap(this::getEnumById, E::getId)),
+            defaultValue,
+            changeCallback
         );
     }
 
     @Override
-    protected ValueTextGetter<E> getDefaultValueTextGetter() {
+    protected SimpleOption.ValueTextGetter<E> getDefaultValueTextGetter() {
         return SimpleOption.enumValueText();
     }
 

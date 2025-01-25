@@ -40,12 +40,12 @@ public class ClipboardConfigScreen extends ConfigScreen {
         Configs configs = ComponentViewer.getInstance().configs;
 
         this.addConfigs(
-                configs.clipboardCopy,
-                configs.clipboardFormatting,
-                configs.clipboardIndentation,
-                configs.clipboardPrependSlash,
-                configs.clipboardIncludeCount,
-                configs.clipboardSuccessNotification
+            configs.clipboardCopy,
+            configs.clipboardFormatting,
+            configs.clipboardIndentation,
+            configs.clipboardPrependSlash,
+            configs.clipboardIncludeCount,
+            configs.clipboardSuccessNotification
         );
     }
 }

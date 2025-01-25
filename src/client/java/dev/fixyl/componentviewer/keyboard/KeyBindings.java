@@ -24,12 +24,12 @@
 
 package dev.fixyl.componentviewer.keyboard;
 
-import org.lwjgl.glfw.GLFW;
-
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.option.KeyBinding;
+
+import org.lwjgl.glfw.GLFW;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Configs;
@@ -50,12 +50,12 @@ public final class KeyBindings {
 
     public KeyBindings() {
         KeyBindings.register(
-                this.configScreenKey,
-                this.tooltipDisplayConfigKey,
-                this.tooltipComponentsConfigKey,
-                this.tooltipFormattingConfigKey,
-                this.clipboardCopyConfigKey,
-                this.clipboardFormattingConfigKey
+            this.configScreenKey,
+            this.tooltipDisplayConfigKey,
+            this.tooltipComponentsConfigKey,
+            this.tooltipFormattingConfigKey,
+            this.clipboardCopyConfigKey,
+            this.clipboardFormattingConfigKey
         );
     }
 
@@ -76,38 +76,38 @@ public final class KeyBindings {
     }
 
     public final AdvancedKeyBinding configScreenKey = new AdvancedKeyBinding(
-            "componentviewer.keybind.general.config_screen",
-            GLFW.GLFW_KEY_J,
-            KeyBindings.GENERAL_CATEGORY
+        "componentviewer.keybind.general.config_screen",
+        GLFW.GLFW_KEY_J,
+        KeyBindings.GENERAL_CATEGORY
     );
     public final EnumOptionKeyBinding<TooltipDisplay> tooltipDisplayConfigKey = new EnumOptionKeyBinding<>(
-            "componentviewer.keybind.config.tooltip_display",
-            GLFW.GLFW_KEY_UNKNOWN,
-            KeyBindings.CONFIG_CATEGORY,
-            this.configs.tooltipDisplay
+        "componentviewer.keybind.config.tooltip_display",
+        GLFW.GLFW_KEY_UNKNOWN,
+        KeyBindings.CONFIG_CATEGORY,
+        this.configs.tooltipDisplay
     );
     public final EnumOptionKeyBinding<TooltipComponents> tooltipComponentsConfigKey = new EnumOptionKeyBinding<>(
-            "componentviewer.keybind.config.tooltip_components",
-            GLFW.GLFW_KEY_UNKNOWN,
-            KeyBindings.CONFIG_CATEGORY,
-            this.configs.tooltipComponents
+        "componentviewer.keybind.config.tooltip_components",
+        GLFW.GLFW_KEY_UNKNOWN,
+        KeyBindings.CONFIG_CATEGORY,
+        this.configs.tooltipComponents
     );
     public final EnumOptionKeyBinding<TooltipFormatting> tooltipFormattingConfigKey = new EnumOptionKeyBinding<>(
-            "componentviewer.keybind.config.tooltip_formatting",
-            GLFW.GLFW_KEY_UNKNOWN,
-            KeyBindings.CONFIG_CATEGORY,
-            this.configs.tooltipFormatting
+        "componentviewer.keybind.config.tooltip_formatting",
+        GLFW.GLFW_KEY_UNKNOWN,
+        KeyBindings.CONFIG_CATEGORY,
+        this.configs.tooltipFormatting
     );
     public final EnumOptionKeyBinding<ClipboardCopy> clipboardCopyConfigKey = new EnumOptionKeyBinding<>(
-            "componentviewer.keybind.config.clipboard_copy",
-            GLFW.GLFW_KEY_UNKNOWN,
-            KeyBindings.CONFIG_CATEGORY,
-            this.configs.clipboardCopy
+        "componentviewer.keybind.config.clipboard_copy",
+        GLFW.GLFW_KEY_UNKNOWN,
+        KeyBindings.CONFIG_CATEGORY,
+        this.configs.clipboardCopy
     );
     public final EnumOptionKeyBinding<ClipboardFormatting> clipboardFormattingConfigKey = new EnumOptionKeyBinding<>(
-            "componentviewer.keybind.config.clipboard_formatting",
-            GLFW.GLFW_KEY_UNKNOWN,
-            KeyBindings.CONFIG_CATEGORY,
-            this.configs.clipboardFormatting
+        "componentviewer.keybind.config.clipboard_formatting",
+        GLFW.GLFW_KEY_UNKNOWN,
+        KeyBindings.CONFIG_CATEGORY,
+        this.configs.clipboardFormatting
     );
 }
