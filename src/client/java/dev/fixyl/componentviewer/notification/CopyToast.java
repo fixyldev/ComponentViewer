@@ -79,7 +79,7 @@ public class CopyToast implements Toast {
 
         this.textLeftMargin = (itemStack == null) ? TEXT_LEFT_MARGIN : TEXT_LEFT_MARGIN_WITH_ITEM;
 
-        this.visibility = Toast.Visibility.HIDE;
+        this.visibility = Toast.Visibility.SHOW;
     }
 
     public CopyToast(CopyToast.Type type) {
@@ -93,9 +93,9 @@ public class CopyToast implements Toast {
 
     @Override
     public void update(ToastManager toastManager, long elapsedTime) {
-        double totalDuration = CopyToast.DURATION * toastManager.getNotificationDisplayTimeMultiplier();
+        double actualDuration = CopyToast.DURATION * toastManager.getNotificationDisplayTimeMultiplier();
 
-        this.visibility = (elapsedTime < totalDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
+        this.visibility = (elapsedTime < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
     }
 
     @Override
@@ -129,11 +129,15 @@ public class CopyToast implements Toast {
         }
     }
 
-    public static void dispatch(CopyToast.Type type, @Nullable ItemStack itemStack) {
-        MinecraftClient.getInstance().getToastManager().add(new CopyToast(type, itemStack));
+    public static CopyToast dispatch(CopyToast.Type type, @Nullable ItemStack itemStack) {
+        CopyToast toast = new CopyToast(type, itemStack);
+
+        MinecraftClient.getInstance().getToastManager().add(toast);
+
+        return toast;
     }
 
-    public static void dispatch(CopyToast.Type type) {
-        MinecraftClient.getInstance().getToastManager().add(new CopyToast(type));
+    public static CopyToast dispatch(CopyToast.Type type) {
+        return CopyToast.dispatch(type, null);
     }
 }

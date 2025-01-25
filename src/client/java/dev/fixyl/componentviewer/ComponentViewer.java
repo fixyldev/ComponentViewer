@@ -34,7 +34,6 @@ import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.control.ControlFlow;
 import dev.fixyl.componentviewer.event.TooltipCallback;
 import dev.fixyl.componentviewer.keyboard.KeyBindings;
-import dev.fixyl.componentviewer.screen.MainConfigScreen;
 
 public final class ComponentViewer implements ClientModInitializer {
     private static ComponentViewer instance;
@@ -55,11 +54,7 @@ public final class ComponentViewer implements ClientModInitializer {
         TooltipCallback.EVENT.register(controlFlow::onTooltip);
 
         KeyBindings keyBindings = new KeyBindings();
-        ClientTickEvents.END_CLIENT_TICK.register(minecraftClient -> {
-            if (keyBindings.configKey.isPressed()) {
-                minecraftClient.setScreen(new MainConfigScreen(null));
-            }
-        });
+        ClientTickEvents.END_CLIENT_TICK.register(keyBindings::onClientTick);
     }
 
     public static ComponentViewer getInstance() {

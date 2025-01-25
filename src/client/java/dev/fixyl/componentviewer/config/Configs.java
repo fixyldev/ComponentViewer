@@ -38,10 +38,9 @@ import dev.fixyl.componentviewer.option.TooltipFormatting;
 public final class Configs implements Options {
     private static final String CONFIG_FILENAME = "componentviewer-config.json";
 
-    private final ConfigManager configManager;
+    private final ConfigManager configManager = new ConfigManager(Configs.CONFIG_FILENAME);
 
     public Configs() {
-        this.configManager = new ConfigManager(Configs.CONFIG_FILENAME);
         this.configManager.addOptions(this);
         this.configManager.readFromFile();
     }
@@ -66,9 +65,7 @@ public final class Configs implements Options {
     }
 
     private <T> void changeCallback(T value) {
-        if (this.configManager != null) {
-            this.configManager.writeToFile();
-        }
+        this.configManager.writeToFile();
     }
 
     public final EnumOption<TooltipDisplay> tooltipDisplay = EnumOption.<TooltipDisplay>create("tooltip.display")

@@ -58,6 +58,12 @@ public class EnumOption<E extends Enum<E> & TranslatableOption> extends Advanced
         return this.enumClass.getEnumConstants();
     }
 
+    public void cycleValue() {
+        int nextId = this.simpleOption.getValue().getId() + 1;
+        E nextValue = this.getEnumById(nextId);
+        this.simpleOption.setValue(nextValue);
+    }
+
     @Override
     protected SimpleOption<E> createSimpleOption(String translationkey, SimpleOption.TooltipFactory<E> tooltipFactory, SimpleOption.ValueTextGetter<E> valueTextGetter, E defaultValue, Consumer<E> changeCallback) {
         return new SimpleOption<>(

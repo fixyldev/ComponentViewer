@@ -95,6 +95,10 @@ public abstract class AdvancedOption<T> {
         return this.id;
     }
 
+    public String getTranslationKey() {
+        return this.translationKey;
+    }
+
     public T getValue() {
         return this.simpleOption.getValue();
     }
