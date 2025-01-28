@@ -29,8 +29,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.mojang.serialization.Codec;
+
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.component.Component;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.visitor.NbtTextFormatter;
@@ -39,9 +40,11 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.text.MutableText;
 
+import org.jetbrains.annotations.Nullable;
+
 import dev.fixyl.componentviewer.util.ResultCache;
 
-public class SnbtFormatter implements Formatter {
+public class SnbtFormatter implements CodecBasedFormatter {
     private static final String NO_CODEC_REPR = "{}";
     private static final Style NO_CODEC_REPR_STYLE = Style.EMPTY.withColor(Formatting.WHITE);
 
@@ -54,27 +57,27 @@ public class SnbtFormatter implements Formatter {
     }
 
     @Override
-    public <T> String componentToString(Component<T> component, int indentation, String linePrefix) {
+    public <T> String codecToString(T value, @Nullable Codec<T> codec, int indentation, String linePrefix) {
         return this.stringResultCache.cache(() -> {
-            if (component.type().getCodec() == null) {
+            if (codec == null) {
                 return linePrefix + SnbtFormatter.NO_CODEC_REPR;
             }
 
-            String formattedString = SnbtFormatter.getFormattedText(component, indentation).getString();
+            String formattedString = SnbtFormatter.getFormattedText(value, codec, indentation).getString();
 
             if (!linePrefix.isEmpty()) {
                 return linePrefix + formattedString.replace("\n", System.lineSeparator() + linePrefix);
             }
 
             return formattedString;
-        }, component, indentation, linePrefix);
+        }, value, codec, indentation, linePrefix);
     }
 
     @Override
-    public <T> List<Text> componentToText(Component<T> component, int indentation, boolean colored, String linePrefix) {
+    public <T> List<Text> codecToText(T value, @Nullable Codec<T> codec, int indentation, boolean colored, String linePrefix) {
         return Collections.unmodifiableList(this.textResultCache.cache(() -> {
-            if (component.type().getCodec() != null) {
-                Text text = SnbtFormatter.getFormattedText(component, indentation);
+            if (codec != null) {
+                Text text = SnbtFormatter.getFormattedText(value, codec, indentation);
                 return SnbtFormatter.convertToTextList(text, colored, linePrefix);
             }
 
@@ -90,15 +93,15 @@ public class SnbtFormatter implements Formatter {
             }
 
             return List.of(startOfLine.append(noCodecText));
-        }, component, indentation, colored, linePrefix));
+        }, value, codec, indentation, colored, linePrefix));
     }
 
-    private static Text getFormattedText(Component<?> component, int indentation) {
+    private static <T> Text getFormattedText(T value, Codec<T> codec, int indentation) {
         String prefix = " ".repeat(indentation);
 
         NbtTextFormatter nbtTextFormatter = new NbtTextFormatter(prefix);
 
-        NbtElement nbtElement = component.encode(MinecraftClient.getInstance().player.getRegistryManager().getOps(NbtOps.INSTANCE)).getOrThrow(FormattingException::new);
+        NbtElement nbtElement = codec.encodeStart(MinecraftClient.getInstance().player.getRegistryManager().getOps(NbtOps.INSTANCE), value).getOrThrow(FormattingException::new);
 
         return nbtTextFormatter.apply(nbtElement);
     }

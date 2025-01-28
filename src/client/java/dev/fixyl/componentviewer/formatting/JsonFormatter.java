@@ -39,19 +39,20 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.component.Component;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import org.jetbrains.annotations.Nullable;
+
 import dev.fixyl.componentviewer.util.ResultCache;
 
-public class JsonFormatter implements Formatter {
+public class JsonFormatter implements CodecBasedFormatter {
     private static final String NO_CODEC_REPR = "{}";
 
     private static final Pattern STRING_ESCAPE_PATTERN = Pattern.compile("[\\\\\"]");
@@ -92,17 +93,20 @@ public class JsonFormatter implements Formatter {
     }
 
     @Override
-    public <T> String componentToString(Component<T> component, int indentation, String linePrefix) {
+    public <T> String codecToString(T value, @Nullable Codec<T> codec, int indentation, String linePrefix) {
         return this.stringResultCache.cache(() -> {
-            List<Text> formattedTextList = this.getFormattedTextList(component, indentation, false, linePrefix);
+            List<Text> formattedTextList = this.getFormattedTextList(value, codec, indentation, false, linePrefix);
 
             return formattedTextList.stream().map(Text::getString).collect(Collectors.joining(System.lineSeparator()));
-        }, component, indentation, linePrefix);
+        }, value, codec, indentation, linePrefix);
     }
 
     @Override
-    public <T> List<Text> componentToText(Component<T> component, int indentation, boolean colored, String linePrefix) {
-        return Collections.unmodifiableList(this.textResultCache.cache(() -> this.getFormattedTextList(component, indentation, colored, linePrefix), component, indentation, colored, linePrefix));
+    public <T> List<Text> codecToText(T value, @Nullable Codec<T> codec, int indentation, boolean colored, String linePrefix) {
+        return Collections.unmodifiableList(this.textResultCache.cache(
+            () -> this.getFormattedTextList(value, codec, indentation, colored, linePrefix),
+            value, codec, indentation, colored, linePrefix
+        ));
     }
 
     private Style getStyle(JsonType jsonType) {
@@ -141,7 +145,7 @@ public class JsonFormatter implements Formatter {
         return this.newLinePrefixCache.computeIfAbsent(this.indentLevel, key -> this.linePrefix + this.indentPrefix.repeat(key));
     }
 
-    private <T> List<Text> getFormattedTextList(Component<T> component, int indentation, boolean colored, String linePrefix) {
+    private <T> List<Text> getFormattedTextList(T value, @Nullable Codec<T> codec, int indentation, boolean colored, String linePrefix) {
         this.updateNewLinePrefix(indentation, linePrefix);
         this.colored = colored;
 
@@ -149,13 +153,13 @@ public class JsonFormatter implements Formatter {
         this.textLine = Text.literal(linePrefix);
         this.indentLevel = 0;
 
-        if (component.type().getCodec() == null) {
+        if (codec == null) {
             this.textLine.append(Text.literal(JsonFormatter.NO_CODEC_REPR).fillStyle(this.getStyle()));
             this.textList.add(this.textLine);
             return this.textList;
         }
 
-        JsonElement jsonElement = component.encode(MinecraftClient.getInstance().player.getRegistryManager().getOps(JsonOps.INSTANCE)).getOrThrow(FormattingException::new);
+        JsonElement jsonElement = codec.encodeStart(MinecraftClient.getInstance().player.getRegistryManager().getOps(JsonOps.INSTANCE), value).getOrThrow(FormattingException::new);
 
         this.walkJson(jsonElement);
 
