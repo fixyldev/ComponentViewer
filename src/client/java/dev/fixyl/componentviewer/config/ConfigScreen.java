@@ -59,9 +59,8 @@ public abstract class ConfigScreen extends GameOptionsScreen {
         this.options = new HashMap<>();
     }
 
-    protected final void addConfig(AdvancedOption<?> option) {
-        ClickableWidget optionWidget = option.getSimpleOption().createWidget(
-            this.gameOptions,
+    protected final <T> void addConfig(AdvancedOption<T> option) {
+        ClickableWidget optionWidget = option.createWidget(
             0,
             0,
             ConfigScreen.WIDGET_WIDTH,

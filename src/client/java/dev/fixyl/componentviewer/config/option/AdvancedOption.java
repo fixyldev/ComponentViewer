@@ -32,7 +32,9 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.tooltip.Tooltip;
+import net.minecraft.client.gui.widget.ClickableWidget;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
 
@@ -87,10 +89,6 @@ public abstract class AdvancedOption<T> {
         throw new IllegalStateException("AdvancedOption doesn't have a type although it's necessary?");
     }
 
-    public SimpleOption<T> getSimpleOption() {
-        return this.simpleOption;
-    }
-
     public String getId() {
         return this.id;
     }
@@ -122,6 +120,16 @@ public abstract class AdvancedOption<T> {
 
     public Tooltip getTooltip() {
         return this.tooltipFactory.apply(this.getValue());
+    }
+
+    public ClickableWidget createWidget(int x, int y, int width, Consumer<T> changeCallback) {
+        return this.simpleOption.createWidget(
+            MinecraftClient.getInstance().options,
+            x,
+            y,
+            width,
+            changeCallback
+        );
     }
 
     public boolean isDependent() {

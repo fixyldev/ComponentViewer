@@ -24,6 +24,8 @@
 
 package dev.fixyl.componentviewer.config;
 
+import org.slf4j.Logger;
+
 import dev.fixyl.componentviewer.config.option.AdvancedOption;
 import dev.fixyl.componentviewer.config.option.BooleanOption;
 import dev.fixyl.componentviewer.config.option.EnumOption;
@@ -38,9 +40,10 @@ import dev.fixyl.componentviewer.option.TooltipFormatting;
 public final class Configs implements Options {
     private static final String CONFIG_FILENAME = "componentviewer-config.json";
 
-    private final ConfigManager configManager = new ConfigManager(Configs.CONFIG_FILENAME);
+    private final ConfigManager configManager;
 
-    public Configs() {
+    public Configs(Logger logger) {
+        this.configManager = new ConfigManager(Configs.CONFIG_FILENAME, logger);
         this.configManager.addOptions(this);
         this.configManager.readFromFile();
     }

@@ -45,7 +45,7 @@ public final class ComponentViewer implements ClientModInitializer {
         ComponentViewer.setInstance(this);
 
         this.logger = LoggerFactory.getLogger(this.getClass());
-        this.configs = new Configs();
+        this.configs = new Configs(this.logger);
     }
 
     @Override
