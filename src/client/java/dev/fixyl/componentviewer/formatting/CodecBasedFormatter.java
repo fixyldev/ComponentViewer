@@ -29,6 +29,7 @@ import java.util.List;
 import com.mojang.serialization.Codec;
 
 import net.minecraft.component.Component;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 
 import org.jetbrains.annotations.Nullable;
@@ -54,5 +55,15 @@ public interface CodecBasedFormatter extends Formatter {
     @Override
     public default <T> List<Text> componentToText(Component<T> component, int indentation, boolean colored, String linePrefix) {
         return this.codecToText(component.value(), component.type().getCodec(), indentation, colored, linePrefix);
+    }
+
+    @Override
+    public default String itemStackToString(ItemStack itemStack, int indentation, String linePrefix) {
+        return this.codecToString(itemStack, ItemStack.CODEC, indentation, linePrefix);
+    }
+
+    @Override
+    public default List<Text> itemStackToText(ItemStack itemStack, int indentation, boolean colored, String linePrefix) {
+        return this.codecToText(itemStack, ItemStack.CODEC, indentation, colored, linePrefix);
     }
 }

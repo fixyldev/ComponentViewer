@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.minecraft.component.Component;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -50,15 +51,15 @@ public class Tooltip {
     private static final String CONTENT_INDENTATION = " ";
 
     private static final Map<TooltipComponents, String> COMPONENT_SELECTION_TRANSLATION_KEYS = Map.of(
-        TooltipComponents.ALL, "componentviewer.tooltip.component.selection.all",
-        TooltipComponents.DEFAULT, "componentviewer.tooltip.component.selection.default",
-        TooltipComponents.CHANGES, "componentviewer.tooltip.component.selection.changes"
+        TooltipComponents.ALL, "componentviewer.tooltip.purpose.components.selection.all",
+        TooltipComponents.DEFAULT, "componentviewer.tooltip.purpose.components.selection.default",
+        TooltipComponents.CHANGES, "componentviewer.tooltip.purpose.components.selection.changes"
     );
 
     private static final Map<TooltipComponents, String> EMPTY_COMPONENT_SELECTION_TRANSLATION_KEYS = Map.of(
-        TooltipComponents.ALL, "componentviewer.tooltip.component.selection.all.empty",
-        TooltipComponents.DEFAULT, "componentviewer.tooltip.component.selection.default.empty",
-        TooltipComponents.CHANGES, "componentviewer.tooltip.component.selection.changes.empty"
+        TooltipComponents.ALL, "componentviewer.tooltip.purpose.components.selection.all.empty",
+        TooltipComponents.DEFAULT, "componentviewer.tooltip.purpose.components.selection.default.empty",
+        TooltipComponents.CHANGES, "componentviewer.tooltip.purpose.components.selection.changes.empty"
     );
 
     private final List<Text> lines;
@@ -117,14 +118,30 @@ public class Tooltip {
     }
 
     public <T> Tooltip addComponentValue(Component<T> component, Formatter formatter, int formattingIndentation, boolean coloredFormatting) {
-        this.addHeader("componentviewer.tooltip.component.value");
+        this.addHeader("componentviewer.tooltip.purpose.components.value");
 
         try {
             this.lines.addAll(formatter.componentToText(component, formattingIndentation, coloredFormatting, Tooltip.CONTENT_INDENTATION));
         } catch (FormattingException e) {
-            this.lines.add(Text.literal(Tooltip.CONTENT_INDENTATION).append(Text.translatable("componentviewer.tooltip.component.value.formatting_exception").fillStyle(Tooltip.ERROR_STYLE)));
+            this.addFormattingException();
         }
 
         return this;
+    }
+
+    public Tooltip addItemStack(ItemStack itemStack, Formatter formatter, int formattingIndentation, boolean coloredFormatting) {
+        this.addHeader("componentviewer.tooltip.purpose.item_stack");
+
+        try {
+            this.lines.addAll(formatter.itemStackToText(itemStack, formattingIndentation, coloredFormatting, Tooltip.CONTENT_INDENTATION));
+        } catch (FormattingException e) {
+            this.addFormattingException();
+        }
+
+        return this;
+    }
+
+    private void addFormattingException() {
+        this.lines.add(Text.literal(Tooltip.CONTENT_INDENTATION).append(Text.translatable("componentviewer.tooltip.formatting_exception").fillStyle(Tooltip.ERROR_STYLE)));
     }
 }

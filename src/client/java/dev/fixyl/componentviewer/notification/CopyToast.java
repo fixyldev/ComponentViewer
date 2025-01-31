@@ -143,6 +143,7 @@ public class CopyToast implements Toast {
 
     public enum Type {
         COMPONENT_VALUE("componentviewer.notification.toast.copy.type.component_value", true),
+        ITEM_STACK("componentviewer.notification.toast.copy.type.item_stack", true),
         GIVE_COMMAND("componentviewer.notification.toast.copy.type.give_command", true),
         FORMATTING_EXCEPTION("componentviewer.notification.toast.copy.type.formatting_exception", false);
 

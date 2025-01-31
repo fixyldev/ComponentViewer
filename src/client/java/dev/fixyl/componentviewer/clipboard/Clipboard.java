@@ -60,6 +60,20 @@ public class Clipboard {
         }
     }
 
+    public void copyItemStack(ItemStack itemStack, Formatter formatter, int indentation, boolean successNotification) {
+        try {
+            String itemStackString = formatter.itemStackToString(itemStack, indentation);
+            this.setClipboard(itemStackString);
+        } catch (FormattingException e) {
+            CopyToast.dispatch(CopyToast.Type.FORMATTING_EXCEPTION);
+            return;
+        }
+
+        if (successNotification) {
+            CopyToast.dispatch(CopyToast.Type.ITEM_STACK, itemStack);
+        }
+    }
+
     public void copyGiveCommand(ItemStack itemStack, boolean prependSlash, boolean includeCount, boolean successNotification) {
         StringBuilder commandString = new StringBuilder();
 

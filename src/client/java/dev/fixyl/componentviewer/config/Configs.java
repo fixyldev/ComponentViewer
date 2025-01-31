@@ -24,6 +24,8 @@
 
 package dev.fixyl.componentviewer.config;
 
+import java.util.EnumSet;
+
 import org.slf4j.Logger;
 
 import dev.fixyl.componentviewer.config.option.AdvancedOption;
@@ -36,6 +38,7 @@ import dev.fixyl.componentviewer.option.ClipboardFormatting;
 import dev.fixyl.componentviewer.option.TooltipComponents;
 import dev.fixyl.componentviewer.option.TooltipDisplay;
 import dev.fixyl.componentviewer.option.TooltipFormatting;
+import dev.fixyl.componentviewer.option.TooltipPurpose;
 
 public final class Configs implements Options {
     private static final String CONFIG_FILENAME = "componentviewer-config.json";
@@ -52,11 +55,12 @@ public final class Configs implements Options {
     public AdvancedOption<?>[] getOptions() {
         return new AdvancedOption<?>[] {
             this.tooltipDisplay,
+            this.tooltipPurpose,
             this.tooltipComponents,
             this.tooltipComponentValues,
             this.tooltipFormatting,
             this.tooltipIndentation,
-            this.tooltipColoredValues,
+            this.tooltipColoredFormatting,
             this.tooltipAdvancedTooltips,
             this.clipboardCopy,
             this.clipboardFormatting,
@@ -77,25 +81,32 @@ public final class Configs implements Options {
         .setDescriptionTranslationKey("componentviewer.config.tooltip.display.description")
         .setChangeCallback(this::changeCallback)
         .build();
+    public final EnumOption<TooltipPurpose> tooltipPurpose = EnumOption.<TooltipPurpose>create("tooltip.purpose")
+        .setDefaultValue(TooltipPurpose.COMPONENTS)
+        .setTranslationKey("componentviewer.config.tooltip.purpose")
+        .setDescriptionTranslationKey("componentviewer.config.tooltip.purpose.description")
+        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER)
+        .setChangeCallback(this::changeCallback)
+        .build();
     public final EnumOption<TooltipComponents> tooltipComponents = EnumOption.<TooltipComponents>create("tooltip.components")
         .setDefaultValue(TooltipComponents.ALL)
         .setTranslationKey("componentviewer.config.tooltip.components")
         .setDescriptionTranslationKey("componentviewer.config.tooltip.components.description")
-        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER)
+        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS)
         .setChangeCallback(this::changeCallback)
         .build();
     public final BooleanOption tooltipComponentValues = BooleanOption.create("tooltip.component_values")
         .setDefaultValue(true)
         .setTranslationKey("componentviewer.config.tooltip.component_values")
         .setDescriptionTranslationKey("componentviewer.config.tooltip.component_values.description")
-        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER)
+        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS)
         .setChangeCallback(this::changeCallback)
         .build();
     public final EnumOption<TooltipFormatting> tooltipFormatting = EnumOption.<TooltipFormatting>create("tooltip.formatting")
         .setDefaultValue(TooltipFormatting.SNBT)
         .setTranslationKey("componentviewer.config.tooltip.formatting")
         .setDescriptionTranslationKey("componentviewer.config.tooltip.formatting.description")
-        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipComponentValues.getBooleanValue())
+        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && ((this.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS && this.tooltipComponentValues.getBooleanValue()) || this.tooltipPurpose.getValue() == TooltipPurpose.ITEM_STACK))
         .setChangeCallback(this::changeCallback)
         .build();
     public final IntegerOption tooltipIndentation = IntegerOption.create("tooltip.indentation")
@@ -104,14 +115,14 @@ public final class Configs implements Options {
         .setTranslationKey("componentviewer.config.tooltip.indentation")
         .setDescriptionTranslationKey("componentviewer.config.tooltip.indentation.description")
         .setTranslationKeyOverwrite(value -> (value == 0) ? "componentviewer.config.tooltip.indentation.off" : "componentviewer.config.tooltip.indentation.value")
-        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipComponentValues.getBooleanValue())
+        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && ((this.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS && this.tooltipComponentValues.getBooleanValue()) || this.tooltipPurpose.getValue() == TooltipPurpose.ITEM_STACK))
         .setChangeCallback(this::changeCallback)
         .build();
-    public final BooleanOption tooltipColoredValues = BooleanOption.create("tooltip.colored_values")
+    public final BooleanOption tooltipColoredFormatting = BooleanOption.create("tooltip.colored_formatting")
         .setDefaultValue(true)
-        .setTranslationKey("componentviewer.config.tooltip.colored_values")
-        .setDescriptionTranslationKey("componentviewer.config.tooltip.colored_values.description")
-        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && this.tooltipComponentValues.getBooleanValue())
+        .setTranslationKey("componentviewer.config.tooltip.colored_formatting")
+        .setDescriptionTranslationKey("componentviewer.config.tooltip.colored_formatting.description")
+        .setDependency(() -> this.tooltipDisplay.getValue() != TooltipDisplay.NEVER && ((this.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS && this.tooltipComponentValues.getBooleanValue()) || this.tooltipPurpose.getValue() == TooltipPurpose.ITEM_STACK))
         .setChangeCallback(this::changeCallback)
         .build();
     public final BooleanOption tooltipAdvancedTooltips = BooleanOption.create("tooltip.advanced_tooltips")
@@ -131,7 +142,7 @@ public final class Configs implements Options {
         .setDefaultValue(ClipboardFormatting.SYNC)
         .setTranslationKey("componentviewer.config.clipboard.formatting")
         .setDescriptionTranslationKey("componentviewer.config.clipboard.formatting.description")
-        .setDependency(() -> this.clipboardCopy.getValue() == ClipboardCopy.COMPONENT_VALUE)
+        .setDependency(() -> EnumSet.of(ClipboardCopy.COMPONENT_VALUE, ClipboardCopy.ITEM_STACK).contains(this.clipboardCopy.getValue()))
         .setChangeCallback(this::changeCallback)
         .build();
     public final IntegerOption clipboardIndentation = IntegerOption.create("clipboard.indentation")
@@ -145,7 +156,7 @@ public final class Configs implements Options {
             case 1 -> "componentviewer.config.clipboard.indentation.value";
             default -> throw new IllegalStateException(String.format("Unexpected int value: %s", value));
         })
-        .setDependency(() -> this.clipboardCopy.getValue() == ClipboardCopy.COMPONENT_VALUE)
+        .setDependency(() -> EnumSet.of(ClipboardCopy.COMPONENT_VALUE, ClipboardCopy.ITEM_STACK).contains(this.clipboardCopy.getValue()))
         .setChangeCallback(this::changeCallback)
         .build();
     public final BooleanOption clipboardPrependSlash = BooleanOption.create("clipboard.prepend_slash")

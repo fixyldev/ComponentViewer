@@ -35,6 +35,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.minecraft.component.Component;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
@@ -101,29 +102,43 @@ public class ObjectFormatter implements Formatter {
 
     @Override
     public <T> String componentToString(Component<T> component, int indentation, String linePrefix) {
-        return this.stringResultCache.cache(() -> {
-            String componentValue = component.value().toString();
-
-            if (indentation <= 0) {
-                return linePrefix + componentValue;
-            }
-
-            List<Token> tokenList = this.tokenizer.tokenize(componentValue);
-
-            return this.formatTokensAsString(tokenList, indentation, linePrefix);
-        }, component, indentation, linePrefix);
+        return this.valueToString(component.value().toString(), indentation, linePrefix);
     }
 
     @Override
     public <T> List<Text> componentToText(Component<T> component, int indentation, boolean colored, String linePrefix) {
-        return Collections.unmodifiableList(this.textResultCache.cache(() -> {
-            String componentValue = component.value().toString();
+        return this.valueToText(component.value().toString(), indentation, colored, linePrefix);
+    }
 
-            if (indentation <= 0 && !colored) {
-                return List.of(Text.literal(linePrefix + componentValue).fillStyle(Formatter.NO_COLOR_STYLE));
+    @Override
+    public String itemStackToString(ItemStack itemStack, int indentation, String linePrefix) {
+        return this.valueToString(itemStack.toString(), indentation, linePrefix);
+    }
+
+    @Override
+    public List<Text> itemStackToText(ItemStack itemStack, int indentation, boolean colored, String linePrefix) {
+        return this.valueToText(itemStack.toString(), indentation, colored, linePrefix);
+    }
+
+    private String valueToString(String value, int indentation, String linePrefix) {
+        return this.stringResultCache.cache(() -> {
+            if (indentation <= 0) {
+                return linePrefix + value;
             }
 
-            List<Token> tokenList = this.tokenizer.tokenize(componentValue);
+            List<Token> tokenList = this.tokenizer.tokenize(value);
+
+            return this.formatTokensAsString(tokenList, indentation, linePrefix);
+        }, value, indentation, linePrefix);
+    }
+
+    private List<Text> valueToText(String value, int indentation, boolean colored, String linePrefix) {
+        return Collections.unmodifiableList(this.textResultCache.cache(() -> {
+            if (indentation <= 0 && !colored) {
+                return List.of(Text.literal(linePrefix + value).fillStyle(Formatter.NO_COLOR_STYLE));
+            }
+
+            List<Token> tokenList = this.tokenizer.tokenize(value);
 
             if (indentation <= 0) {
                 MutableText line = Text.literal(linePrefix);
@@ -136,7 +151,7 @@ public class ObjectFormatter implements Formatter {
             }
 
             return this.formatTokensAsText(tokenList, indentation, colored, linePrefix);
-        }, component, indentation, colored, linePrefix));
+        }, value, indentation, colored, linePrefix));
     }
 
     private String formatTokensAsString(List<Token> tokens, int indentation, String linePrefix) {

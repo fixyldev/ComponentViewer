@@ -40,6 +40,7 @@ import dev.fixyl.componentviewer.option.ClipboardFormatting;
 import dev.fixyl.componentviewer.option.TooltipComponents;
 import dev.fixyl.componentviewer.option.TooltipDisplay;
 import dev.fixyl.componentviewer.option.TooltipFormatting;
+import dev.fixyl.componentviewer.option.TooltipPurpose;
 import dev.fixyl.componentviewer.screen.MainConfigScreen;
 
 public final class KeyBindings {
@@ -52,6 +53,7 @@ public final class KeyBindings {
         KeyBindings.register(
             this.configScreenKey,
             this.tooltipDisplayConfigKey,
+            this.tooltipPurposeConfigKey,
             this.tooltipComponentsConfigKey,
             this.tooltipFormattingConfigKey,
             this.clipboardCopyConfigKey,
@@ -63,6 +65,7 @@ public final class KeyBindings {
         this.configScreenKey.onPressed(() -> minecraftClient.setScreen(new MainConfigScreen(null)));
 
         this.tooltipDisplayConfigKey.cycleValueOnPressed();
+        this.tooltipPurposeConfigKey.cycleValueOnPressed();
         this.tooltipComponentsConfigKey.cycleValueOnPressed();
         this.tooltipFormattingConfigKey.cycleValueOnPressed();
         this.clipboardCopyConfigKey.cycleValueOnPressed();
@@ -85,6 +88,12 @@ public final class KeyBindings {
         GLFW.GLFW_KEY_UNKNOWN,
         KeyBindings.CONFIG_CATEGORY,
         this.configs.tooltipDisplay
+    );
+    public final EnumOptionKeyBinding<TooltipPurpose> tooltipPurposeConfigKey = new EnumOptionKeyBinding<>(
+        "componentviewer.keybind.config.tooltip_purpose",
+        GLFW.GLFW_KEY_UNKNOWN,
+        KeyBindings.CONFIG_CATEGORY,
+        this.configs.tooltipPurpose
     );
     public final EnumOptionKeyBinding<TooltipComponents> tooltipComponentsConfigKey = new EnumOptionKeyBinding<>(
         "componentviewer.keybind.config.tooltip_components",

@@ -30,6 +30,8 @@ import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 
+import org.jetbrains.annotations.Nullable;
+
 import dev.fixyl.componentviewer.clipboard.Clipboard;
 import dev.fixyl.componentviewer.component.Components;
 import dev.fixyl.componentviewer.config.Configs;
@@ -39,6 +41,7 @@ import dev.fixyl.componentviewer.formatting.ObjectFormatter;
 import dev.fixyl.componentviewer.formatting.SnbtFormatter;
 import dev.fixyl.componentviewer.option.ClipboardCopy;
 import dev.fixyl.componentviewer.option.TooltipDisplay;
+import dev.fixyl.componentviewer.option.TooltipPurpose;
 import dev.fixyl.componentviewer.tooltip.Tooltip;
 
 public final class ControlFlow {
@@ -65,52 +68,28 @@ public final class ControlFlow {
     public void onTooltip(ItemStack itemStack, Tooltip tooltip, TooltipType tooltipType) {
         boolean shouldPerformCopyAction = this.stateManager.shouldPerformCopyAction();
 
-        if (this.configs.clipboardCopy.getValue() == ClipboardCopy.GIVE_COMMAND && shouldPerformCopyAction) {
-            this.clipboard.copyGiveCommand(
-                itemStack,
-                this.configs.clipboardPrependSlash.getBooleanValue(),
-                this.configs.clipboardIncludeCount.getBooleanValue(),
-                this.configs.clipboardSuccessNotification.getBooleanValue()
-            );
+        if (shouldPerformCopyAction) {
+            ClipboardCopy clipboardCopy = this.configs.clipboardCopy.getValue();
+
+            if (clipboardCopy == ClipboardCopy.ITEM_STACK) {
+                this.copyItemStack(itemStack);
+            } else if (clipboardCopy == ClipboardCopy.GIVE_COMMAND) {
+                this.copyGiveCommand(itemStack);
+            }
         }
 
         if (!this.shouldDisplayToolip(tooltipType)) {
             return;
         }
 
-        Components components = this.getComponents(itemStack);
-        int selectedComponentIndex = this.stateManager.cycleSelectedComponentIndex(components.size());
-        boolean tooltipComponentValues = this.configs.tooltipComponentValues.getBooleanValue();
-
         if (!tooltip.isEmpty()) {
             tooltip.addSpacer();
         }
 
-        tooltip.addComponentSelection(components, (tooltipComponentValues) ? selectedComponentIndex : -1);
-
-        if (components.isEmpty() || !tooltipComponentValues) {
-            return;
-        }
-
-        Component<?> selectedComponent = components.get(selectedComponentIndex);
-        int tooltipIndentation = this.configs.tooltipIndentation.getIntValue();
-
-        tooltip.addSpacer().addComponentValue(
-            selectedComponent,
-            this.getTooltipFormatter(selectedComponent),
-            tooltipIndentation,
-            this.configs.tooltipColoredValues.getBooleanValue()
-        );
-
-        if (this.configs.clipboardCopy.getValue() == ClipboardCopy.COMPONENT_VALUE && shouldPerformCopyAction) {
-            int clipboardIndentation = this.configs.clipboardIndentation.getIntValue();
-
-            this.clipboard.copyComponentValue(
-                selectedComponent,
-                this.getClipboardFormatter(selectedComponent),
-                (clipboardIndentation == -1) ? tooltipIndentation : clipboardIndentation,
-                this.configs.clipboardSuccessNotification.getBooleanValue()
-            );
+        if (this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS) {
+            this.handleComponentPurpose(itemStack, tooltip, shouldPerformCopyAction);
+        } else {
+            this.handleItemStackPurpose(itemStack, tooltip);
         }
     }
 
@@ -123,6 +102,67 @@ public final class ControlFlow {
         return tooltipType.isAdvanced() || !this.configs.tooltipAdvancedTooltips.getBooleanValue();
     }
 
+    private void handleComponentPurpose(ItemStack itemStack, Tooltip tooltip, boolean shouldPerformCopyAction) {
+        Components components = this.getComponents(itemStack);
+        int selectedComponentIndex = this.stateManager.cycleSelectedComponentIndex(components.size());
+        boolean tooltipComponentValues = this.configs.tooltipComponentValues.getBooleanValue();
+
+        tooltip.addComponentSelection(components, (tooltipComponentValues) ? selectedComponentIndex : -1);
+
+        if (components.isEmpty() || !tooltipComponentValues) {
+            return;
+        }
+
+        Component<?> selectedComponent = components.get(selectedComponentIndex);
+
+        tooltip.addSpacer().addComponentValue(
+            selectedComponent,
+            this.getTooltipFormatter(selectedComponent),
+            this.getTooltipIndentation(),
+            this.configs.tooltipColoredFormatting.getBooleanValue()
+        );
+
+        if (shouldPerformCopyAction && this.configs.clipboardCopy.getValue() == ClipboardCopy.COMPONENT_VALUE) {
+            this.copyComponentValue(selectedComponent);
+        }
+    }
+
+    private void handleItemStackPurpose(ItemStack itemStack, Tooltip tooltip) {
+        tooltip.addItemStack(
+            itemStack,
+            this.getTooltipFormatter(),
+            this.configs.tooltipIndentation.getIntValue(),
+            this.configs.tooltipColoredFormatting.getBooleanValue()
+        );
+    }
+
+    private <T> void copyComponentValue(Component<T> component) {
+        this.clipboard.copyComponentValue(
+            component,
+            this.getClipboardFormatter(component),
+            this.getClipboardIndentation(),
+            this.configs.clipboardSuccessNotification.getBooleanValue()
+        );
+    }
+
+    private void copyItemStack(ItemStack itemStack) {
+        this.clipboard.copyItemStack(
+            itemStack,
+            this.getClipboardFormatter(),
+            this.getClipboardIndentation(),
+            this.configs.clipboardSuccessNotification.getBooleanValue()
+        );
+    }
+
+    private void copyGiveCommand(ItemStack itemStack) {
+        this.clipboard.copyGiveCommand(
+            itemStack,
+            this.configs.clipboardPrependSlash.getBooleanValue(),
+            this.configs.clipboardIncludeCount.getBooleanValue(),
+            this.configs.clipboardSuccessNotification.getBooleanValue()
+        );
+    }
+
     private Components getComponents(ItemStack itemStack) {
         return switch (this.configs.tooltipComponents.getValue()) {
             case ALL -> Components.getAllComponents(itemStack);
@@ -131,20 +171,38 @@ public final class ControlFlow {
         };
     }
 
-    private <T> Formatter getTooltipFormatter(Component<T> component) {
+    private Formatter getTooltipFormatter() {
+        return this.getTooltipFormatter(null);
+    }
+
+    private <T> Formatter getTooltipFormatter(@Nullable Component<T> component) {
         return switch (this.configs.tooltipFormatting.getValue()) {
             case SNBT -> this.snbtFormatter;
             case JSON -> this.jsonFormatter;
-            case OBJECT -> (component.value() instanceof NbtComponent) ? this.snbtFormatter : this.objectFormatter;
+            case OBJECT -> (component != null && component.value() instanceof NbtComponent) ? this.snbtFormatter : this.objectFormatter;
         };
     }
 
-    private <T> Formatter getClipboardFormatter(Component<T> component) {
+    private Formatter getClipboardFormatter() {
+        return this.getClipboardFormatter(null);
+    }
+
+    private <T> Formatter getClipboardFormatter(@Nullable Component<T> component) {
         return switch (this.configs.clipboardFormatting.getValue()) {
             case SYNC -> this.getTooltipFormatter(component);
             case SNBT -> this.snbtFormatter;
             case JSON -> this.jsonFormatter;
-            case OBJECT -> (component.value() instanceof NbtComponent) ? this.snbtFormatter : this.objectFormatter;
+            case OBJECT -> (component != null && component.value() instanceof NbtComponent) ? this.snbtFormatter : this.objectFormatter;
         };
+    }
+
+    private int getTooltipIndentation() {
+        return this.configs.tooltipIndentation.getIntValue();
+    }
+
+    private int getClipboardIndentation() {
+        int clipboardIndentation = this.configs.clipboardIndentation.getIntValue();
+
+        return (clipboardIndentation == -1) ? this.getTooltipIndentation() : clipboardIndentation;
     }
 }

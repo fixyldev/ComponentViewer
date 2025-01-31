@@ -29,9 +29,9 @@ import com.google.gson.annotations.SerializedName;
 import net.minecraft.util.TranslatableOption;
 
 public enum TooltipDisplay implements TranslatableOption {
-    @SerializedName("never") NEVER(0, "componentviewer.config.tooltip.display.never"),
-    @SerializedName("hold") HOLD(1, "componentviewer.config.tooltip.display.hold"),
-    @SerializedName("always") ALWAYS(2, "componentviewer.config.tooltip.display.always");
+    @SerializedName("hold") HOLD(0, "componentviewer.config.tooltip.display.hold"),
+    @SerializedName("always") ALWAYS(1, "componentviewer.config.tooltip.display.always"),
+    @SerializedName("never") NEVER(2, "componentviewer.config.tooltip.display.never");
 
     private final int id;
     private final String translationKey;

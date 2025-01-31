@@ -27,6 +27,7 @@ package dev.fixyl.componentviewer.formatting;
 import java.util.List;
 
 import net.minecraft.component.Component;
+import net.minecraft.item.ItemStack;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
@@ -38,11 +39,23 @@ public interface Formatter {
 
     public <T> List<Text> componentToText(Component<T> component, int indentation, boolean colored, String linePrefix);
 
+    public String itemStackToString(ItemStack itemStack, int indentation, String linePrefix);
+
+    public List<Text> itemStackToText(ItemStack itemStack, int indentation, boolean colored, String linePrefix);
+
     public default <T> String componentToString(Component<T> component, int indentation) {
         return this.componentToString(component, indentation, "");
     }
 
     public default <T> List<Text> componentToText(Component<T> component, int indentation, boolean colored) {
         return this.componentToText(component, indentation, colored, "");
+    }
+
+    public default String itemStackToString(ItemStack itemStack, int indentation) {
+        return this.itemStackToString(itemStack, indentation, "");
+    }
+
+    public default List<Text> itemStackToText(ItemStack itemStack, int indentation, boolean colored) {
+        return this.itemStackToText(itemStack, indentation, colored, "");
     }
 }
