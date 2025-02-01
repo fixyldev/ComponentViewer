@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.tooltip;
+package dev.fixyl.componentviewer.control;
 
 import java.util.List;
 import java.util.Map;
@@ -34,10 +34,9 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import dev.fixyl.componentviewer.component.Components;
+import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 import dev.fixyl.componentviewer.formatting.Formatter;
 import dev.fixyl.componentviewer.formatting.FormattingException;
-import dev.fixyl.componentviewer.option.TooltipComponents;
 
 public class Tooltip {
     private static final Style HEADER_STYLE = Style.EMPTY.withColor(Formatting.GRAY);

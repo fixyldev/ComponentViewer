@@ -28,17 +28,17 @@ import java.util.EnumSet;
 
 import org.slf4j.Logger;
 
+import dev.fixyl.componentviewer.config.enums.ClipboardCopy;
+import dev.fixyl.componentviewer.config.enums.ClipboardFormatting;
+import dev.fixyl.componentviewer.config.enums.TooltipComponents;
+import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
+import dev.fixyl.componentviewer.config.enums.TooltipFormatting;
+import dev.fixyl.componentviewer.config.enums.TooltipPurpose;
 import dev.fixyl.componentviewer.config.option.AdvancedOption;
 import dev.fixyl.componentviewer.config.option.BooleanOption;
 import dev.fixyl.componentviewer.config.option.EnumOption;
 import dev.fixyl.componentviewer.config.option.IntegerOption;
 import dev.fixyl.componentviewer.config.option.Options;
-import dev.fixyl.componentviewer.option.ClipboardCopy;
-import dev.fixyl.componentviewer.option.ClipboardFormatting;
-import dev.fixyl.componentviewer.option.TooltipComponents;
-import dev.fixyl.componentviewer.option.TooltipDisplay;
-import dev.fixyl.componentviewer.option.TooltipFormatting;
-import dev.fixyl.componentviewer.option.TooltipPurpose;
 
 public final class Configs implements Options {
     private static final String CONFIG_FILENAME = "componentviewer-config.json";

@@ -30,7 +30,7 @@ import net.minecraft.util.TranslatableOption;
 import org.jetbrains.annotations.Nullable;
 
 import dev.fixyl.componentviewer.config.option.EnumOption;
-import dev.fixyl.componentviewer.notification.EnumOptionToast;
+import dev.fixyl.componentviewer.control.notification.EnumOptionToast;
 
 public class EnumOptionKeyBinding<E extends Enum<E> & TranslatableOption> extends AdvancedKeyBinding {
     private final EnumOption<E> option;

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.option;
+package dev.fixyl.componentviewer.config.enums;
 
 import com.google.gson.annotations.SerializedName;
 

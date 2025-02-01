@@ -22,22 +22,21 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.option;
+package dev.fixyl.componentviewer.config.enums;
 
 import com.google.gson.annotations.SerializedName;
 
 import net.minecraft.util.TranslatableOption;
 
-public enum ClipboardCopy implements TranslatableOption {
-    @SerializedName("component_value") COMPONENT_VALUE(0, "componentviewer.config.clipboard.copy.component_value"),
-    @SerializedName("item_stack") ITEM_STACK(1, "componentviewer.config.clipboard.copy.item_stack"),
-    @SerializedName("give_command") GIVE_COMMAND(2, "componentviewer.config.clipboard.copy.give_command"),
-    @SerializedName("disabled") DISABLED(3, "componentviewer.config.clipboard.copy.disabled");
+public enum TooltipComponents implements TranslatableOption {
+    @SerializedName("all") ALL(0, "componentviewer.config.tooltip.components.all"),
+    @SerializedName("default") DEFAULT(1, "componentviewer.config.tooltip.components.default"),
+    @SerializedName("changes") CHANGES(2, "componentviewer.config.tooltip.components.changes");
 
     private final int id;
     private final String translationKey;
 
-    private ClipboardCopy(int id, String translationKey) {
+    private TooltipComponents(int id, String translationKey) {
         this.id = id;
         this.translationKey = translationKey;
     }

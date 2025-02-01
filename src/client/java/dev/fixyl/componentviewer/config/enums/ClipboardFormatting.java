@@ -22,20 +22,22 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.option;
+package dev.fixyl.componentviewer.config.enums;
 
 import com.google.gson.annotations.SerializedName;
 
 import net.minecraft.util.TranslatableOption;
 
-public enum TooltipPurpose implements TranslatableOption {
-    @SerializedName("components") COMPONENTS(0, "componentviewer.config.tooltip.purpose.components"),
-    @SerializedName("item_stack") ITEM_STACK(1, "componentviewer.config.tooltip.purpose.item_stack");
+public enum ClipboardFormatting implements TranslatableOption {
+    @SerializedName("sync") SYNC(0, "componentviewer.config.clipboard.formatting.sync"),
+    @SerializedName("snbt") SNBT(1, "componentviewer.config.clipboard.formatting.snbt"),
+    @SerializedName("json") JSON(2, "componentviewer.config.clipboard.formatting.json"),
+    @SerializedName("object") OBJECT(3, "componentviewer.config.clipboard.formatting.object");
 
     private final int id;
     private final String translationKey;
 
-    private TooltipPurpose(int id, String translationKey) {
+    private ClipboardFormatting(int id, String translationKey) {
         this.id = id;
         this.translationKey = translationKey;
     }

@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.tooltip.TooltipType;
 
-import dev.fixyl.componentviewer.tooltip.Tooltip;
+import dev.fixyl.componentviewer.control.Tooltip;
 
 @FunctionalInterface
 public interface TooltipCallback {

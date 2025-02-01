@@ -32,17 +32,14 @@ import net.minecraft.item.tooltip.TooltipType;
 
 import org.jetbrains.annotations.Nullable;
 
-import dev.fixyl.componentviewer.clipboard.Clipboard;
-import dev.fixyl.componentviewer.component.Components;
 import dev.fixyl.componentviewer.config.Configs;
+import dev.fixyl.componentviewer.config.enums.ClipboardCopy;
+import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
+import dev.fixyl.componentviewer.config.enums.TooltipPurpose;
 import dev.fixyl.componentviewer.formatting.Formatter;
 import dev.fixyl.componentviewer.formatting.JsonFormatter;
 import dev.fixyl.componentviewer.formatting.ObjectFormatter;
 import dev.fixyl.componentviewer.formatting.SnbtFormatter;
-import dev.fixyl.componentviewer.option.ClipboardCopy;
-import dev.fixyl.componentviewer.option.TooltipDisplay;
-import dev.fixyl.componentviewer.option.TooltipPurpose;
-import dev.fixyl.componentviewer.tooltip.Tooltip;
 
 public final class ControlFlow {
     private final Configs configs;

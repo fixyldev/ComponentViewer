@@ -33,14 +33,14 @@ import org.lwjgl.glfw.GLFW;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Configs;
+import dev.fixyl.componentviewer.config.enums.ClipboardCopy;
+import dev.fixyl.componentviewer.config.enums.ClipboardFormatting;
+import dev.fixyl.componentviewer.config.enums.TooltipComponents;
+import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
+import dev.fixyl.componentviewer.config.enums.TooltipFormatting;
+import dev.fixyl.componentviewer.config.enums.TooltipPurpose;
 import dev.fixyl.componentviewer.keyboard.keybinding.EnumOptionKeyBinding;
 import dev.fixyl.componentviewer.keyboard.keybinding.AdvancedKeyBinding;
-import dev.fixyl.componentviewer.option.ClipboardCopy;
-import dev.fixyl.componentviewer.option.ClipboardFormatting;
-import dev.fixyl.componentviewer.option.TooltipComponents;
-import dev.fixyl.componentviewer.option.TooltipDisplay;
-import dev.fixyl.componentviewer.option.TooltipFormatting;
-import dev.fixyl.componentviewer.option.TooltipPurpose;
 import dev.fixyl.componentviewer.screen.MainConfigScreen;
 
 public final class KeyBindings {

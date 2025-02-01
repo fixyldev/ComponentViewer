@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.config;
+package dev.fixyl.componentviewer.screen;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.clipboard;
+package dev.fixyl.componentviewer.control;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,11 +31,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.Component;
 import net.minecraft.item.ItemStack;
 
-import dev.fixyl.componentviewer.component.Components;
+import dev.fixyl.componentviewer.control.notification.CopyToast;
 import dev.fixyl.componentviewer.formatting.Formatter;
 import dev.fixyl.componentviewer.formatting.FormattingException;
 import dev.fixyl.componentviewer.formatting.SnbtFormatter;
-import dev.fixyl.componentviewer.notification.CopyToast;
 
 public class Clipboard {
     private static final String GIVE_COMMAND_BASE = "give @s";

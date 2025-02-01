@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.notification;
+package dev.fixyl.componentviewer.control.notification;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;

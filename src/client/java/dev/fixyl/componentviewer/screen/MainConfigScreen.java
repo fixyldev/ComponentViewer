@@ -26,8 +26,6 @@ package dev.fixyl.componentviewer.screen;
 
 import net.minecraft.client.gui.screen.Screen;
 
-import dev.fixyl.componentviewer.config.ConfigScreen;
-
 public class MainConfigScreen extends ConfigScreen {
     public MainConfigScreen(Screen parentScreen) {
         super(parentScreen, "componentviewer.config.title");

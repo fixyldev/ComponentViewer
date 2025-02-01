@@ -27,7 +27,6 @@ package dev.fixyl.componentviewer.screen;
 import net.minecraft.client.gui.screen.Screen;
 
 import dev.fixyl.componentviewer.ComponentViewer;
-import dev.fixyl.componentviewer.config.ConfigScreen;
 import dev.fixyl.componentviewer.config.Configs;
 
 public class ClipboardConfigScreen extends ConfigScreen {

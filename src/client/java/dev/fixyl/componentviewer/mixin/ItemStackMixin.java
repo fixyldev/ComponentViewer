@@ -40,8 +40,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import dev.fixyl.componentviewer.control.Tooltip;
 import dev.fixyl.componentviewer.event.TooltipCallback;
-import dev.fixyl.componentviewer.tooltip.Tooltip;
 import dev.fixyl.componentviewer.util.Lists;
 
 @Mixin(value = ItemStack.class, priority = Integer.MAX_VALUE)

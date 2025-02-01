@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.notification;
+package dev.fixyl.componentviewer.control.notification;
 
 import java.util.Objects;
 

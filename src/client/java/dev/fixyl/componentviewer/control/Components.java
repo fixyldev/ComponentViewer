@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.component;
+package dev.fixyl.componentviewer.control;
 
 import java.util.Comparator;
 import java.util.HashSet;
@@ -36,7 +36,7 @@ import net.minecraft.component.ComponentMap;
 import net.minecraft.component.ComponentType;
 import net.minecraft.item.ItemStack;
 
-import dev.fixyl.componentviewer.option.TooltipComponents;
+import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 import dev.fixyl.componentviewer.util.ResultCache;
 
 public class Components {
