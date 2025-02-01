@@ -3,7 +3,7 @@
     "id": "componentviewer",
     "version": "${version}",
     "name": "Component Viewer",
-    "description": "'Component Viewer' is a mod for Minecraft Java Edition that allows you to view and copy components of any item stack.",
+    "description": "Component Viewer is a mod for Minecraft Java Edition that allows you to view and copy components of any item stack.",
     "authors": [
         "fixyldev"
     ],
