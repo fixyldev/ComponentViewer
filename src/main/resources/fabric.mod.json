@@ -24,7 +24,10 @@
         ]
     },
     "mixins": [
-        "componentviewer.mixins.json"
+        {
+            "config": "componentviewer.client.mixins.json",
+            "environment": "client"
+        }
     ],
     "depends": {
         "fabric-api": ">=0.100.1",
