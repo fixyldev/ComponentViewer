@@ -7,7 +7,7 @@
 [<img src="https://github.com/fixyldev/fixyldev/blob/main/download/modrinth.svg" height="80">](https://modrinth.com/mod/component-viewer)
 
 ## 🗒️ Description
-Component Viewer is a mod for Minecraft Java Edition that allows you to view and copy components of any item stack. This mod is configurable out of the box by pressing `J`. If the component value is extensively large, overflowing the screen width or height, it is recommended to use a mod like [Tooltip Scroll](https://modrinth.com/mod/tooltip-scroll) or similar mods. [Fabric API](https://modrinth.com/mod/fabric-api) is required.
+Component Viewer is a mod for Minecraft Java Edition that allows you to view and copy components of any item stack. This mod is configurable out of the box by pressing `J`. If tooltips become extensively large, you can use a mod like [Tooltip Scroll](https://modrinth.com/mod/tooltip-scroll) or just copy the data to a separate text file. [Fabric API](https://modrinth.com/mod/fabric-api) is required.
 
 ## 🚀 Building
 To build this mod, you will need **JDK 21** installed on your system.
@@ -43,5 +43,5 @@ To build this mod, you will need **JDK 21** installed on your system.
     ```
 
 ## 🔍 Useful Resources
-- 🐛 [**Issues**](https://github.com/fixyldev/ComponentViewer/issues): For reporting bugs or suggesting features.
-- 📝 [**Changelog**](https://modrinth.com/mod/component-viewer/changelog): Keep track of all notable changes made to the mod.
+- 🐛 [**Issues**](https://github.com/fixyldev/ComponentViewer/issues): For reporting bugs or suggesting features
+- 📝 [**Changelog**](https://modrinth.com/mod/component-viewer/changelog): Keep track of all notable changes made to the mod
