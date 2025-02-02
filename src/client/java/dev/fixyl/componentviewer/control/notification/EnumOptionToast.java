@@ -29,7 +29,6 @@ import java.util.Objects;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.ToastManager;
 import net.minecraft.text.Text;
@@ -72,33 +71,21 @@ public class EnumOptionToast<E extends Enum<E> & TranslatableOption> implements 
         this.shouldResetTimer = true;
     }
 
-    @Override
     public Toast.Visibility getVisibility() {
         return this.visibility;
     }
 
     @Override
-    public void update(ToastManager toastManager, long elapsedTime) {
-        if (this.shouldResetTimer) {
-            this.shouldResetTimer = false;
-            this.totalDuration = elapsedTime + EnumOptionToast.DURATION;
-        }
-
-        double actualDuration = (this.totalDuration - EnumOptionToast.DURATION) + EnumOptionToast.DURATION * toastManager.getNotificationDisplayTimeMultiplier();
-
-        this.visibility = (elapsedTime < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
-    }
-
-    @Override
-    public void draw(DrawContext drawContext, TextRenderer textRenderer, long startTime) {
+    public Toast.Visibility draw(DrawContext drawContext, ToastManager toastManager, long elapsedTime) {
         drawContext.drawGuiTexture(
-            RenderLayer::getGuiTextured,
             EnumOptionToast.BACKGROUND_TEXTURE,
             0,
             0,
             this.getWidth(),
             this.getHeight()
         );
+
+        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
         drawContext.drawText(
             textRenderer,
@@ -117,6 +104,21 @@ public class EnumOptionToast<E extends Enum<E> & TranslatableOption> implements 
             EnumOptionToast.SECOND_ROW_COLOR,
             false
         );
+
+        this.updateVisibility(toastManager, elapsedTime);
+
+        return this.visibility;
+    }
+
+    private void updateVisibility(ToastManager toastManager, long elapsedTime) {
+        if (this.shouldResetTimer) {
+            this.shouldResetTimer = false;
+            this.totalDuration = elapsedTime + EnumOptionToast.DURATION;
+        }
+
+        double actualDuration = (this.totalDuration - EnumOptionToast.DURATION) + EnumOptionToast.DURATION * toastManager.getNotificationDisplayTimeMultiplier();
+
+        this.visibility = (elapsedTime < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
     }
 
     public static <E extends Enum<E> & TranslatableOption> EnumOptionToast<E> dispatch(EnumOption<E> option, @Nullable String translationKey) {
