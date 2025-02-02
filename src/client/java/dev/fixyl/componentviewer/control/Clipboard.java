@@ -30,6 +30,7 @@ import java.util.List;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.component.Component;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 
 import dev.fixyl.componentviewer.control.notification.CopyToast;
 import dev.fixyl.componentviewer.formatting.Formatter;
@@ -82,7 +83,7 @@ public class Clipboard {
 
         commandString.append(Clipboard.GIVE_COMMAND_BASE)
                      .append(' ')
-                     .append(itemStack.getItem());
+                     .append(Registries.ITEM.getEntry(itemStack.getItem()).getIdAsString());
 
         Components components = Components.getChangedComponents(itemStack);
 
