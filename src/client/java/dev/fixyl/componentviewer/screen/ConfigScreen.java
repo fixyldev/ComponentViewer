@@ -24,7 +24,7 @@
 
 package dev.fixyl.componentviewer.screen;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,33 +33,41 @@ import java.util.function.Supplier;
 
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.option.GameOptionsScreen;
+import net.minecraft.client.gui.screen.option.SimpleOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
+import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
 
 import org.jetbrains.annotations.Nullable;
 
 import dev.fixyl.componentviewer.config.option.AdvancedOption;
 
-public abstract class ConfigScreen extends GameOptionsScreen {
+public abstract class ConfigScreen extends SimpleOptionsScreen {
     private static final int WIDGET_WIDTH = 150;
 
-    private final List<ClickableWidget> queuedWidgets;
-    private final Map<ClickableWidget, AdvancedOption<?>> options;
+    private final Map<ClickableWidget, AdvancedOption<?>> advancedOptions;
 
     protected ConfigScreen(Screen parentScreen, @Nullable String translationKey) {
         super(
             parentScreen,
             MinecraftClient.getInstance().options,
-            Text.translatable(Objects.toString(translationKey))
+            Text.translatable(Objects.toString(translationKey)),
+            new SimpleOption<?>[0]
         );
 
-        this.queuedWidgets = new ArrayList<>();
-        this.options = new HashMap<>();
+        this.advancedOptions = new HashMap<>();
     }
 
-    protected final <T> void addConfig(AdvancedOption<T> option) {
+    @Override
+    protected void init() {
+        super.init();
+
+        List<ClickableWidget> widgets = this.getWidgets();
+        this.buttonList.addAll(widgets);
+    }
+
+    protected final <T> ClickableWidget createConfigWidget(AdvancedOption<T> option) {
         ClickableWidget optionWidget = option.createWidget(
             0,
             0,
@@ -69,38 +77,28 @@ public abstract class ConfigScreen extends GameOptionsScreen {
 
         ConfigScreen.updateOptionWidget(optionWidget, option);
 
-        this.queuedWidgets.add(optionWidget);
-        this.options.put(optionWidget, option);
+        this.advancedOptions.put(optionWidget, option);
+
+        return optionWidget;
     }
 
-    protected final void addConfigs(AdvancedOption<?>... options) {
-        for (AdvancedOption<?> option : options) {
-            this.addConfig(option);
-        }
+    protected final List<ClickableWidget> createConfigWidgets(AdvancedOption<?>... options) {
+        return Arrays.stream(options)
+                     .map(this::createConfigWidget)
+                     .toList();
     }
 
-    protected final void addRedirect(@Nullable String translationKey, Supplier<Screen> screenSupplier) {
-        this.queuedWidgets.add(ButtonWidget.builder(
+    protected final ClickableWidget createRedirectWidget(@Nullable String translationKey, Supplier<Screen> screenSupplier) {
+        return ButtonWidget.builder(
             Text.translatable(Objects.toString(translationKey)),
             buttonWidget -> this.client.setScreen(screenSupplier.get())
-        ).build());
+        ).build();
     }
 
-    @Override
-    protected final void addOptions() {
-        this.addElements();
-        this.deployWidgets();
-    }
-
-    protected abstract void addElements();
-
-    private final void deployWidgets() {
-        this.body.addAll(this.queuedWidgets);
-        this.queuedWidgets.clear();
-    }
+    protected abstract List<ClickableWidget> getWidgets();
 
     private final void updateOptionWidgets() {
-        this.options.forEach(ConfigScreen::updateOptionWidget);
+        this.advancedOptions.forEach(ConfigScreen::updateOptionWidget);
     }
 
     private static final <T> void updateOptionWidget(ClickableWidget optionWidget, AdvancedOption<T> option) {

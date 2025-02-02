@@ -27,8 +27,8 @@ package dev.fixyl.componentviewer.event;
 import net.fabricmc.fabric.api.event.Event;
 import net.fabricmc.fabric.api.event.EventFactory;
 
+import net.minecraft.client.item.TooltipType;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
 
 import dev.fixyl.componentviewer.control.Tooltip;
 

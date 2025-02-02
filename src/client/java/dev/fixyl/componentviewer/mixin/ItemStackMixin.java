@@ -27,10 +27,10 @@ package dev.fixyl.componentviewer.mixin;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.minecraft.client.item.TooltipType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
 import net.minecraft.text.Text;
 
 import org.jetbrains.annotations.Nullable;

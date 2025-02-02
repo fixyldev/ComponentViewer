@@ -33,7 +33,7 @@ import java.util.stream.Stream;
 
 import net.minecraft.component.Component;
 import net.minecraft.component.ComponentMap;
-import net.minecraft.component.ComponentType;
+import net.minecraft.component.DataComponentType;
 import net.minecraft.item.ItemStack;
 
 import dev.fixyl.componentviewer.config.enums.TooltipComponents;
@@ -108,7 +108,7 @@ public class Components {
             changedComponents.removeAll(defaultComponents);
 
             Set<Component<?>> removedComponents = new HashSet<>(defaultComponents);
-            Set<ComponentType<?>> componentTypes = regularComponents.stream().map(Component::type).collect(Collectors.toSet());
+            Set<DataComponentType<?>> componentTypes = regularComponents.stream().map(Component::type).collect(Collectors.toSet());
             removedComponents.removeIf(defaultComponent -> componentTypes.contains(defaultComponent.type()));
 
             return new Components(TooltipComponents.CHANGES, changedComponents, removedComponents);

@@ -24,16 +24,24 @@
 
 package dev.fixyl.componentviewer.screen;
 
-import net.minecraft.client.gui.screen.Screen;
+import java.util.List;
 
+import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ClickableWidget;
+
+// Suppress the SonarQube warning for a too
+// deeply nested class inheritance tree
+@SuppressWarnings("java:S110")
 public class MainConfigScreen extends ConfigScreen {
     public MainConfigScreen(Screen parentScreen) {
         super(parentScreen, "componentviewer.config.title");
     }
 
     @Override
-    protected void addElements() {
-        this.addRedirect("componentviewer.config.tooltip", () -> new TooltipConfigScreen(this));
-        this.addRedirect("componentviewer.config.clipboard", () -> new ClipboardConfigScreen(this));
+    protected List<ClickableWidget> getWidgets() {
+        return List.of(
+            this.createRedirectWidget("componentviewer.config.tooltip", () -> new TooltipConfigScreen(this)),
+            this.createRedirectWidget("componentviewer.config.clipboard", () -> new ClipboardConfigScreen(this))
+        );
     }
 }

@@ -27,7 +27,6 @@ package dev.fixyl.componentviewer.control.notification;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.toast.Toast;
 import net.minecraft.client.toast.ToastManager;
 import net.minecraft.item.ItemStack;
@@ -38,7 +37,7 @@ import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public class CopyToast implements Toast {
-    private static final Identifier BACKGROUND_TEXTURE = Identifier.ofVanilla("toast/advancement");
+    private static final Identifier BACKGROUND_TEXTURE = Identifier.of("minecraft", "toast/advancement");
     private static final long DURATION = 3000L;
 
     private static final int ITEM_LEFT_MARGIN = 8;
@@ -87,21 +86,8 @@ public class CopyToast implements Toast {
     }
 
     @Override
-    public Toast.Visibility getVisibility() {
-        return this.visibility;
-    }
-
-    @Override
-    public void update(ToastManager toastManager, long elapsedTime) {
-        double actualDuration = CopyToast.DURATION * toastManager.getNotificationDisplayTimeMultiplier();
-
-        this.visibility = (elapsedTime < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
-    }
-
-    @Override
-    public void draw(DrawContext drawContext, TextRenderer textRenderer, long startTime) {
+    public Toast.Visibility draw(DrawContext drawContext, ToastManager toastManager, long elapsedTime) {
         drawContext.drawGuiTexture(
-            RenderLayer::getGuiTextured,
             CopyToast.BACKGROUND_TEXTURE,
             0,
             0,
@@ -116,6 +102,8 @@ public class CopyToast implements Toast {
                 CopyToast.ITEM_TOP_MARGIN
             );
         }
+
+        TextRenderer textRenderer = MinecraftClient.getInstance().textRenderer;
 
         drawContext.drawText(
             textRenderer,
@@ -134,11 +122,21 @@ public class CopyToast implements Toast {
             this.secondRowColor,
             false
         );
+
+        this.updateVisibility(toastManager, elapsedTime);
+
+        return this.visibility;
     }
 
     @Override
     public CopyToast.Type getType() {
         return this.toastType;
+    }
+
+    private void updateVisibility(ToastManager toastManager, long elapsedTime) {
+        double actualDuration = CopyToast.DURATION * toastManager.getNotificationDisplayTimeMultiplier();
+
+        this.visibility = (elapsedTime < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
     }
 
     public enum Type {

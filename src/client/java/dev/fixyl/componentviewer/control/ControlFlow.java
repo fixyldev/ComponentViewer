@@ -25,10 +25,10 @@
 package dev.fixyl.componentviewer.control;
 
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.item.TooltipType;
 import net.minecraft.component.Component;
 import net.minecraft.component.type.NbtComponent;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.tooltip.TooltipType;
 
 import org.jetbrains.annotations.Nullable;
 

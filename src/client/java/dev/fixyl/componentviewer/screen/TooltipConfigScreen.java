@@ -24,21 +24,27 @@
 
 package dev.fixyl.componentviewer.screen;
 
+import java.util.List;
+
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.widget.ClickableWidget;
 
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.config.Configs;
 
+// Suppress the SonarQube warning for a too
+// deeply nested class inheritance tree
+@SuppressWarnings("java:S110")
 public class TooltipConfigScreen extends ConfigScreen {
     public TooltipConfigScreen(Screen parentScreen) {
         super(parentScreen, "componentviewer.config.tooltip.title");
     }
 
     @Override
-    protected void addElements() {
+    protected List<ClickableWidget> getWidgets() {
         Configs configs = ComponentViewer.getInstance().configs;
 
-        this.addConfigs(
+        return this.createConfigWidgets(
             configs.tooltipDisplay,
             configs.tooltipPurpose,
             configs.tooltipComponents,
