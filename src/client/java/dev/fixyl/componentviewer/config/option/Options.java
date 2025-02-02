@@ -22,16 +22,12 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.modmenu;
+package dev.fixyl.componentviewer.config.option;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
-
-import dev.fixyl.componentviewer.screen.MainConfigScreen;
-
-public class ModMenu implements ModMenuApi {
-    @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return MainConfigScreen::new;
-    }
+public interface Options {
+    // Suppress the generic wildcard warning for SonarQube
+    // since it's an array of mixed types and the actual
+    // type doesn't matter
+    @SuppressWarnings("java:S1452")
+    public AdvancedOption<?>[] getOptions();
 }

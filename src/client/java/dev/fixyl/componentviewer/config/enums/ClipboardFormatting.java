@@ -22,16 +22,33 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.modmenu;
+package dev.fixyl.componentviewer.config.enums;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
+import com.google.gson.annotations.SerializedName;
 
-import dev.fixyl.componentviewer.screen.MainConfigScreen;
+import net.minecraft.util.TranslatableOption;
 
-public class ModMenu implements ModMenuApi {
+public enum ClipboardFormatting implements TranslatableOption {
+    @SerializedName("sync") SYNC(0, "componentviewer.config.clipboard.formatting.sync"),
+    @SerializedName("snbt") SNBT(1, "componentviewer.config.clipboard.formatting.snbt"),
+    @SerializedName("json") JSON(2, "componentviewer.config.clipboard.formatting.json"),
+    @SerializedName("object") OBJECT(3, "componentviewer.config.clipboard.formatting.object");
+
+    private final int id;
+    private final String translationKey;
+
+    private ClipboardFormatting(int id, String translationKey) {
+        this.id = id;
+        this.translationKey = translationKey;
+    }
+
     @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return MainConfigScreen::new;
+    public int getId() {
+        return this.id;
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return this.translationKey;
     }
 }

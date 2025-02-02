@@ -1,0 +1,11 @@
+{
+    "required": true,
+    "package": "dev.fixyl.componentviewer.mixin",
+    "compatibilityLevel": "JAVA_21",
+    "client": [
+        "ItemStackMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    }
+}

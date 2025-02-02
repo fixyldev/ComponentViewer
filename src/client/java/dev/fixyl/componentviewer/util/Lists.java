@@ -22,16 +22,21 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.modmenu;
+package dev.fixyl.componentviewer.util;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
+import java.util.List;
 
-import dev.fixyl.componentviewer.screen.MainConfigScreen;
+public final class Lists {
+    private Lists() {}
 
-public class ModMenu implements ModMenuApi {
-    @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return MainConfigScreen::new;
+    public static <T> boolean isModifiable(List<T> list) {
+        try {
+            list.addLast(null);
+        } catch (UnsupportedOperationException | NullPointerException e) {
+            return false;
+        }
+
+        list.removeLast();
+        return true;
     }
 }

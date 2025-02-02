@@ -22,16 +22,32 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.modmenu;
+package dev.fixyl.componentviewer.config.enums;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
+import com.google.gson.annotations.SerializedName;
 
-import dev.fixyl.componentviewer.screen.MainConfigScreen;
+import net.minecraft.util.TranslatableOption;
 
-public class ModMenu implements ModMenuApi {
+public enum TooltipDisplay implements TranslatableOption {
+    @SerializedName("hold") HOLD(0, "componentviewer.config.tooltip.display.hold"),
+    @SerializedName("always") ALWAYS(1, "componentviewer.config.tooltip.display.always"),
+    @SerializedName("never") NEVER(2, "componentviewer.config.tooltip.display.never");
+
+    private final int id;
+    private final String translationKey;
+
+    private TooltipDisplay(int id, String translationKey) {
+        this.id = id;
+        this.translationKey = translationKey;
+    }
+
     @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return MainConfigScreen::new;
+    public int getId() {
+        return this.id;
+    }
+
+    @Override
+    public String getTranslationKey() {
+        return this.translationKey;
     }
 }

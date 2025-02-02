@@ -22,16 +22,36 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.modmenu;
+package dev.fixyl.componentviewer.util;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
+import java.util.Objects;
+import java.util.function.Supplier;
 
-import dev.fixyl.componentviewer.screen.MainConfigScreen;
+public class ResultCache<T> {
+    private T result;
+    private int hashCode;
+    private boolean empty;
 
-public class ModMenu implements ModMenuApi {
-    @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return MainConfigScreen::new;
+    public ResultCache() {
+        this.empty = true;
+    }
+
+    public T cache(Supplier<T> resultSupplier, Object... arguments) {
+        int newHashCode = Objects.hash(arguments);
+
+        if (!this.empty && newHashCode == this.hashCode) {
+            return this.result;
+        }
+
+        this.result = resultSupplier.get();
+        this.hashCode = newHashCode;
+        this.empty = false;
+
+        return this.result;
+    }
+
+    public void clear() {
+        this.empty = true;
+        this.result = null;
     }
 }

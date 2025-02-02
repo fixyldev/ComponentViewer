@@ -22,16 +22,22 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.modmenu;
+package dev.fixyl.componentviewer.formatting;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
+public class FormattingException extends RuntimeException {
+    public FormattingException() {
+        super();
+    }
 
-import dev.fixyl.componentviewer.screen.MainConfigScreen;
+    public FormattingException(String message) {
+        super(message);
+    }
 
-public class ModMenu implements ModMenuApi {
-    @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return MainConfigScreen::new;
+    public FormattingException(Throwable cause) {
+        super(cause);
+    }
+
+    public FormattingException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

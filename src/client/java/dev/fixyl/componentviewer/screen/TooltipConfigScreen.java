@@ -22,16 +22,31 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.modmenu;
+package dev.fixyl.componentviewer.screen;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
+import net.minecraft.client.gui.screen.Screen;
 
-import dev.fixyl.componentviewer.screen.MainConfigScreen;
+import dev.fixyl.componentviewer.ComponentViewer;
+import dev.fixyl.componentviewer.config.Configs;
 
-public class ModMenu implements ModMenuApi {
+public class TooltipConfigScreen extends ConfigScreen {
+    public TooltipConfigScreen(Screen parentScreen) {
+        super(parentScreen, "componentviewer.config.tooltip.title");
+    }
+
     @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return MainConfigScreen::new;
+    protected void addElements() {
+        Configs configs = ComponentViewer.getInstance().configs;
+
+        this.addConfigs(
+            configs.tooltipDisplay,
+            configs.tooltipPurpose,
+            configs.tooltipComponents,
+            configs.tooltipComponentValues,
+            configs.tooltipFormatting,
+            configs.tooltipIndentation,
+            configs.tooltipColoredFormatting,
+            configs.tooltipAdvancedTooltips
+        );
     }
 }

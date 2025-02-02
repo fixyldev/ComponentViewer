@@ -22,16 +22,29 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.modmenu;
+package dev.fixyl.componentviewer.screen;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
+import net.minecraft.client.gui.screen.Screen;
 
-import dev.fixyl.componentviewer.screen.MainConfigScreen;
+import dev.fixyl.componentviewer.ComponentViewer;
+import dev.fixyl.componentviewer.config.Configs;
 
-public class ModMenu implements ModMenuApi {
+public class ClipboardConfigScreen extends ConfigScreen {
+    public ClipboardConfigScreen(Screen parentScreen) {
+        super(parentScreen, "componentviewer.config.clipboard.title");
+    }
+
     @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return MainConfigScreen::new;
+    protected void addElements() {
+        Configs configs = ComponentViewer.getInstance().configs;
+
+        this.addConfigs(
+            configs.clipboardCopy,
+            configs.clipboardFormatting,
+            configs.clipboardIndentation,
+            configs.clipboardPrependSlash,
+            configs.clipboardIncludeCount,
+            configs.clipboardSuccessNotification
+        );
     }
 }

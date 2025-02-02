@@ -22,16 +22,18 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.modmenu;
+package dev.fixyl.componentviewer.keyboard.keybinding;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
+import net.minecraft.client.option.KeyBinding;
 
-import dev.fixyl.componentviewer.screen.MainConfigScreen;
+public class AdvancedKeyBinding extends KeyBinding {
+    public AdvancedKeyBinding(String translationKey, int code, String category) {
+        super(translationKey, code, category);
+    }
 
-public class ModMenu implements ModMenuApi {
-    @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return MainConfigScreen::new;
+    public void onPressed(Runnable runnable) {
+        while (this.wasPressed()) {
+            runnable.run();
+        }
     }
 }

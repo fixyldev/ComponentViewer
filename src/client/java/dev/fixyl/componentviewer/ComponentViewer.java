@@ -1,7 +1,7 @@
 /*
  * MIT License
  *
- * Copyright (c) 2024 fixyldev
+ * Copyright (c) 2025 fixyldev
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -26,37 +26,49 @@ package dev.fixyl.componentviewer;
 
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
-import net.fabricmc.loader.api.FabricLoader;
-
-import net.minecraft.client.MinecraftClient;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import dev.fixyl.componentviewer.component.ComponentManager;
-import dev.fixyl.componentviewer.config.ConfigManager;
-import dev.fixyl.componentviewer.keybind.KeyBindings;
-import dev.fixyl.componentviewer.screen.ConfigScreen;
+import dev.fixyl.componentviewer.config.Configs;
+import dev.fixyl.componentviewer.control.ControlFlow;
+import dev.fixyl.componentviewer.event.TooltipCallback;
+import dev.fixyl.componentviewer.keyboard.KeyBindings;
 
-public class ComponentViewer implements ClientModInitializer {
-    public static final MinecraftClient minecraftClient = MinecraftClient.getInstance();
-    public static final FabricLoader fabricLoader = FabricLoader.getInstance();
+public final class ComponentViewer implements ClientModInitializer {
+    private static ComponentViewer instance;
 
-    public static final Logger logger = LoggerFactory.getLogger("ComponentViewer");
+    public final Logger logger;
+    public final Configs configs;
 
-    public static final ConfigManager configManager = ConfigManager.getInstance();
-    public static final ComponentManager componentManager = ComponentManager.getInstance();
+    public ComponentViewer() {
+        ComponentViewer.setInstance(this);
 
-    public static final KeyBindings keyBindings = new KeyBindings();
+        this.logger = LoggerFactory.getLogger(this.getClass());
+        this.configs = new Configs(this.logger);
+    }
 
     @Override
     public void onInitializeClient() {
-        ItemTooltipCallback.EVENT.register(ComponentViewer.componentManager::itemTooltipCallbackListener);
+        ControlFlow controlFlow = new ControlFlow(this.configs);
+        TooltipCallback.EVENT.register(controlFlow::onTooltip);
 
-        ClientTickEvents.END_CLIENT_TICK.register(minecraftClient -> {
-            if (ComponentViewer.keyBindings.configKey.isPressed())
-                minecraftClient.setScreen(new ConfigScreen(null));
-        });
+        KeyBindings keyBindings = new KeyBindings();
+        ClientTickEvents.END_CLIENT_TICK.register(keyBindings::onClientTick);
+    }
+
+    public static ComponentViewer getInstance() {
+        return ComponentViewer.instance;
+    }
+
+    private static void setInstance(ComponentViewer instance) {
+        if (ComponentViewer.instance != null) {
+            throw new IllegalStateException(String.format(
+                "Cannot instantiate '%s' twice!",
+                ComponentViewer.class.getName()
+            ));
+        }
+
+        ComponentViewer.instance = instance;
     }
 }

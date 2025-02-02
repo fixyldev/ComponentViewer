@@ -22,16 +22,23 @@
  * SOFTWARE.
  */
 
-package dev.fixyl.componentviewer.modmenu;
+package dev.fixyl.componentviewer.event;
 
-import com.terraformersmc.modmenu.api.ConfigScreenFactory;
-import com.terraformersmc.modmenu.api.ModMenuApi;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 
-import dev.fixyl.componentviewer.screen.MainConfigScreen;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.tooltip.TooltipType;
 
-public class ModMenu implements ModMenuApi {
-    @Override
-    public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return MainConfigScreen::new;
-    }
+import dev.fixyl.componentviewer.control.Tooltip;
+
+@FunctionalInterface
+public interface TooltipCallback {
+    public static final Event<TooltipCallback> EVENT = EventFactory.createArrayBacked(TooltipCallback.class, listeners -> (itemStack, tooltip, tooltipType) -> {
+        for (TooltipCallback listener : listeners) {
+            listener.onTooltipCallback(itemStack, tooltip, tooltipType);
+        }
+    });
+
+    public void onTooltipCallback(ItemStack itemStack, Tooltip tooltip, TooltipType tooltipType);
 }
