@@ -12,7 +12,6 @@ Component Viewer is a mod for Minecraft Java Edition that allows you to view and
 ## 🚀 Building
 To build this mod, you will need **JDK 21** installed on your system.
 
-### Linux
 1. **Clone the project**
     ```sh
     git clone https://github.com/fixyldev/ComponentViewer.git
@@ -25,21 +24,6 @@ To build this mod, you will need **JDK 21** installed on your system.
 3. **Locate the JAR files**
     ```sh
     cd build/libs
-    ```
-
-### Windows
-1. **Clone the project**
-    ```cmd
-    git clone https://github.com/fixyldev/ComponentViewer.git
-    cd ComponentViewer
-    ```
-2. **Build the project**
-    ```cmd
-    gradlew build
-    ```
-3. **Locate the JAR files**
-    ```cmd
-    cd build\libs
     ```
 
 ## 🔍 Useful Resources
