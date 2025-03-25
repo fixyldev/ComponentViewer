@@ -1,5 +1,5 @@
 plugins {
-    id "fabric-loom" version "1.9-SNAPSHOT"
+    id "fabric-loom" version "1.10-SNAPSHOT"
     id "maven-publish"
 }
 
@@ -55,11 +55,11 @@ java {
 }
 
 jar {
-    from("LICENSE")
+    from "LICENSE"
 }
 
 sourcesJar {
-    from("LICENSE")
+    from "LICENSE"
 
     filesMatching("fabric.mod.json") {
         expand "version": project.version
