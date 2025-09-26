@@ -13,13 +13,13 @@ public class ActionBoundKeyMapping extends AdvancedKeyMapping implements TickedK
 
     private final Runnable action;
 
-    public ActionBoundKeyMapping(String translationKey, int keyCode, Category category, ConflictContext conflictContext, Runnable action) {
+    public ActionBoundKeyMapping(String translationKey, int keyCode, String category, ConflictContext conflictContext, Runnable action) {
         super(translationKey, keyCode, category, conflictContext);
 
         this.action = action;
     }
 
-    public ActionBoundKeyMapping(String translationKey, int keyCode, Category category, Runnable action) {
+    public ActionBoundKeyMapping(String translationKey, int keyCode, String category, Runnable action) {
         super(translationKey, keyCode, category);
 
         this.action = action;

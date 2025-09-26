@@ -42,7 +42,7 @@ public final class FabricComponentViewer extends ComponentViewer implements Clie
         KeyboardEvents.COPY_ACTION_EVENT.register(controlFlow::onCopyAction);
 
         ClientTickEvents.END_CLIENT_TICK.register(client -> keyboard.onEndClientTick());
-        MixinEvents.KEY_PRESS_EVENT.register(keyboard::onKeyPress);
+        MixinEvents.KEY_PRESS_EVENT.register((key, modifiers) -> keyboard.onKeyPress(key));
         MixinEvents.CLEAR_TOAST_MANAGER_EVENT.register(keyboard::clearAllOptionCycleToasts);
     }
 }

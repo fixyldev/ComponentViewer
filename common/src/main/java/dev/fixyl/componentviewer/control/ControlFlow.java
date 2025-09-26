@@ -312,7 +312,7 @@ public final class ControlFlow {
             case EVERYONE -> "@a";
             case NEAREST -> "@p";
             case SELF -> "@s";
-            case PLAYER -> this.minecraftClient.getGameProfile().name();
+            case PLAYER -> this.minecraftClient.getGameProfile().getName();
         };
     }
 }

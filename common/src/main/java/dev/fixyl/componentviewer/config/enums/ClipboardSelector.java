@@ -14,7 +14,7 @@ public enum ClipboardSelector implements OptionEnum {
     @SerializedName("player") PLAYER(3, "componentviewer.config.clipboard.selector.player") {
         @Override
         public Component getCaption() {
-            return Component.translatable(this.getKey(), Minecraft.getInstance().getGameProfile().name());
+            return Component.translatable(this.getKey(), Minecraft.getInstance().getGameProfile().getName());
         }
     };
 

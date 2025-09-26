@@ -20,7 +20,7 @@ public final class MouseHandlerMixin {
     private void onScroll(long windowHandle, double xOffset, double yOffset, CallbackInfo callback) {
         Minecraft minecraftClient = Minecraft.getInstance();
 
-        if (windowHandle != minecraftClient.getWindow().handle()) {
+        if (windowHandle != minecraftClient.getWindow().getWindow()) {
             return;
         }
 

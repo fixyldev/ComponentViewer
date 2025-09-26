@@ -1,6 +1,7 @@
 package dev.fixyl.componentviewer.event;
 
-import net.minecraft.client.input.KeyEvent;
+import com.mojang.blaze3d.platform.InputConstants.Key;
+
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 
@@ -14,7 +15,7 @@ public interface MixinEventDispatcher {
 
     void invokeStartRenderEvent();
     void invokeTooltipEvent(ItemStack itemStack, Tooltip tooltip);
-    void invokeKeyPressEvent(KeyEvent keyEvent);
+    void invokeKeyPressEvent(Key key, int modifiers);
     InteractionResult invokeMouseScrollEvent(double xOffset, double yOffset);
     void invokeClearToastManagerEvent();
 }

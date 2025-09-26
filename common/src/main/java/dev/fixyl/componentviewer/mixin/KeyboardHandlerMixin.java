@@ -2,9 +2,10 @@ package dev.fixyl.componentviewer.mixin;
 
 import static org.lwjgl.glfw.GLFW.*;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.KeyboardHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.input.KeyEvent;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -18,14 +19,14 @@ public final class KeyboardHandlerMixin {
 
     private KeyboardHandlerMixin() {}
 
-    @Inject(method = "keyPress(JILnet/minecraft/client/input/KeyEvent;)V", at = @At(value = "HEAD"))
-    private void keyPress(long windowHandle, int action, KeyEvent keyEvent, CallbackInfo callback) {
-        if (windowHandle != Minecraft.getInstance().getWindow().handle() || action == GLFW_RELEASE) {
+    @Inject(method = "keyPress(JIIII)V", at = @At(value = "HEAD"))
+    private void keyPress(long windowHandle, int key, int scancode, int action, int modifiers, CallbackInfo callback) {
+        if (windowHandle != Minecraft.getInstance().getWindow().getWindow() || action == GLFW_RELEASE) {
             return;
         }
 
         ComponentViewer.dispatchEventSafely(dispatcher ->
-            dispatcher.invokeKeyPressEvent(keyEvent)
+            dispatcher.invokeKeyPressEvent(InputConstants.getKey(key, scancode), modifiers)
         );
     }
 }

@@ -6,14 +6,14 @@ public class CycleSelectionKeyMapping extends AdvancedKeyMapping {
 
     private final CycleType cycleType;
 
-    public CycleSelectionKeyMapping(String translationKey, int keyCode, Category category, ConflictContext conflictContext, CycleType cycleType) {
+    public CycleSelectionKeyMapping(String translationKey, int keyCode, String category, ConflictContext conflictContext, CycleType cycleType) {
         super(translationKey, keyCode, category, conflictContext);
 
         this.cycleType = cycleType;
 
     }
 
-    public CycleSelectionKeyMapping(String translationKey, int keyCode, Category category, CycleType cycleType) {
+    public CycleSelectionKeyMapping(String translationKey, int keyCode, String category, CycleType cycleType) {
         super(translationKey, keyCode, category);
 
         this.cycleType = cycleType;
