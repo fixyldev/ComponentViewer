@@ -8,7 +8,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
@@ -69,7 +69,7 @@ public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
     @Override
     public void render(GuiGraphics guiGraphics, Font font, long visibilityTime) {
         guiGraphics.blitSprite(
-            RenderPipelines.GUI_TEXTURED,
+            RenderType::guiTextured,
             BACKGROUND_SPRITE,
             0,
             0,
