@@ -7,11 +7,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
-import net.minecraft.client.gui.components.toasts.ToastManager;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.OptionEnum;
 
 import dev.fixyl.componentviewer.annotation.NullPermitted;
@@ -26,8 +24,8 @@ public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
     private static final int TEXT_FIRST_ROW = 7;
     private static final int TEXT_SECOND_ROW = 18;
 
-    private static final int FIRST_ROW_COLOR = ARGB.opaque(ChatFormatting.DARK_AQUA.getColor());
-    private static final int SECOND_ROW_COLOR = ARGB.opaque(ChatFormatting.WHITE.getColor());
+    private static final int FIRST_ROW_COLOR = ChatFormatting.DARK_AQUA.getColor();
+    private static final int SECOND_ROW_COLOR = ChatFormatting.WHITE.getColor();
 
     private final EnumOption<E> option;
     private final String translationKey;
@@ -49,33 +47,21 @@ public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
         this.shouldResetTimer = true;
     }
 
-    @Override
     public Toast.Visibility getWantedVisibility() {
         return this.visibility;
     }
 
     @Override
-    public void update(ToastManager toastManager, long visibilityTime) {
-        if (this.shouldResetTimer) {
-            this.shouldResetTimer = false;
-            this.totalDuration = visibilityTime + DURATION;
-        }
-
-        double actualDuration = (this.totalDuration - DURATION) + DURATION * toastManager.getNotificationDisplayTimeMultiplier();
-
-        this.visibility = (visibilityTime < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
-    }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, Font font, long visibilityTime) {
+    public Toast.Visibility render(GuiGraphics guiGraphics, ToastComponent toastComponent, long timeSinceLastVisible) {
         guiGraphics.blitSprite(
-            RenderType::guiTextured,
             BACKGROUND_SPRITE,
             0,
             0,
             this.width(),
             this.height()
         );
+
+        Font font = toastComponent.getMinecraft().font;
 
         guiGraphics.drawString(
             font,
@@ -94,12 +80,27 @@ public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
             SECOND_ROW_COLOR,
             false
         );
+
+        this.updateVisibility(toastComponent, timeSinceLastVisible);
+
+        return this.visibility;
+    }
+
+    private void updateVisibility(ToastComponent toastComponent, long timeSinceLastVisible) {
+        if (this.shouldResetTimer) {
+            this.shouldResetTimer = false;
+            this.totalDuration = timeSinceLastVisible + DURATION;
+        }
+
+        double actualDuration = (this.totalDuration - DURATION) + DURATION * toastComponent.getNotificationDisplayTimeMultiplier();
+
+        this.visibility = (timeSinceLastVisible < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
     }
 
     public static <E extends Enum<E> & OptionEnum> EnumOptionToast<E> dispatch(EnumOption<E> option, @NullPermitted String translationKey) {
         EnumOptionToast<E> toast = new EnumOptionToast<>(option, translationKey);
 
-        Minecraft.getInstance().getToastManager().addToast(toast);
+        Minecraft.getInstance().getToasts().addToast(toast);
 
         return toast;
     }

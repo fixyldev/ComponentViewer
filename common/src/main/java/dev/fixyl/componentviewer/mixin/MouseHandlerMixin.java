@@ -29,7 +29,6 @@ public final class MouseHandlerMixin {
         ).orElse(InteractionResult.PASS);
 
         if (result == InteractionResult.SUCCESS) {
-            minecraftClient.getFramerateLimitTracker().onInputReceived();
             callback.cancel();
         }
     }

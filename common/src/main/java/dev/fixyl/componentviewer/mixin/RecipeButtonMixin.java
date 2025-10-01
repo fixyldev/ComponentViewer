@@ -4,6 +4,8 @@ import static net.minecraft.world.item.TooltipFlag.*;
 
 import java.util.List;
 
+import com.llamalad7.mixinextras.sugar.Local;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.recipebook.RecipeButton;
 import net.minecraft.network.chat.Component;
@@ -24,7 +26,7 @@ public final class RecipeButtonMixin {
 
     private RecipeButtonMixin() {}
 
-    @Redirect(method = "getTooltipText(Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;getTooltipFromItem(Lnet/minecraft/client/Minecraft;Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;"))
+    @Redirect(method = "getTooltipText()Ljava/util/List;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;getTooltipFromItem(Lnet/minecraft/client/Minecraft;Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;"))
     private static List<Component> getTooltipFromItem(Minecraft minecraftClient, ItemStack stack) {
         return stack.getTooltipLines(
             TooltipContext.of(minecraftClient.level),
@@ -33,8 +35,8 @@ public final class RecipeButtonMixin {
         );
     }
 
-    @Inject(method = "getTooltipText(Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;", at = @At(value = "RETURN"))
-    private void getTooltipText(ItemStack stack, CallbackInfoReturnable<List<Component>> callback) {
+    @Inject(method = "getTooltipText()Ljava/util/List;", at = @At(value = "RETURN"))
+    private void getTooltipText(CallbackInfoReturnable<List<Component>> callback, @Local ItemStack stack) {
         ComponentViewer.dispatchEventSafely(dispatcher ->
             dispatcher.invokeTooltipEvent(stack, new Tooltip(callback.getReturnValue()))
         );

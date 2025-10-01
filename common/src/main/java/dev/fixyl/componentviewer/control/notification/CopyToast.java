@@ -5,11 +5,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
-import net.minecraft.client.gui.components.toasts.ToastManager;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
 
 import dev.fixyl.componentviewer.annotation.NullPermitted;
@@ -26,10 +24,10 @@ public class CopyToast implements Toast {
     private static final int TEXT_FIRST_ROW = 7;
     private static final int TEXT_SECOND_ROW = 18;
 
-    private static final int FIRST_ROW_COLOR_SUCCESS = ARGB.opaque(ChatFormatting.DARK_GREEN.getColor());
-    private static final int SECOND_ROW_COLOR_SUCCESS = ARGB.opaque(ChatFormatting.GOLD.getColor());
-    private static final int FIRST_ROW_COLOR_FAILURE = ARGB.opaque(ChatFormatting.RED.getColor());
-    private static final int SECOND_ROW_COLOR_FAILURE = ARGB.opaque(ChatFormatting.DARK_AQUA.getColor());
+    private static final int FIRST_ROW_COLOR_SUCCESS = ChatFormatting.DARK_GREEN.getColor();
+    private static final int SECOND_ROW_COLOR_SUCCESS = ChatFormatting.GOLD.getColor();
+    private static final int FIRST_ROW_COLOR_FAILURE = ChatFormatting.RED.getColor();
+    private static final int SECOND_ROW_COLOR_FAILURE = ChatFormatting.DARK_AQUA.getColor();
 
     private final CopyToast.Type toastType;
     private final @NullPermitted ItemStack itemStack;
@@ -65,21 +63,8 @@ public class CopyToast implements Toast {
     }
 
     @Override
-    public Toast.Visibility getWantedVisibility() {
-        return this.visibility;
-    }
-
-    @Override
-    public void update(ToastManager toastManager, long visibilityTime) {
-        double actualDuration = DURATION * toastManager.getNotificationDisplayTimeMultiplier();
-
-        this.visibility = (visibilityTime < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
-    }
-
-    @Override
-    public void render(GuiGraphics guiGraphics, Font font, long visibilityTime) {
+    public Toast.Visibility render(GuiGraphics guiGraphics, ToastComponent toastComponent, long timeSinceLastVisible) {
         guiGraphics.blitSprite(
-            RenderType::guiTextured,
             BACKGROUND_SPRITE,
             0,
             0,
@@ -94,6 +79,8 @@ public class CopyToast implements Toast {
                 ITEM_TOP_MARGIN
             );
         }
+
+        Font font = toastComponent.getMinecraft().font;
 
         guiGraphics.drawString(
             font,
@@ -112,11 +99,21 @@ public class CopyToast implements Toast {
             this.secondRowColor,
             false
         );
+
+        this.updateVisibility(toastComponent, timeSinceLastVisible);
+
+        return this.visibility;
     }
 
     @Override
     public CopyToast.Type getToken() {
         return this.toastType;
+    }
+
+    private void updateVisibility(ToastComponent toastComponent, long timeSinceLastVisible) {
+        double actualDuration = DURATION * toastComponent.getNotificationDisplayTimeMultiplier();
+
+        this.visibility = (timeSinceLastVisible < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
     }
 
     public enum Type {
@@ -137,7 +134,7 @@ public class CopyToast implements Toast {
     public static CopyToast dispatch(CopyToast.Type type, @NullPermitted ItemStack itemStack) {
         CopyToast toast = new CopyToast(type, itemStack);
 
-        Minecraft.getInstance().getToastManager().addToast(toast);
+        Minecraft.getInstance().getToasts().addToast(toast);
 
         return toast;
     }

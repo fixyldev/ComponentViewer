@@ -1,7 +1,5 @@
 package dev.fixyl.componentviewer.control;
 
-import net.minecraft.client.ScrollWheelHandler;
-
 public class Selection {
 
     private int amount;
@@ -50,7 +48,11 @@ public class Selection {
      * @param scrollDistance the distance whose sign specifies direction
      */
     public void updateByScrolling(double scrollDistance) {
-        this.selectedIndex = ScrollWheelHandler.getNextScrollWheelSelection(scrollDistance, this.selectedIndex, this.amount);
+        if (scrollDistance < 0) {
+            this.updateByCycling(CycleType.NEXT);
+        } else if (scrollDistance > 0) {
+            this.updateByCycling(CycleType.PREVIOUS);
+        }
     }
 
     /**

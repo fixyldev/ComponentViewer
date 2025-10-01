@@ -1,6 +1,6 @@
 package dev.fixyl.componentviewer.mixin;
 
-import net.minecraft.client.gui.components.toasts.ToastManager;
+import net.minecraft.client.gui.components.toasts.ToastComponent;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -10,7 +10,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import dev.fixyl.componentviewer.ComponentViewer;
 import dev.fixyl.componentviewer.event.EventDispatcher;
 
-@Mixin(value = ToastManager.class)
+@Mixin(value = ToastComponent.class)
 public final class ToastManagerMixin {
 
     private ToastManagerMixin() {}
