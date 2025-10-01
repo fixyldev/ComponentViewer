@@ -28,8 +28,8 @@ import dev.fixyl.componentviewer.screen.MainConfigScreen;
  *
  * @see ComponentViewer
  */
-@Mod(value = "componentviewer", dist = Dist.CLIENT)
-@EventBusSubscriber(value = Dist.CLIENT)
+@Mod(value = ComponentViewer.MOD_ID, dist = Dist.CLIENT)
+@EventBusSubscriber(modid = ComponentViewer.MOD_ID, value = Dist.CLIENT)
 public final class NeoForgeComponentViewer extends ComponentViewer {
 
     public NeoForgeComponentViewer(ModContainer modContainer) {

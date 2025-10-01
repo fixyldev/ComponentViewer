@@ -27,6 +27,8 @@ import dev.fixyl.componentviewer.event.EventDispatcher;
  */
 public abstract class ComponentViewer implements DisablableMod {
 
+    public static final String MOD_ID = "componentviewer";
+
     private static ComponentViewer instance;
 
     /**
