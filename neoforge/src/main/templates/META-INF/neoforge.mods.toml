@@ -1,3 +1,6 @@
+modLoader="javafml"
+loaderVersion="[1,)"
+
 license="MIT"
 
 issueTrackerURL="https://github.com/fixyldev/ComponentViewer/issues"
@@ -20,13 +23,13 @@ config="componentviewer-common.mixins.json"
 [[dependencies.componentviewer]]
     modId="minecraft"
     type="required"
-    versionRange="[1.21.6,1.21.9)"
+    versionRange="[1.21.2,1.21.6)"
     ordering="NONE"
     side="CLIENT"
 
 [[dependencies.componentviewer]]
     modId="neoforge"
     type="required"
-    versionRange="[21.6.0,)"
+    versionRange="[21.2.0,)"
     ordering="NONE"
     side="CLIENT"
