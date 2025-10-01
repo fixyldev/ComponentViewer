@@ -30,7 +30,7 @@ import dev.fixyl.componentviewer.screen.MainConfigScreen;
  * @implNote
  * Although not suppressible in this case, I think, the deprecated
  * {@code bus} property of the {@link EventBusSubscriber} is still
- * necessary for older versions, like {@code 1.21.2} to load properly!
+ * necessary for {@code 1.21} to load properly!
  *
  * @see ComponentViewer
  */
