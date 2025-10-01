@@ -20,7 +20,7 @@ import dev.fixyl.componentviewer.event.EventDispatcher;
  * This class implements the registration of key mappings
  * for the NeoForge platform.
  */
-@EventBusSubscriber(value = Dist.CLIENT)
+@EventBusSubscriber(modid = ComponentViewer.MOD_ID, value = Dist.CLIENT)
 public class NeoForgeKeyboard extends Keyboard {
 
     public NeoForgeKeyboard(Minecraft minecraftClient, DisablableMod disablableMod, EventDispatcher eventDispatcher, Configs configs) {
