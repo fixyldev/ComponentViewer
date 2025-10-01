@@ -25,7 +25,7 @@ public final class RecipeButtonMixin {
     private RecipeButtonMixin() {}
 
     @Redirect(method = "getTooltipText(Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/Screen;getTooltipFromItem(Lnet/minecraft/client/Minecraft;Lnet/minecraft/world/item/ItemStack;)Ljava/util/List;"))
-    private static List<Component> getTooltipFromItem(Minecraft minecraftClient, ItemStack stack) {
+    private List<Component> getTooltipFromItem(Minecraft minecraftClient, ItemStack stack) {
         return stack.getTooltipLines(
             TooltipContext.of(minecraftClient.level),
             minecraftClient.player,
