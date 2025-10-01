@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.server.IntegratedServer;
 
@@ -139,7 +140,13 @@ public abstract class ComponentViewer implements DisablableMod {
 
     private boolean currentlyInSurvival() {
         LocalPlayer player = ComponentViewer.getMinecraftClient().player;
-        return player != null && player.gameMode().isSurvival();
+
+        if (player == null) {
+            return false;
+        }
+
+        PlayerInfo playerInfo = player.getPlayerInfo();
+        return playerInfo != null && playerInfo.getGameMode().isSurvival();
     }
 
     private boolean currentlyOnServer() {
