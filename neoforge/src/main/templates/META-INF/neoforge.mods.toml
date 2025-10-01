@@ -30,6 +30,6 @@ config="componentviewer-common.mixins.json"
 [[dependencies.componentviewer]]
     modId="neoforge"
     type="required"
-    versionRange="[21.2.0,)"
+    versionRange="[21.2.1-beta,)"
     ordering="NONE"
     side="CLIENT"
