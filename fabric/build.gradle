@@ -1,0 +1,100 @@
+plugins {
+    id "java-library"
+    id "fabric-loom" version "${fabric_loom_version}"
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+    archivesName = "${project.archives_base_name}-fabric"
+}
+
+repositories {
+    maven {
+        name = "ParchmentMC"
+        url = "https://maven.parchmentmc.org/"
+    }
+    maven {
+        name = "Terraformers"
+        url = "https://maven.terraformersmc.com/"
+    }
+}
+
+dependencies {
+    implementation project(path: ":common", configuration: "namedElements")
+
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings loom.layered() {
+        officialMojangMappings()
+
+        if (
+            project.parchment_minecraft_version?.trim()
+            && project.parchment_mappings_version?.trim()
+        ) {
+            parchment("org.parchmentmc.data:parchment-${project.parchment_minecraft_version}:${project.parchment_mappings_version}@zip")
+        }
+    }
+
+    modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+
+    if (project.modmenu_version?.trim()) {
+        modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir "../common/src/main/java"
+
+            if (!project.modmenu_version?.trim()) {
+                exclude "dev/fixyl/componentviewer/modmenu/**"
+            }
+        }
+        resources {
+            srcDir "../common/src/main/resources"
+        }
+    }
+}
+
+loom {
+    runs {
+        client { runDir = "../run" }
+        server { runDir = "../run" }
+    }
+
+    accessWidenerPath = file("src/main/resources/componentviewer-fabric.accesswidener")
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
+
+java {
+    withSourcesJar()
+
+    toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+    inputs.property "archivesName", project.base.archivesName
+
+    from "../LICENSE"
+}
+
+sourcesJar {
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+
+    from "../LICENSE"
+}

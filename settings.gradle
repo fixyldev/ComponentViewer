@@ -8,3 +8,19 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
+plugins {
+    id "org.gradle.toolchains.foojay-resolver-convention" version "1.0.0"
+}
+
+rootProject.name = "componentviewer"
+
+include "common"
+include "fabric"
+
+if (
+    neoforge_version?.trim()
+    && moddev_version?.trim()
+) {
+    include "neoforge"
+}
