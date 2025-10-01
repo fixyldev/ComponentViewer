@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.server.IntegratedServer;
+import net.minecraft.world.level.GameType;
 
 import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.event.EventDispatcher;
@@ -139,7 +140,13 @@ public abstract class ComponentViewer implements DisablableMod {
 
     private boolean currentlyInSurvival() {
         LocalPlayer player = ComponentViewer.getMinecraftClient().player;
-        return player != null && player.gameMode().isSurvival();
+
+        if (player == null) {
+            return false;
+        }
+
+        GameType gameMode = player.gameMode();
+        return gameMode != null && gameMode.isSurvival();
     }
 
     private boolean currentlyOnServer() {
