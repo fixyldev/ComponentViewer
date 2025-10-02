@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 
@@ -20,13 +19,8 @@ import dev.fixyl.componentviewer.event.EventDispatcher;
  * <p>
  * This class implements the registration of key mappings
  * for the NeoForge platform.
- *
- * @implNote
- * Although not suppressible in this case, I think, the deprecated
- * {@code bus} property of the {@link EventBusSubscriber} is still
- * necessary for older versions, like {@code 1.21.2} to load properly!
  */
-@EventBusSubscriber(modid = ComponentViewer.MOD_ID, value = Dist.CLIENT, bus = Bus.MOD)
+@EventBusSubscriber(modid = ComponentViewer.MOD_ID, value = Dist.CLIENT)
 public class NeoForgeKeyboard extends Keyboard {
 
     public NeoForgeKeyboard(Minecraft minecraftClient, DisablableMod disablableMod, EventDispatcher eventDispatcher, Configs configs) {
