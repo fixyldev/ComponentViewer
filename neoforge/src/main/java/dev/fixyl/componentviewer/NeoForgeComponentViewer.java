@@ -6,6 +6,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.common.EventBusSubscriber.Bus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLPaths;
@@ -26,10 +27,15 @@ import dev.fixyl.componentviewer.screen.MainConfigScreen;
  * <p>
  * Handles initialization logic specific to NeoForge.
  *
+ * @implNote
+ * Although not suppressible in this case, I think, the deprecated
+ * {@code bus} property of the {@link EventBusSubscriber} is still
+ * necessary for older NeoForge versions to load properly!
+ *
  * @see ComponentViewer
  */
 @Mod(value = ComponentViewer.MOD_ID, dist = Dist.CLIENT)
-@EventBusSubscriber(modid = ComponentViewer.MOD_ID, value = Dist.CLIENT)
+@EventBusSubscriber(modid = ComponentViewer.MOD_ID, value = Dist.CLIENT, bus = Bus.MOD)
 public final class NeoForgeComponentViewer extends ComponentViewer {
 
     public NeoForgeComponentViewer(ModContainer modContainer) {
