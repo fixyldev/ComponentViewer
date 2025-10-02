@@ -1,0 +1,35 @@
+modLoader="javafml"
+loaderVersion="[1,)"
+
+license="MIT"
+
+issueTrackerURL="https://github.com/fixyldev/ComponentViewer/issues"
+
+[[mods]]
+modId="componentviewer"
+version="${version}"
+
+displayName="Component Viewer"
+description="Component Viewer is a mod for Minecraft Java Edition that allows you to view and copy components of any item stack."
+logoFile="assets/componentviewer/icon.png"
+
+displayURL="https://modrinth.com/mod/component-viewer"
+
+authors="fixyldev"
+
+[[mixins]]
+config="componentviewer-common.mixins.json"
+
+[[dependencies.componentviewer]]
+    modId="minecraft"
+    type="required"
+    versionRange="[1.21,1.21.2)"
+    ordering="NONE"
+    side="CLIENT"
+
+[[dependencies.componentviewer]]
+    modId="neoforge"
+    type="required"
+    versionRange="[21.0.143,)"
+    ordering="NONE"
+    side="CLIENT"
