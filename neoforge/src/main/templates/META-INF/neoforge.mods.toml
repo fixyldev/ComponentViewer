@@ -23,7 +23,7 @@ config="componentviewer-common.mixins.json"
 [[dependencies.componentviewer]]
     modId="minecraft"
     type="required"
-    versionRange="[1.21.2,1.21.6)"
+    versionRange="[1.21.2,1.21.5)"
     ordering="NONE"
     side="CLIENT"
 
