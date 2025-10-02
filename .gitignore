@@ -23,11 +23,11 @@ bin/
 # macos
 *.DS_Store
 
-# fabric
-run/
-
 # java
 hs_err_*.log
 replay_*.log
 *.hprof
 *.jfr
+
+# other
+run/
