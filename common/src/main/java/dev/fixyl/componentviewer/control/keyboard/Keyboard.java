@@ -87,10 +87,10 @@ public abstract class Keyboard {
     }
 
     /**
-     * This method should be called each time a keyboard key is pressed,
+     * This method should be called each time a key is pressed,
      * held or released. That key is then passed as an argument.
      *
-     * @param keyEvent the key as a key event
+     * @param key the key input
      * @param action the action of the key input
      */
     public void onKeyInput(Key key, Action action) {
