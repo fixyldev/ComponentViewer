@@ -1,11 +1,8 @@
 package dev.fixyl.componentviewer.config.keymapping;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.platform.InputConstants.Key;
-import com.mojang.blaze3d.platform.Window;
 
 import net.minecraft.client.KeyMapping;
-import net.minecraft.client.Minecraft;
 
 /**
  * An {@link AdvancedKeyMapping} is a regular {@link KeyMapping} with
@@ -15,10 +12,9 @@ import net.minecraft.client.Minecraft;
  */
 public class AdvancedKeyMapping extends KeyMapping {
 
-    public static final String GENERAL_CATEGORY = "key.category.componentviewer.controls";
-    public static final String CONFIG_CATEGORY = "key.category.componentviewer.controls.cycle_configs";
-
     private final ConflictContext conflictContext;
+
+    private boolean isDownAnywhere = false;
 
     public AdvancedKeyMapping(String translationKey, int keyCode, String category, ConflictContext conflictContext) {
         super(translationKey, keyCode, category);
@@ -28,6 +24,16 @@ public class AdvancedKeyMapping extends KeyMapping {
 
     public AdvancedKeyMapping(String translationKey, int keyCode, String category) {
         this(translationKey, keyCode, category, ConflictContext.getDefault());
+    }
+
+    public AdvancedKeyMapping(String translationKey, Key key, String category, ConflictContext conflictContext) {
+        super(translationKey, key.getType(), key.getValue(), category);
+
+        this.conflictContext = conflictContext;
+    }
+
+    public AdvancedKeyMapping(String translationKey, Key key, String category) {
+        this(translationKey, key, category, ConflictContext.getDefault());
     }
 
     /**
@@ -43,8 +49,8 @@ public class AdvancedKeyMapping extends KeyMapping {
     }
 
     /**
-     * Check whether the provided key is the same as the one
-     * currently associated with this key mapping.
+     * Check whether the provided key matches the one that is currently
+     * associated with this key mapping.
      *
      * @param key the key to match
      * @return {@code true} if the key matches, {@code false} otherwise
@@ -64,17 +70,17 @@ public class AdvancedKeyMapping extends KeyMapping {
      * @return {@code true} if the key is currently held down, {@code false} otherwise
      */
     public boolean isDownAnywhere() {
-        Minecraft minecraftClient = Minecraft.getInstance();
-        if (minecraftClient == null) {
-            return false;
-        }
+        return this.isDownAnywhere;
+    }
 
-        Window window = minecraftClient.getWindow();
-        if (window == null) {
-            return false;
-        }
-
-        return InputConstants.isKeyDown(window.getWindow(), this.key.getValue());
+    /**
+     * Set whether the key, associated with this mapping, is currently
+     * held down while the game is running.
+     *
+     * @param isDownAnywhere whether the key is pressed
+     */
+    public void setDownAnywhere(boolean isDownAnywhere) {
+        this.isDownAnywhere = isDownAnywhere;
     }
 
     /**
