@@ -9,6 +9,7 @@ import net.neoforged.neoforge.common.NeoForge;
 
 import dev.fixyl.componentviewer.control.Selection.CycleType;
 import dev.fixyl.componentviewer.control.Tooltip;
+import dev.fixyl.componentviewer.control.keyboard.Keyboard.Action;
 
 public class NeoForgeEventDispatcher implements EventDispatcher {
 
@@ -23,8 +24,8 @@ public class NeoForgeEventDispatcher implements EventDispatcher {
     }
 
     @Override
-    public void invokeKeyPressEvent(Key key, int modifiers) {
-        NeoForge.EVENT_BUS.post(new MixinEvents.KeyPressEvent(key, modifiers));
+    public void invokeKeyInputEvent(Key key, int modifiers, Action action) {
+        NeoForge.EVENT_BUS.post(new MixinEvents.KeyInputEvent(key, modifiers, action));
     }
 
     @Override

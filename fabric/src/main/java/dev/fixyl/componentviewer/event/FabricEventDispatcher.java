@@ -6,6 +6,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 
 import dev.fixyl.componentviewer.control.Selection.CycleType;
+import dev.fixyl.componentviewer.control.keyboard.Keyboard.Action;
 import dev.fixyl.componentviewer.control.Tooltip;
 
 public class FabricEventDispatcher implements EventDispatcher {
@@ -21,8 +22,8 @@ public class FabricEventDispatcher implements EventDispatcher {
     }
 
     @Override
-    public void invokeKeyPressEvent(Key key, int modifiers) {
-        MixinEvents.KEY_PRESS_EVENT.invoker().onKeyPress(key, modifiers);
+    public void invokeKeyInputEvent(Key key, int modifiers, Action action) {
+        MixinEvents.KEY_INPUT_EVENT.invoker().onKeyInput(key, modifiers, action);
     }
 
     @Override
