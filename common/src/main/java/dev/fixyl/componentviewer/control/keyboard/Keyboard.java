@@ -137,7 +137,7 @@ public abstract class Keyboard {
     }
 
     private void setDownStateForAll(Key key, Action action) {
-        boolean isDown = (action == Action.PRESS);
+        boolean isDown = (action != Action.RELEASE);
 
         for (AdvancedKeyMapping keyMapping : this.keyMappings) {
             if (keyMapping.matchesKey(key)) {
