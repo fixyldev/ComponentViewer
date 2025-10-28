@@ -1,6 +1,6 @@
 package dev.fixyl.componentviewer.config;
 
-import static org.lwjgl.glfw.GLFW.*;
+import static com.mojang.blaze3d.platform.InputConstants.*;
 
 import java.nio.file.Path;
 import java.util.EnumSet;
@@ -36,6 +36,9 @@ import dev.fixyl.componentviewer.screen.MainConfigScreen;
 public final class Configs implements Options, KeyMappings {
 
     private static final String CONFIG_FILENAME = "componentviewer-config.json";
+
+    private static final String KEY_CATEGORY_GENERAL = "key.category.componentviewer.controls";
+    private static final String KEY_CATEGORY_CYCLE_CONFIGS = "key.category.componentviewer.controls.cycle_configs";
 
     private final ConfigManager configManager;
 
@@ -251,8 +254,8 @@ public final class Configs implements Options, KeyMappings {
 
     public final ActionBoundKeyMapping keyConfigScreen = new ActionBoundKeyMapping(
         "key.category.componentviewer.controls.config_screen",
-        GLFW_KEY_J,
-        AdvancedKeyMapping.GENERAL_CATEGORY,
+        KEY_J,
+        KEY_CATEGORY_GENERAL,
         ConflictContext.IN_GAME,
         () -> {
             Minecraft minecraftClient = Minecraft.getInstance();
@@ -264,90 +267,90 @@ public final class Configs implements Options, KeyMappings {
     );
     public final AdvancedKeyMapping keyShowTooltip = new AdvancedKeyMapping(
         "key.category.componentviewer.controls.show_tooltip",
-        GLFW_KEY_LEFT_ALT,
-        AdvancedKeyMapping.GENERAL_CATEGORY,
+        KEY_LALT,
+        KEY_CATEGORY_GENERAL,
         ConflictContext.IN_SCREEN
     );
     public final CycleSelectionKeyMapping keyNextComponent = new CycleSelectionKeyMapping(
         "key.category.componentviewer.controls.next_component",
-        GLFW_KEY_DOWN,
-        AdvancedKeyMapping.GENERAL_CATEGORY,
+        KEY_DOWN,
+        KEY_CATEGORY_GENERAL,
         ConflictContext.IN_SCREEN,
         CycleType.NEXT
     );
     public final CycleSelectionKeyMapping keyPreviousComponent = new CycleSelectionKeyMapping(
         "key.category.componentviewer.controls.previous_component",
-        GLFW_KEY_UP,
-        AdvancedKeyMapping.GENERAL_CATEGORY,
+        KEY_UP,
+        KEY_CATEGORY_GENERAL,
         ConflictContext.IN_SCREEN,
         CycleType.PREVIOUS
     );
     public final CycleSelectionKeyMapping keyFirstComponent = new CycleSelectionKeyMapping(
         "key.category.componentviewer.controls.first_component",
-        GLFW_KEY_HOME,
-        AdvancedKeyMapping.GENERAL_CATEGORY,
+        KEY_HOME,
+        KEY_CATEGORY_GENERAL,
         ConflictContext.IN_SCREEN,
         CycleType.FIRST
     );
     public final CycleSelectionKeyMapping keyLastComponent = new CycleSelectionKeyMapping(
         "key.category.componentviewer.controls.last_component",
-        GLFW_KEY_END,
-        AdvancedKeyMapping.GENERAL_CATEGORY,
+        KEY_END,
+        KEY_CATEGORY_GENERAL,
         ConflictContext.IN_SCREEN,
         CycleType.LAST
     );
     public final EnumOptionKeyMapping<TooltipDisplay> keyTooltipDisplayConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.tooltip_display",
-        GLFW_KEY_UNKNOWN,
-        AdvancedKeyMapping.CONFIG_CATEGORY,
+        UNKNOWN,
+        KEY_CATEGORY_CYCLE_CONFIGS,
         this.tooltipDisplay
     );
     public final EnumOptionKeyMapping<TooltipPurpose> keyTooltipPurposeConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.tooltip_purpose",
-        GLFW_KEY_UNKNOWN,
-        AdvancedKeyMapping.CONFIG_CATEGORY,
+        UNKNOWN,
+        KEY_CATEGORY_CYCLE_CONFIGS,
         this.tooltipPurpose
     );
     public final EnumOptionKeyMapping<TooltipComponents> keyTooltipComponentsConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.tooltip_components",
-        GLFW_KEY_UNKNOWN,
-        AdvancedKeyMapping.CONFIG_CATEGORY,
+        UNKNOWN,
+        KEY_CATEGORY_CYCLE_CONFIGS,
         this.tooltipComponents
     );
     public final EnumOptionKeyMapping<TooltipKeepSelection> keyTooltipKeepSelectionConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.tooltip_keep_selection",
-        GLFW_KEY_UNKNOWN,
-        AdvancedKeyMapping.CONFIG_CATEGORY,
+        UNKNOWN,
+        KEY_CATEGORY_CYCLE_CONFIGS,
         this.tooltipKeepSelection
     );
     public final EnumOptionKeyMapping<TooltipFormatting> keyTooltipFormattingConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.tooltip_formatting",
-        GLFW_KEY_UNKNOWN,
-        AdvancedKeyMapping.CONFIG_CATEGORY,
+        UNKNOWN,
+        KEY_CATEGORY_CYCLE_CONFIGS,
         this.tooltipFormatting
     );
     public final EnumOptionKeyMapping<TooltipInjectMethod> keyTooltipInjectMethodConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.tooltip_inject_method",
-        GLFW_KEY_UNKNOWN,
-        AdvancedKeyMapping.CONFIG_CATEGORY,
+        UNKNOWN,
+        KEY_CATEGORY_CYCLE_CONFIGS,
         this.tooltipInjectMethod
     );
     public final EnumOptionKeyMapping<ClipboardCopy> keyClipboardCopyConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.clipboard_copy",
-        GLFW_KEY_UNKNOWN,
-        AdvancedKeyMapping.CONFIG_CATEGORY,
+        UNKNOWN,
+        KEY_CATEGORY_CYCLE_CONFIGS,
         this.clipboardCopy
     );
     public final EnumOptionKeyMapping<ClipboardFormatting> keyClipboardFormattingConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.clipboard_formatting",
-        GLFW_KEY_UNKNOWN,
-        AdvancedKeyMapping.CONFIG_CATEGORY,
+        UNKNOWN,
+        KEY_CATEGORY_CYCLE_CONFIGS,
         this.clipboardFormatting
     );
     public final EnumOptionKeyMapping<ClipboardSelector> keyClipboardSelectorConfig = new EnumOptionKeyMapping<>(
         "key.category.componentviewer.controls.cycle_configs.clipboard_selector",
-        GLFW_KEY_UNKNOWN,
-        AdvancedKeyMapping.CONFIG_CATEGORY,
+        UNKNOWN,
+        KEY_CATEGORY_CYCLE_CONFIGS,
         this.clipboardSelector
     );
 

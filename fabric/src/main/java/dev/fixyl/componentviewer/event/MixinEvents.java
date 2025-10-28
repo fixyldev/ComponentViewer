@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.InteractionResult;
 
 import dev.fixyl.componentviewer.control.Tooltip;
+import dev.fixyl.componentviewer.control.keyboard.Keyboard.Action;
 
 public final class MixinEvents {
 
@@ -26,9 +27,9 @@ public final class MixinEvents {
         }
     });
 
-    public static final Event<KeyPressCallback> KEY_PRESS_EVENT = EventFactory.createArrayBacked(KeyPressCallback.class, listeners -> (key, modifiers) -> {
-        for (KeyPressCallback listener : listeners) {
-            listener.onKeyPress(key, modifiers);
+    public static final Event<KeyInputCallback> KEY_INPUT_EVENT = EventFactory.createArrayBacked(KeyInputCallback.class, listeners -> (key, modifiers, action) -> {
+        for (KeyInputCallback listener : listeners) {
+            listener.onKeyInput(key, modifiers, action);
         }
     });
 
@@ -61,8 +62,8 @@ public final class MixinEvents {
     }
 
     @FunctionalInterface
-    public static interface KeyPressCallback {
-        void onKeyPress(Key key, int modifiers);
+    public static interface KeyInputCallback {
+        void onKeyInput(Key key, int modifiers, Action action);
     }
 
     @FunctionalInterface
