@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
  * <p>
  * It is purely a type-hint for humans and therefore distinct from all other
  * {@code @Nullable} annotations which may be used for null-analysis.
- * Therfore, this annotation doesn't have a {@code @NotNullPermitted}
+ * Therefore, this annotation doesn't have a {@code @NotNullPermitted}
  * counterpart, as seen with {@code @NonNull} annotations, since {@code null}
  * is seen as invalid by default.
  */
