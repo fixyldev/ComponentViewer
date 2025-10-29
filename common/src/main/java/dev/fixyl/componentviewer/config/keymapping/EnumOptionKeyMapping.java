@@ -27,6 +27,18 @@ public class EnumOptionKeyMapping<E extends Enum<E> & OptionEnum> extends Advanc
         this.option = option;
     }
 
+    public EnumOptionKeyMapping(String translationKey, Key key, String category, ConflictContext conflictContext, EnumOption<E> option) {
+        super(translationKey, key, category, conflictContext);
+
+        this.option = option;
+    }
+
+    public EnumOptionKeyMapping(String translationKey, Key key, String category, EnumOption<E> option) {
+        super(translationKey, key, category);
+
+        this.option = option;
+    }
+
     @Override
     public void onEndClientTick() {
         if (this.optionToast != null && this.optionToast.getWantedVisibility() == Visibility.HIDE) {
