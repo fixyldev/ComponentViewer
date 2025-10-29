@@ -7,6 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.Event;
 
 import dev.fixyl.componentviewer.control.Tooltip;
+import dev.fixyl.componentviewer.control.keyboard.Keyboard.Action;
 
 public final class MixinEvents {
 
@@ -25,14 +26,16 @@ public final class MixinEvents {
         }
     }
 
-    public static class KeyPressEvent extends Event {
+    public static class KeyInputEvent extends Event {
 
         public final Key key;
         public final int modifiers;
+        public final Action action;
 
-        public KeyPressEvent(Key key, int modifiers) {
+        public KeyInputEvent(Key key, int modifiers, Action action) {
             this.key = key;
             this.modifiers = modifiers;
+            this.action = action;
         }
     }
 

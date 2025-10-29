@@ -1,5 +1,7 @@
 package dev.fixyl.componentviewer.control;
 
+import java.util.Optional;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.world.InteractionResult;
@@ -129,11 +131,12 @@ public final class ControlFlow {
             this.isComponentSelectionShown()
             && this.configs.controlsAllowScrolling.getBooleanValue()
         ) {
-            this.hoveredItemStack.getComponentSelection().ifPresent(selection ->
-                selection.updateByScrolling(scrollDistance)
-            );
+            Optional<Selection> optionalSelection = this.hoveredItemStack.getComponentSelection();
 
-            return InteractionResult.SUCCESS;
+            if (optionalSelection.isPresent()) {
+                optionalSelection.orElseThrow().updateByScrolling(scrollDistance);
+                return InteractionResult.SUCCESS;
+            }
         }
 
         return InteractionResult.PASS;
