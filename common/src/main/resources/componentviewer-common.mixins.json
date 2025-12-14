@@ -9,7 +9,8 @@
         "RecipeButtonMixin",
         "KeyboardHandlerMixin",
         "MouseHandlerMixin",
-        "ToastManagerMixin"
+        "ToastManagerMixin",
+        "BundleItemMixin"
     ],
     "injectors": {
         "defaultRequire": 1
