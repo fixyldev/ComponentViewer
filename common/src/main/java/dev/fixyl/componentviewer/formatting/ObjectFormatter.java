@@ -301,9 +301,9 @@ public class ObjectFormatter implements Formatter {
         private static final Pattern NON_WORD_DOT_DASH_CHAR_PATTERN = Pattern.compile("^[^\\p{L}\\p{N}_.\\-]$");
 
         private static final Pattern CURLY_BRACKET_STRING_BEGIN_PATTERN = Pattern.compile("^(keybind|literal|pattern)\\{");
-        private static final Pattern INTEGER_PATTERN = Pattern.compile("^(-?\\d+)(?![\\p{L}\\p{N}_.\\-])");
-        private static final Pattern FLOAT_PATTERN = Pattern.compile("^(-?\\d+\\.\\d+)(?![\\p{L}\\p{N}_.\\-])");
-        private static final Pattern HEX_PATTERN = Pattern.compile("^([a-fA-F\\d]+)(?![\\p{L}\\p{N}_.])");
+        private static final Pattern INTEGER_PATTERN = Pattern.compile("^(-?\\d+[bBsSiIlL]?)(?![\\p{L}\\p{N}_.\\-])");
+        private static final Pattern FLOAT_PATTERN = Pattern.compile("^(-?\\d+\\.\\d+[fFdD]?)(?![\\p{L}\\p{N}_.\\-])");
+        private static final Pattern HEX_PATTERN = Pattern.compile("^([a-fA-F\\d]{2,})(?![\\p{L}\\p{N}_.])");
         private static final Pattern BOOLEAN_PATTERN = Pattern.compile("^(true|false)(?![\\p{L}\\p{N}_])");
         private static final Pattern NULL_PATTERN = Pattern.compile("^(null)(?![\\p{L}\\p{N}_])");
 

@@ -24,6 +24,11 @@ public class NeoForgeEventDispatcher implements EventDispatcher {
     }
 
     @Override
+    public InteractionResult invokeBundleTooltipImageEvent() {
+        return NeoForge.EVENT_BUS.post(new MixinEvents.BundleTooltipImageEvent()).getResult();
+    }
+
+    @Override
     public void invokeKeyInputEvent(Key key, int modifiers, Action action) {
         NeoForge.EVENT_BUS.post(new MixinEvents.KeyInputEvent(key, modifiers, action));
     }
