@@ -26,6 +26,8 @@ public final class MixinEvents {
         }
     }
 
+    public static class BundleTooltipImageEvent extends InteractionResultEvent {}
+
     public static class KeyInputEvent extends Event {
 
         public final KeyEvent keyEvent;

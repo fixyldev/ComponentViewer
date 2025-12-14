@@ -16,6 +16,7 @@ public interface MixinEventDispatcher {
 
     void invokeStartRenderEvent();
     void invokeTooltipEvent(ItemStack itemStack, Tooltip tooltip);
+    InteractionResult invokeBundleTooltipImageEvent();
     void invokeKeyInputEvent(KeyEvent keyEvent, Action action);
     void invokeButtonInputEvent(MouseButtonInfo mouseButtonInfo, Action action);
     InteractionResult invokeMouseScrollEvent(double xOffset, double yOffset);

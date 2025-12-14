@@ -41,7 +41,7 @@ final class PatchedItemStackComponents extends ItemStackComponents {
             .stream()
             .<DataComponentType<?>>map(Entry::getKey)
             .sorted(REGISTRY_ID_COMPARATOR)
-            .sorted(Comparator.comparing(dataComponentType ->
+            .sorted(Comparator.<DataComponentType<?>, Boolean>comparing(dataComponentType ->
                 PatchedItemStackComponents.wasRemovedWithPatch(dataComponentType, currentPatch)
             ))
             .toList();

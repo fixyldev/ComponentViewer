@@ -6,10 +6,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.CustomData;
 
 import dev.fixyl.componentviewer.DisablableMod;
-import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.config.enums.ClipboardCopy;
 import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
@@ -118,12 +116,11 @@ public final class ControlFlow {
         }
     }
 
-    public void onCycleComponent(Selection.CycleType cycleType) {
-        if (this.isComponentSelectionShown()) {
-            this.hoveredItemStack.getComponentSelection().ifPresent(selection ->
-                selection.updateByCycling(cycleType)
-            );
-        }
+    public InteractionResult onBundleTooltipImage() {
+        return this.isTooltipShown()
+            && this.configs.tooltipInjectMethod.getValue() == TooltipInjectMethod.REPLACE
+            ? InteractionResult.SUCCESS
+            : InteractionResult.PASS;
     }
 
     public InteractionResult onMouseScroll(double scrollDistance) {
@@ -140,6 +137,14 @@ public final class ControlFlow {
         }
 
         return InteractionResult.PASS;
+    }
+
+    public void onCycleComponent(Selection.CycleType cycleType) {
+        if (this.isComponentSelectionShown()) {
+            this.hoveredItemStack.getComponentSelection().ifPresent(selection ->
+                selection.updateByCycling(cycleType)
+            );
+        }
     }
 
     public void onCopyAction() {
@@ -232,7 +237,7 @@ public final class ControlFlow {
 
         tooltip.addSpacer().addComponentValue(
             selectedComponent,
-            this.getTooltipFormatter(selectedComponent),
+            this.getTooltipFormatter(),
             this.getTooltipIndentation(),
             this.configs.tooltipColoredFormatting.getBooleanValue()
         );
@@ -250,7 +255,7 @@ public final class ControlFlow {
     private <T> void copyComponentValue(TypedDataComponent<T> component) {
         this.clipboard.copyComponentValue(
             component,
-            this.getClipboardFormatter(component),
+            this.getClipboardFormatter(),
             this.getClipboardIndentation(),
             this.configs.clipboardSuccessNotification.getBooleanValue()
         );
@@ -276,27 +281,19 @@ public final class ControlFlow {
     }
 
     private Formatter getTooltipFormatter() {
-        return this.getTooltipFormatter(null);
-    }
-
-    private <T> Formatter getTooltipFormatter(@NullPermitted TypedDataComponent<T> component) {
         return switch (this.configs.tooltipFormatting.getValue()) {
             case SNBT -> this.snbtFormatter;
             case JSON -> this.jsonFormatter;
-            case OBJECT -> (component != null && component.value() instanceof CustomData) ? this.snbtFormatter : this.objectFormatter;
+            case OBJECT -> this.objectFormatter;
         };
     }
 
     private Formatter getClipboardFormatter() {
-        return this.getClipboardFormatter(null);
-    }
-
-    private <T> Formatter getClipboardFormatter(@NullPermitted TypedDataComponent<T> component) {
         return switch (this.configs.clipboardFormatting.getValue()) {
-            case SYNC -> this.getTooltipFormatter(component);
+            case SYNC -> this.getTooltipFormatter();
             case SNBT -> this.snbtFormatter;
             case JSON -> this.jsonFormatter;
-            case OBJECT -> (component != null && component.value() instanceof CustomData) ? this.snbtFormatter : this.objectFormatter;
+            case OBJECT -> this.objectFormatter;
         };
     }
 

@@ -27,6 +27,18 @@ public final class MixinEvents {
         }
     });
 
+    public static final Event<BundleTooltipImageCallback> BUNDLE_TOOLTIP_IMAGE_EVENT = EventFactory.createArrayBacked(BundleTooltipImageCallback.class, listeners -> () -> {
+        for (BundleTooltipImageCallback listener : listeners) {
+            InteractionResult result = listener.onBundleTooltipImage();
+
+            if (result != InteractionResult.PASS) {
+                return result;
+            }
+        }
+
+        return InteractionResult.PASS;
+    });
+
     public static final Event<KeyInputCallback> KEY_INPUT_EVENT = EventFactory.createArrayBacked(KeyInputCallback.class, listeners -> (keyEvent, action) -> {
         for (KeyInputCallback listener : listeners) {
             listener.onKeyInput(keyEvent, action);
@@ -65,6 +77,11 @@ public final class MixinEvents {
     @FunctionalInterface
     public static interface TooltipCallback {
         void onTooltip(ItemStack itemStack, Tooltip tooltip);
+    }
+
+    @FunctionalInterface
+    public static interface BundleTooltipImageCallback {
+        InteractionResult onBundleTooltipImage();
     }
 
     @FunctionalInterface
