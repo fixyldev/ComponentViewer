@@ -37,6 +37,7 @@ public final class FabricComponentViewer extends ComponentViewer implements Clie
 
         MixinEvents.START_RENDER_EVENT.register(controlFlow::onStartRender);
         MixinEvents.TOOLTIP_EVENT.register(controlFlow::onTooltip);
+        MixinEvents.BUNDLE_TOOLTIP_IMAGE_EVENT.register(controlFlow::onBundleTooltipImage);
         MixinEvents.MOUSE_SCROLL_EVENT.register((xOffset, yOffset) -> controlFlow.onMouseScroll(yOffset));
         KeyboardEvents.CYCLE_COMPONENT_EVENT.register(controlFlow::onCycleComponent);
         KeyboardEvents.COPY_ACTION_EVENT.register(controlFlow::onCopyAction);
