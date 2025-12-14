@@ -9,8 +9,8 @@
     ],
     "contact": {
         "homepage": "https://modrinth.com/mod/component-viewer",
-        "issues": "https://github.com/fixyldev/ComponentViewer/issues",
-        "sources": "https://github.com/fixyldev/ComponentViewer"
+        "issues": "https://github.com/fixyldev/component-viewer/issues",
+        "sources": "https://github.com/fixyldev/component-viewer"
     },
     "license": "MIT",
     "icon": "assets/componentviewer/icon.png",
