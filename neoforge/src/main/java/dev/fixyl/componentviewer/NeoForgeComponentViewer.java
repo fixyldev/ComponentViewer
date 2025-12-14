@@ -53,6 +53,7 @@ public final class NeoForgeComponentViewer extends ComponentViewer {
 
         NeoForge.EVENT_BUS.addListener(MixinEvents.StartRenderEvent.class, event -> controlFlow.onStartRender());
         NeoForge.EVENT_BUS.addListener(MixinEvents.TooltipEvent.class, event -> controlFlow.onTooltip(event.itemStack, event.tooltip));
+        NeoForge.EVENT_BUS.addListener(MixinEvents.BundleTooltipImageEvent.class, event -> event.setResult(controlFlow.onBundleTooltipImage()));
         NeoForge.EVENT_BUS.addListener(MixinEvents.MouseScrollEvent.class, event -> event.setResult(controlFlow.onMouseScroll(event.yOffset)));
         NeoForge.EVENT_BUS.addListener(KeyboardEvents.CycleComponentEvent.class, event -> controlFlow.onCycleComponent(event.cycleType));
         NeoForge.EVENT_BUS.addListener(KeyboardEvents.CopyActionEvent.class, event -> controlFlow.onCopyAction());

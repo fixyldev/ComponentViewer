@@ -14,8 +14,8 @@ To build this mod, you will need **JDK 21** installed and properly configured on
 
 1. **Clone the repository**
     ```sh
-    git clone https://github.com/fixyldev/ComponentViewer.git
-    cd ComponentViewer
+    git clone https://github.com/fixyldev/component-viewer.git
+    cd component-viewer
     ```
 2. **Build the mod for Fabric and NeoForge**
     ```sh
@@ -37,5 +37,5 @@ To build independently, use:
 ```
 
 ## 🔍 Useful Resources
-- 🐛 [**Issues**](https://github.com/fixyldev/ComponentViewer/issues): For reporting bugs or suggesting features
+- 🐛 [**Issues**](https://github.com/fixyldev/component-viewer/issues): For reporting bugs or suggesting features
 - 📝 [**Changelog**](https://modrinth.com/mod/component-viewer/changelog): Keep track of all notable changes made to the mod
