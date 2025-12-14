@@ -22,6 +22,11 @@ public class FabricEventDispatcher implements EventDispatcher {
     }
 
     @Override
+    public InteractionResult invokeBundleTooltipImageEvent() {
+        return MixinEvents.BUNDLE_TOOLTIP_IMAGE_EVENT.invoker().onBundleTooltipImage();
+    }
+
+    @Override
     public void invokeKeyInputEvent(Key key, int modifiers, Action action) {
         MixinEvents.KEY_INPUT_EVENT.invoker().onKeyInput(key, modifiers, action);
     }
