@@ -3,6 +3,7 @@ package dev.fixyl.componentviewer.control;
 import java.util.Optional;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
@@ -196,30 +197,24 @@ public final class ControlFlow {
         switch (this.configs.tooltipKeepSelection.getValue()) {
             case INDEX -> this.keepSelectionByIndex(newHoveredItemStack);
             case TYPE -> this.keepSelectionByType(newHoveredItemStack);
-            case NEVER -> { /* Don't keep the selection */ }
+            case NEVER -> newHoveredItemStack.resetSelection();
         }
     }
 
     private void keepSelectionByIndex(HoveredItemStack newHoveredItemStack) {
         this.hoveredItemStack.getComponentSelection().ifPresent(currentSelection ->
-            newHoveredItemStack.getComponentSelection().ifPresent(newSelection ->
-                newSelection.updateByValue(currentSelection.getSelectedIndex())
-            )
+            newHoveredItemStack.setSelectionByIndex(currentSelection.getSelectedIndex())
         );
     }
 
     private void keepSelectionByType(HoveredItemStack newHoveredItemStack) {
-        this.hoveredItemStack.getSelectedComponent().ifPresent(component -> {
-            int indexOfComponent = newHoveredItemStack.getComponents().indexOf(component.type());
+        this.hoveredItemStack.getComponentSelection().ifPresent(currentSelection -> {
+            int selectedIndex = currentSelection.getSelectedIndex();
+            DataComponentType<?> type = this.hoveredItemStack.getComponents()
+                .getComponentTypes()
+                .get(selectedIndex);
 
-            if (indexOfComponent < 0) {
-                this.keepSelectionByIndex(newHoveredItemStack);
-                return;
-            }
-
-            newHoveredItemStack.getComponentSelection().ifPresent(newSelection ->
-                newSelection.updateByValue(indexOfComponent)
-            );
+            newHoveredItemStack.setSelectionByType(type, selectedIndex);
         });
     }
 
