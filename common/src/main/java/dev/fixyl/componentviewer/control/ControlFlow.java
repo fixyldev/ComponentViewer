@@ -12,9 +12,9 @@ import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.config.enums.ClipboardCopy;
 import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
 import dev.fixyl.componentviewer.config.enums.TooltipInjectMethod;
+import dev.fixyl.componentviewer.config.enums.TooltipKeepSelection;
 import dev.fixyl.componentviewer.config.enums.TooltipPurpose;
 import dev.fixyl.componentviewer.control.keyboard.Clipboard;
-import dev.fixyl.componentviewer.config.enums.TooltipKeepSelection;
 import dev.fixyl.componentviewer.formatting.Formatter;
 import dev.fixyl.componentviewer.formatting.JsonFormatter;
 import dev.fixyl.componentviewer.formatting.ObjectFormatter;
@@ -80,7 +80,10 @@ public final class ControlFlow {
         }
 
         if (this.hoveredItemStack == null || itemStack != this.previousItemStack) {
-            HoveredItemStack newHoveredItemStack = new HoveredItemStack(itemStack, this.configs);
+            HoveredItemStack newHoveredItemStack = new HoveredItemStack(
+                itemStack,
+                this.configs.tooltipComponents.getValue().getComponentContext()
+            );
 
             if (
                 this.configs.tooltipKeepSelection.getValue() != TooltipKeepSelection.NEVER
