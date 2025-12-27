@@ -9,11 +9,12 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 
 import dev.fixyl.componentviewer.DisablableMod;
+import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.config.Configs;
 import dev.fixyl.componentviewer.config.enums.ClipboardCopy;
+import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 import dev.fixyl.componentviewer.config.enums.TooltipDisplay;
 import dev.fixyl.componentviewer.config.enums.TooltipInjectMethod;
-import dev.fixyl.componentviewer.config.enums.TooltipKeepSelection;
 import dev.fixyl.componentviewer.config.enums.TooltipPurpose;
 import dev.fixyl.componentviewer.control.keyboard.Clipboard;
 import dev.fixyl.componentviewer.formatting.Formatter;
@@ -43,7 +44,9 @@ public final class ControlFlow {
     private long renderTick;
 
     private HoveredItemStack hoveredItemStack;
-    private ItemStack previousItemStack;
+
+    private @NullPermitted ItemStack previousItemStack;
+    private TooltipComponents previousTooltipComponents;
 
     private long lastTimeItemStackHovered;
     private boolean isTooltipShown;
@@ -60,6 +63,9 @@ public final class ControlFlow {
         this.objectFormatter = new ObjectFormatter();
 
         this.renderTick = 0L;
+
+        this.previousItemStack = null;
+        this.previousTooltipComponents = configs.tooltipComponents.getValue();
 
         this.lastTimeItemStackHovered = -1L;
         this.isTooltipShown = false;
@@ -80,15 +86,20 @@ public final class ControlFlow {
             return;
         }
 
-        if (this.hoveredItemStack == null || itemStack != this.previousItemStack) {
+        TooltipComponents tooltipComponents = this.configs.tooltipComponents.getValue();
+
+        if (
+            this.hoveredItemStack == null
+            || itemStack != this.previousItemStack
+            || tooltipComponents != this.previousTooltipComponents
+        ) {
             HoveredItemStack newHoveredItemStack = new HoveredItemStack(
                 itemStack,
-                this.configs.tooltipComponents.getValue().getComponentContext()
+                tooltipComponents.getComponentContext()
             );
 
             if (
-                this.configs.tooltipKeepSelection.getValue() != TooltipKeepSelection.NEVER
-                && this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS
+                this.configs.tooltipPurpose.getValue() == TooltipPurpose.COMPONENTS
                 && this.hoveredItemStack != null
             ) {
                 this.keepSelection(newHoveredItemStack);
@@ -96,6 +107,7 @@ public final class ControlFlow {
 
             this.hoveredItemStack = newHoveredItemStack;
             this.previousItemStack = itemStack;
+            this.previousTooltipComponents = tooltipComponents;
         }
 
         this.lastTimeItemStackHovered = this.renderTick;
