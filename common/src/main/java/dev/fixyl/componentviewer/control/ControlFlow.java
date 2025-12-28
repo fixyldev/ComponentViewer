@@ -286,6 +286,7 @@ public final class ControlFlow {
             this.getGiveCommandSelector(),
             this.configs.clipboardPrependSlash.getBooleanValue(),
             this.configs.clipboardIncludeCount.getBooleanValue(),
+            this.configs.clipboardExplicitGive.getBooleanValue(),
             this.configs.clipboardSuccessNotification.getBooleanValue()
         );
     }
