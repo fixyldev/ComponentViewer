@@ -23,10 +23,9 @@ public final class Strings {
 
             stringBuilder.append(switch (ch) {
                 case '"', '\\' -> "\\" + ch;
-                case '\b', '\f', '\n', '\r', '\t' -> "\\" + Strings.getBackslashEscape(ch);
                 default -> {
                     if (Character.isISOControl(ch)) {
-                        yield String.format("\\u%04X", (int) ch);
+                        yield Strings.escapeCharacter(ch);
                     } else {
                         yield ch;
                     }
@@ -35,6 +34,23 @@ public final class Strings {
         }
 
         return stringBuilder.toString();
+    }
+
+    /**
+     * Escape a character with {@code \}. Some control
+     * characters have their own escape sequence
+     * (e.g. {@code LF} with {@code \n}). All other
+     * characters will be escaped with their
+     * unicode codepoint.
+     *
+     * @param ch the character to escape
+     * @return the escape sequence for that character
+     */
+    public static String escapeCharacter(char ch) {
+        return switch (ch) {
+            case '\b', '\f', '\n', '\r', '\t' -> "\\" + Strings.getBackslashEscape(ch);
+            default -> String.format("\\u%04X", (int) ch);
+        };
     }
 
     private static char getBackslashEscape(char ch) {
