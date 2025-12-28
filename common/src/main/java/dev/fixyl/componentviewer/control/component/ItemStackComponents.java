@@ -77,7 +77,7 @@ public abstract sealed class ItemStackComponents permits MappedItemStackComponen
 
     /**
      * Get an immutable {@link List} holding all {@link DataComponentType} instances
-     * in alphabetical order, sorted by their {@link ResourceLocation} in the registry.
+     * in alphabetical order, sorted by their {@link Identifier} in the registry.
      * <p>
      * Data component types, that aren't registered, come first.
      * <p>
