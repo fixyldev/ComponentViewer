@@ -5,7 +5,7 @@
 ## Reporting Bugs / Suggesting Features and Changes
 
 1. Take a look at the issues page if someone already reported the same bug or suggested the same feature
-2. **If so:** You can show your interest in it getting fixed or implemented there (e.g by reacting or replying with additional information)
+2. **If so:** You can show your interest in it getting fixed or implemented there (e.g. by reacting or replying with additional information)
 3. **If not:** Create an issue describing the bug (as detailed as possible) or the feature you wanna see
 
 ## Fixing Bugs / Implementing Features / Changing Behaviour
