@@ -30,10 +30,6 @@ public class EnumOption<E extends Enum<E> & OptionEnum> extends AdvancedOption<E
         return this.enumClass;
     }
 
-    public E[] getEnumConstants() {
-        return this.enumClass.getEnumConstants();
-    }
-
     public void cycleValue() {
         int nextId = this.option.get().getId() + 1;
         E nextValue = this.getEnumById(nextId);
@@ -55,6 +51,10 @@ public class EnumOption<E extends Enum<E> & OptionEnum> extends AdvancedOption<E
     @Override
     protected OptionInstance.CaptionBasedToString<E> getDefaultCaptionBasedToString() {
         return OptionInstance.forOptionEnum();
+    }
+
+    private E[] getEnumConstants() {
+        return this.enumClass.getEnumConstants();
     }
 
     private E getEnumById(int id) {

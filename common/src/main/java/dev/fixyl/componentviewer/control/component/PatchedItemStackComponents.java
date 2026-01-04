@@ -11,13 +11,12 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
 
 import dev.fixyl.componentviewer.annotation.NullPermitted;
-import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 
 final class PatchedItemStackComponents extends ItemStackComponents {
 
     private final Supplier<DataComponentPatch> dataComponentPatch;
 
-    PatchedItemStackComponents(ItemStack itemStack, Supplier<DataComponentPatch> dataComponentPatch, TooltipComponents componentContext) {
+    PatchedItemStackComponents(ItemStack itemStack, Supplier<DataComponentPatch> dataComponentPatch, ComponentContext componentContext) {
         super(itemStack, componentContext);
 
         this.dataComponentPatch = dataComponentPatch;

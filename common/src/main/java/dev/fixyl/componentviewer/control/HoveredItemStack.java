@@ -7,21 +7,20 @@ import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.world.item.ItemStack;
 
 import dev.fixyl.componentviewer.annotation.NullPermitted;
-import dev.fixyl.componentviewer.config.Configs;
-import dev.fixyl.componentviewer.config.enums.TooltipComponents;
+import dev.fixyl.componentviewer.control.component.ComponentContext;
 import dev.fixyl.componentviewer.control.component.ItemStackComponents;
 
 public class HoveredItemStack {
 
     private final ItemStack itemStack;
-    private final Configs configs;
+    private final ComponentContext componentContext;
 
-    private ItemStackComponents components;
+    private @NullPermitted ItemStackComponents components;
     private @NullPermitted Selection componentSelection;
 
-    public HoveredItemStack(ItemStack itemStack, Configs configs) {
+    public HoveredItemStack(ItemStack itemStack, ComponentContext componentContext) {
         this.itemStack = itemStack;
-        this.configs = configs;
+        this.componentContext = componentContext;
     }
 
     /**
@@ -34,27 +33,33 @@ public class HoveredItemStack {
     }
 
     /**
-     * Get a {@link ItemStackComponents} instance which holds all currently relevant
-     * components of the item stack based on the player's {@link TooltipComponents}
-     * config.
-     * <p>
-     * It is not guaranteed that this is always the same instance.
+     * Get the {@link ComponentContext} of this hovered item stack.
+     *
+     * @return the component context
+     */
+    public ComponentContext getComponentContext() {
+        return this.componentContext;
+    }
+
+    /**
+     * Get an {@link ItemStackComponents} instance which provides accessors
+     * for all relevant components of the item stack. It is based on the specified
+     * {@link ComponentContext}.
      *
      * @implNote
      * This method and {@link HoveredItemStack#getComponentSelection() getComponentSelection()}
      * follow a hierarchical order, where calling {@code getComponentSelection()} from
      * within this method is strictly forbidden since it might result in an unintended infinite
      * recursion. This is because both associated fields are "lazy", meaning they will only
-     * be updated when one of either method is called. Therefore, {@code getComponentSelection()}
-     * depends on this method to update the components.
+     * be updated or initialized when one of either method is called.
+     * Therefore, {@code getComponentSelection()} depends on this method to initialize
+     * the components first.
      *
      * @return all currently relevant components
      */
     public ItemStackComponents getComponents() {
-        TooltipComponents componentContextFromConfig = this.configs.tooltipComponents.getValue();
-
-        if (this.components == null || this.components.getComponentContext() != componentContextFromConfig) {
-            this.components = ItemStackComponents.getComponentsBasedOnContext(this.itemStack, componentContextFromConfig);
+        if (this.components == null) {
+            this.components = ItemStackComponents.getComponentsBasedOnContext(this.itemStack, this.componentContext);
         }
 
         return this.components;
@@ -119,5 +124,58 @@ public class HoveredItemStack {
         DataComponentType<?> selectedType = currentComponents.getComponentTypes().get(selectedIndex);
 
         return Optional.of(currentComponents.getTypedComponent(selectedType));
+    }
+
+    /**
+     * Set the currently selected component by specifying
+     * the index in the component list of the item stack.
+     *
+     * @param index the index to be selected
+     */
+    public void setSelectionByIndex(int index) {
+        this.getComponentSelection().ifPresent(
+            selection -> selection.updateByValue(index)
+        );
+    }
+
+    /**
+     * Select the component which has the specified type.
+     * If no such component exists, the fallback index
+     * defines which component is specified instead.
+     *
+     * @param <T> the data type that this component type wraps around
+     * @param type the component type to select
+     * @param fallbackIndex the index used when no such component
+     *                      with that type exists
+     */
+    public <T> void setSelectionByType(DataComponentType<T> type, int fallbackIndex) {
+        int indexOfComponentType = this.getComponents().indexOf(type);
+
+        if (indexOfComponentType < 0) {
+            this.setSelectionByIndex(fallbackIndex);
+        } else {
+            this.setSelectionByIndex(indexOfComponentType);
+        }
+    }
+
+    /**
+     * Select the component which has the specified type.
+     * If no such component exists, the component at
+     * index {@code 0} is selected instead.
+     *
+     * @param <T> the data type that this component type wraps around
+     * @param type the component type to select
+     */
+    public <T> void setSelectionByType(DataComponentType<T> type) {
+        this.setSelectionByType(type, 0);
+    }
+
+    /**
+     * Reset the current component selection.
+     * This effectively selects the component at
+     * index {@code 0}.
+     */
+    public void resetSelection() {
+        this.setSelectionByIndex(0);
     }
 }
