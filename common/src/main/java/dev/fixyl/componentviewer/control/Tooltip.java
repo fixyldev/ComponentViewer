@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import dev.fixyl.componentviewer.annotation.NullPermitted;
-import dev.fixyl.componentviewer.config.enums.TooltipComponents;
+import dev.fixyl.componentviewer.control.component.ComponentContext;
 import dev.fixyl.componentviewer.control.component.ItemStackComponents;
 import dev.fixyl.componentviewer.formatting.Formatter;
 import dev.fixyl.componentviewer.formatting.FormattingException;
@@ -45,22 +45,22 @@ public class Tooltip {
 
     private static final String NOT_REGISTERED_TRANSLATION_KEY = "componentviewer.tooltip.not_registered";
 
-    private static final Map<TooltipComponents, String> COMPONENT_SELECTION_TRANSLATION_KEYS = Map.of(
-        TooltipComponents.ALL, "componentviewer.tooltip.purpose.components.selection.all",
-        TooltipComponents.DEFAULT, "componentviewer.tooltip.purpose.components.selection.default",
-        TooltipComponents.CHANGES, "componentviewer.tooltip.purpose.components.selection.changes"
+    private static final Map<ComponentContext, String> COMPONENT_SELECTION_TRANSLATION_KEYS = Map.of(
+        ComponentContext.NORMAL, "componentviewer.tooltip.purpose.components.selection.all",
+        ComponentContext.PROTOTYPE, "componentviewer.tooltip.purpose.components.selection.default",
+        ComponentContext.PATCH, "componentviewer.tooltip.purpose.components.selection.changes"
     );
 
-    private static final Map<TooltipComponents, String> EMPTY_COMPONENT_SELECTION_TRANSLATION_KEYS = Map.of(
-        TooltipComponents.ALL, "componentviewer.tooltip.purpose.components.selection.all.empty",
-        TooltipComponents.DEFAULT, "componentviewer.tooltip.purpose.components.selection.default.empty",
-        TooltipComponents.CHANGES, "componentviewer.tooltip.purpose.components.selection.changes.empty"
+    private static final Map<ComponentContext, String> EMPTY_COMPONENT_SELECTION_TRANSLATION_KEYS = Map.of(
+        ComponentContext.NORMAL, "componentviewer.tooltip.purpose.components.selection.all.empty",
+        ComponentContext.PROTOTYPE, "componentviewer.tooltip.purpose.components.selection.default.empty",
+        ComponentContext.PATCH, "componentviewer.tooltip.purpose.components.selection.changes.empty"
     );
 
-    private static final Map<TooltipComponents, String> COMPONENT_SELECTION_WITH_AMOUNT_TRANSLATION_KEYS = Map.of(
-        TooltipComponents.ALL, "componentviewer.tooltip.purpose.components.selection.all.with_amount",
-        TooltipComponents.DEFAULT, "componentviewer.tooltip.purpose.components.selection.default.with_amount",
-        TooltipComponents.CHANGES, "componentviewer.tooltip.purpose.components.selection.changes.with_amount"
+    private static final Map<ComponentContext, String> COMPONENT_SELECTION_WITH_AMOUNT_TRANSLATION_KEYS = Map.of(
+        ComponentContext.NORMAL, "componentviewer.tooltip.purpose.components.selection.all.with_amount",
+        ComponentContext.PROTOTYPE, "componentviewer.tooltip.purpose.components.selection.default.with_amount",
+        ComponentContext.PATCH, "componentviewer.tooltip.purpose.components.selection.changes.with_amount"
     );
 
     private final List<Component> lines;
@@ -142,7 +142,7 @@ public class Tooltip {
      */
     public Tooltip addComponentSelection(HoveredItemStack hoveredItemStack, boolean hideSelectedComponent, boolean showAmount) {
         ItemStackComponents components = hoveredItemStack.getComponents();
-        TooltipComponents componentContext = components.getComponentContext();
+        ComponentContext componentContext = hoveredItemStack.getComponentContext();
 
         if (components.isEmpty()) {
             this.addHeader(EMPTY_COMPONENT_SELECTION_TRANSLATION_KEYS.get(componentContext));

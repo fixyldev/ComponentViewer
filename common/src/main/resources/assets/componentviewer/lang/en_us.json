@@ -7,6 +7,8 @@
     "componentviewer.config.clipboard.copy.disabled": "Disabled",
     "componentviewer.config.clipboard.copy.give_command": "Give Command",
     "componentviewer.config.clipboard.copy.item_stack": "Item Stack",
+    "componentviewer.config.clipboard.explicit_give": "Explicit Give",
+    "componentviewer.config.clipboard.explicit_give.description": "Include all components \"as is\" in the give command, so components normally inferred from the item stack's default properties are included as well.",
     "componentviewer.config.clipboard.formatting": "Formatting",
     "componentviewer.config.clipboard.formatting.description": "How copied data will be formatted.\n\n- Sync: The same as for tooltips\n\n- SNBT\n\n- JSON\n\n- Object: Using Java's Object.toString() method",
     "componentviewer.config.clipboard.formatting.json": "JSON",
