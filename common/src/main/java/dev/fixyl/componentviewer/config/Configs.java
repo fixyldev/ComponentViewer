@@ -197,6 +197,13 @@ public final class Configs implements Options, KeyMappings {
         .setDependency(() -> this.clipboardCopy.getValue() == ClipboardCopy.GIVE_COMMAND)
         .setChangeCallback(this::changeCallback)
         .build();
+    public final BooleanOption clipboardExplicitGive = BooleanOption.create("clipboard.explicit_give")
+        .setDefaultValue(false)
+        .setTranslationKey("componentviewer.config.clipboard.explicit_give")
+        .setDescriptionTranslationKey("componentviewer.config.clipboard.explicit_give.description")
+        .setDependency(() -> this.clipboardCopy.getValue() == ClipboardCopy.GIVE_COMMAND)
+        .setChangeCallback(this::changeCallback)
+        .build();
     public final BooleanOption clipboardSuccessNotification = BooleanOption.create("clipboard.success_notification")
         .setDefaultValue(true)
         .setTranslationKey("componentviewer.config.clipboard.success_notification")
@@ -242,6 +249,7 @@ public final class Configs implements Options, KeyMappings {
         this.clipboardSelector,
         this.clipboardPrependSlash,
         this.clipboardIncludeCount,
+        this.clipboardExplicitGive,
         this.clipboardSuccessNotification,
         this.controlsAllowScrolling,
         this.controlsAlternativeCopyModifierKey,
