@@ -12,7 +12,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import dev.fixyl.componentviewer.annotation.NullPermitted;
-import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 
 /**
  * This class is a wrapper and accessor around an item stack's components.
@@ -35,9 +34,9 @@ public abstract sealed class ItemStackComponents permits MappedItemStackComponen
     );
 
     protected final ItemStack itemStack;
-    protected final TooltipComponents componentContext;
+    protected final ComponentContext componentContext;
 
-    protected ItemStackComponents(ItemStack itemStack, TooltipComponents componentContext) {
+    protected ItemStackComponents(ItemStack itemStack, ComponentContext componentContext) {
         this.itemStack = itemStack;
         this.componentContext = componentContext;
     }
@@ -55,9 +54,9 @@ public abstract sealed class ItemStackComponents permits MappedItemStackComponen
      * Get the context describing which kind of components this instance wraps around
      * and makes accessible.
      *
-     * @return the component context as a {@link TooltipComponents} enum
+     * @return the component context
      */
-    public TooltipComponents getComponentContext() {
+    public ComponentContext getComponentContext() {
         return this.componentContext;
     }
 
@@ -78,7 +77,7 @@ public abstract sealed class ItemStackComponents permits MappedItemStackComponen
 
     /**
      * Get an immutable {@link List} holding all {@link DataComponentType} instances
-     * in alphabetical order, sorted by their {@link ResourceLocation} in the registry.
+     * in alphabetical order, sorted by their {@link Identifier} in the registry.
      * <p>
      * Data component types, that aren't registered, come first.
      * <p>
@@ -163,7 +162,7 @@ public abstract sealed class ItemStackComponents permits MappedItemStackComponen
      * @return the item stack components instance
      */
     public static ItemStackComponents getComponents(ItemStack itemStack) {
-        return new MappedItemStackComponents(itemStack, itemStack::getComponents, TooltipComponents.ALL);
+        return new MappedItemStackComponents(itemStack, itemStack::getComponents, ComponentContext.NORMAL);
     }
 
     /**
@@ -174,7 +173,7 @@ public abstract sealed class ItemStackComponents permits MappedItemStackComponen
      * @return the item stack components instance
      */
     public static ItemStackComponents getPrototypeComponents(ItemStack itemStack) {
-        return new MappedItemStackComponents(itemStack, itemStack::getPrototype, TooltipComponents.DEFAULT);
+        return new MappedItemStackComponents(itemStack, itemStack::getPrototype, ComponentContext.PROTOTYPE);
     }
 
     /**
@@ -187,7 +186,7 @@ public abstract sealed class ItemStackComponents permits MappedItemStackComponen
      * @return the item stack components instance
      */
     public static ItemStackComponents getPatchedComponents(ItemStack itemStack) {
-        return new PatchedItemStackComponents(itemStack, itemStack::getComponentsPatch, TooltipComponents.CHANGES);
+        return new PatchedItemStackComponents(itemStack, itemStack::getComponentsPatch, ComponentContext.PATCH);
     }
 
     /**
@@ -195,17 +194,17 @@ public abstract sealed class ItemStackComponents permits MappedItemStackComponen
      * and context.
      *
      * @param itemStack the item stack
-     * @param componentContext the component context as a {@link TooltipComponents} enum
+     * @param componentContext the component context
      * @return the item stack components instance
      * @see ItemStackComponents#getComponents(ItemStack)
      * @see ItemStackComponents#getPrototypeComponents(ItemStack)
      * @see ItemStackComponents#getPatchedComponents(ItemStack)
      */
-    public static ItemStackComponents getComponentsBasedOnContext(ItemStack itemStack, TooltipComponents componentContext) {
+    public static ItemStackComponents getComponentsBasedOnContext(ItemStack itemStack, ComponentContext componentContext) {
         return switch (componentContext) {
-            case ALL -> ItemStackComponents.getComponents(itemStack);
-            case DEFAULT -> ItemStackComponents.getPrototypeComponents(itemStack);
-            case CHANGES -> ItemStackComponents.getPatchedComponents(itemStack);
+            case NORMAL -> ItemStackComponents.getComponents(itemStack);
+            case PROTOTYPE -> ItemStackComponents.getPrototypeComponents(itemStack);
+            case PATCH -> ItemStackComponents.getPatchedComponents(itemStack);
         };
     }
 }
