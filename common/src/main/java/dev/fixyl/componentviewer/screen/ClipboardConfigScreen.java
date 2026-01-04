@@ -19,6 +19,7 @@ public class ClipboardConfigScreen extends ConfigScreen {
             this.configs.clipboardSelector,
             this.configs.clipboardPrependSlash,
             this.configs.clipboardIncludeCount,
+            this.configs.clipboardExplicitGive,
             this.configs.clipboardSuccessNotification
         );
     }
