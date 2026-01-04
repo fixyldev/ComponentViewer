@@ -7,8 +7,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.google.gson.JsonArray;
@@ -29,13 +27,11 @@ import net.minecraft.network.chat.Style;
 
 import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.util.ResultCache;
+import dev.fixyl.componentviewer.util.Strings;
 
 public class JsonFormatter implements CodecBasedFormatter {
 
     private static final String NO_CODEC_REPR = "{}";
-
-    private static final Pattern STRING_ESCAPE_PATTERN = Pattern.compile("[\\\\\"]");
-    private static final String STRING_ESCAPE_REPLACEMENT = "\\\\$0";
 
     private static final Map<JsonType, Style> JSON_STYLES = Map.ofEntries(
         Map.entry(JsonType.SPECIAL, Style.EMPTY.withColor(ChatFormatting.WHITE)),
@@ -235,7 +231,7 @@ public class JsonFormatter implements CodecBasedFormatter {
     private void processJsonPrimitive(JsonPrimitive jsonPrimitive) {
         if (jsonPrimitive.isString()) {
             this.textLine.append(Component.literal("\"").withStyle(this.getStyle()))
-                .append(Component.literal(JsonFormatter.escapeString(jsonPrimitive.getAsString())).withStyle(this.getStyle(JsonType.STRING)))
+                .append(Component.literal(Strings.escapeJson(jsonPrimitive.getAsString())).withStyle(this.getStyle(JsonType.STRING)))
                 .append(Component.literal("\"").withStyle(this.getStyle()));
         } else if (jsonPrimitive.isNumber()) {
             this.textLine.append(Component.literal(jsonPrimitive.getAsString()).withStyle(this.getStyle(JsonType.NUMBER)));
@@ -259,12 +255,6 @@ public class JsonFormatter implements CodecBasedFormatter {
         } else if (indentChange == 0) {
             this.textLine.append(Component.literal(" "));
         }
-    }
-
-    private static String escapeString(String string) {
-        Matcher matcher = STRING_ESCAPE_PATTERN.matcher(string);
-
-        return matcher.replaceAll(STRING_ESCAPE_REPLACEMENT);
     }
 
     private enum JsonType {

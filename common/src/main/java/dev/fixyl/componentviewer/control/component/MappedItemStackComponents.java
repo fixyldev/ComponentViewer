@@ -8,13 +8,12 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
 
 import dev.fixyl.componentviewer.annotation.NullPermitted;
-import dev.fixyl.componentviewer.config.enums.TooltipComponents;
 
 final class MappedItemStackComponents extends ItemStackComponents {
 
     private final Supplier<DataComponentMap> dataComponentMap;
 
-    MappedItemStackComponents(ItemStack itemStack, Supplier<DataComponentMap> dataComponentMap, TooltipComponents componentContext) {
+    MappedItemStackComponents(ItemStack itemStack, Supplier<DataComponentMap> dataComponentMap, ComponentContext componentContext) {
         super(itemStack, componentContext);
 
         this.dataComponentMap = dataComponentMap;
