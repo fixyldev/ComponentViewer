@@ -18,11 +18,13 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 
 import dev.fixyl.componentviewer.util.ResultCache;
+import dev.fixyl.componentviewer.util.Strings;
 
 public class ObjectFormatter implements Formatter {
 
     private static final Map<TokenType, Style> TOKEN_STYLES = Map.ofEntries(
         Map.entry(TokenType.ANY, Style.EMPTY.withColor(ChatFormatting.AQUA)),
+        Map.entry(TokenType.CONTROL, Style.EMPTY.withColor(ChatFormatting.WHITE)),
         Map.entry(TokenType.SPECIAL, Style.EMPTY.withColor(ChatFormatting.WHITE)),
         Map.entry(TokenType.OPENING_BRACKET, Style.EMPTY.withColor(ChatFormatting.WHITE)),
         Map.entry(TokenType.CLOSING_BRACKET, Style.EMPTY.withColor(ChatFormatting.WHITE)),
@@ -358,6 +360,11 @@ public class ObjectFormatter implements Formatter {
         }
 
         private void processCharacter() {
+            if (Character.isISOControl(this.currentChar)) {
+                this.processControlCharacter();
+                return;
+            }
+
             switch (this.tokenizerState) {
                 case DEFAULT -> this.processDefaultTokenizerState();
                 case STRING -> this.processStringTokenizerState();
@@ -411,6 +418,19 @@ public class ObjectFormatter implements Formatter {
             } else {
                 this.addCurrentCharacter(TokenType.STRING);
             }
+        }
+
+        private void processControlCharacter() {
+            TokenType tokenType = this.currentTokenType;
+
+            this.finishCurrentToken();
+            this.currentTokenContent.append(Strings.escapeCharacter(this.currentChar));
+            this.finishCurrentToken(TokenType.CONTROL);
+
+            // Reset token type so that control characters
+            // don't interrupt other tokens (a control character
+            // can be placed "within" another token)
+            this.currentTokenType = tokenType;
         }
 
         private void processSpecialCharacter() {
@@ -587,6 +607,7 @@ public class ObjectFormatter implements Formatter {
 
     private enum TokenType {
         ANY,
+        CONTROL,
         SPECIAL,
         OPENING_BRACKET,
         CLOSING_BRACKET,
@@ -600,6 +621,7 @@ public class ObjectFormatter implements Formatter {
         NULL;
 
         private static EnumSet<TokenType> singleCharacterTokenTypes = EnumSet.of(
+            CONTROL,
             SPECIAL,
             OPENING_BRACKET,
             CLOSING_BRACKET,

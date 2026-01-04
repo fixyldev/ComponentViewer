@@ -2,6 +2,7 @@ package dev.fixyl.componentviewer.control.keyboard;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiPredicate;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponentType;
@@ -53,7 +54,7 @@ public class Clipboard {
         }
     }
 
-    public void copyGiveCommand(ItemStack itemStack, String targetSelector, boolean prependSlash, boolean includeCount, boolean successNotification) {
+    public void copyGiveCommand(ItemStack itemStack, String targetSelector, boolean prependSlash, boolean includeCount, boolean explicitGive, boolean successNotification) {
         StringBuilder commandString = new StringBuilder();
 
         if (prependSlash) {
@@ -64,16 +65,28 @@ public class Clipboard {
             .append(targetSelector).append(' ')
             .append(BuiltInRegistries.ITEM.getKey(itemStack.getItem()));
 
-        ItemStackComponents components = ItemStackComponents.getPatchedComponents(itemStack);
+        try {
+            List<String> componentList = null;
+            ItemStackComponents patchedComponents = ItemStackComponents.getPatchedComponents(itemStack);
 
-        if (!components.isEmpty()) {
-            try {
-                List<String> componentList = this.createGiveCommandComponentList(components);
-                commandString.append(componentList);
-            } catch (FormattingException e) {
-                CopyToast.dispatch(CopyToast.Type.FORMATTING_EXCEPTION);
-                return;
+            if (explicitGive) {
+                ItemStackComponents allComponents = ItemStackComponents.getComponents(itemStack);
+
+                componentList = this.createGiveCommandComponentList(allComponents);
+                componentList.addAll(this.createGiveCommandComponentList(
+                    patchedComponents,
+                    ItemStackComponents::wasRemoved
+                ));
+            } else {
+                componentList = this.createGiveCommandComponentList(patchedComponents);
             }
+
+            if (!componentList.isEmpty()) {
+                commandString.append(componentList);
+            }
+        } catch (FormattingException e) {
+            CopyToast.dispatch(CopyToast.Type.FORMATTING_EXCEPTION);
+            return;
         }
 
         if (includeCount) {
@@ -91,15 +104,21 @@ public class Clipboard {
         Minecraft.getInstance().keyboardHandler.setClipboard(content);
     }
 
-    private List<String> createGiveCommandComponentList(ItemStackComponents components) {
+    private List<String> createGiveCommandComponentList(
+        ItemStackComponents components,
+        BiPredicate<ItemStackComponents, DataComponentType<?>> filter
+    ) {
         List<String> componentList = new ArrayList<>(components.size());
 
         StringBuilder componentString = new StringBuilder();
 
         for (DataComponentType<?> dataComponentType : components.getComponentTypes()) {
-            // Skip components that can't be encoded and therefore
-            // cannot be used in give commands
-            if (dataComponentType.codec() == null) {
+            // Skip components that can't be encoded and
+            // skip components which fail the filter predicate
+            if (
+                dataComponentType.codec() == null
+                || !filter.test(components, dataComponentType)
+            ) {
                 continue;
             }
 
@@ -117,5 +136,12 @@ public class Clipboard {
         }
 
         return componentList;
+    }
+
+    private List<String> createGiveCommandComponentList(ItemStackComponents components) {
+        return this.createGiveCommandComponentList(
+            components,
+            (itemStackComponents, dataComponentType) -> true
+        );
     }
 }
