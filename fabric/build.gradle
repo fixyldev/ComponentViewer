@@ -40,7 +40,11 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
     if (project.modmenu_version?.trim()) {
-        modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+        if (project.modmenu_compile_only?.trim() == "true") {
+            modCompileOnly "com.terraformersmc:modmenu:${project.modmenu_version}"
+        } else {
+            modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+        }
     }
 }
 
