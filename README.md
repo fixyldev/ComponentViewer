@@ -14,7 +14,7 @@ Component Viewer is a mod for Minecraft Java Edition that allows you to view and
 
 ## :rocket: Building
 
-To build this mod, you will need **JDK 21** installed and properly configured on your system.
+To build this mod, you will need **JDK 25** installed and properly configured on your system.
 
 1. **Clone the repository**
 

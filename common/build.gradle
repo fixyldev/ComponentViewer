@@ -1,6 +1,6 @@
 plugins {
     id "java-library"
-    id "fabric-loom" version "${fabric_loom_version}"
+    id "net.fabricmc.fabric-loom" version "${fabric_loom_version}"
 }
 
 repositories {
@@ -12,18 +12,8 @@ repositories {
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.layered() {
-        officialMojangMappings()
 
-        if (
-            project.parchment_minecraft_version?.trim()
-            && project.parchment_mappings_version?.trim()
-        ) {
-            parchment("org.parchmentmc.data:parchment-${project.parchment_minecraft_version}:${project.parchment_mappings_version}@zip")
-        }
-    }
-
-    modCompileOnly "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+    compileOnly "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
 }
 
 loom {
