@@ -57,7 +57,7 @@ public class CopyToast implements Toast {
 
         this.textLeftMargin = (itemStack == null) ? TEXT_LEFT_MARGIN : TEXT_LEFT_MARGIN_WITH_ITEM;
 
-        this.wantedVisibility = Toast.Visibility.HIDE;
+        this.wantedVisibility = Toast.Visibility.SHOW;
     }
 
     public CopyToast(CopyToast.Type type) {

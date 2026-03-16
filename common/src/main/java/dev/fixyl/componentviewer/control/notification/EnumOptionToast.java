@@ -42,7 +42,7 @@ public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
 
         this.totalDuration = DURATION;
         this.shouldResetTimer = false;
-        this.wantedVisibility = Toast.Visibility.HIDE;
+        this.wantedVisibility = Toast.Visibility.SHOW;
     }
 
     public void resetTimer() {
