@@ -30,7 +30,7 @@ public class Clipboard {
         try {
             String componentString = formatter.componentToString(component, indentation);
             this.setClipboard(componentString);
-        } catch (FormattingException e) {
+        } catch (FormattingException _) {
             CopyToast.dispatch(CopyToast.Type.FORMATTING_EXCEPTION);
             return;
         }
@@ -44,7 +44,7 @@ public class Clipboard {
         try {
             String itemStackString = formatter.itemStackToString(itemStack, indentation);
             this.setClipboard(itemStackString);
-        } catch (FormattingException e) {
+        } catch (FormattingException _) {
             CopyToast.dispatch(CopyToast.Type.FORMATTING_EXCEPTION);
             return;
         }
@@ -84,7 +84,7 @@ public class Clipboard {
             if (!componentList.isEmpty()) {
                 commandString.append(componentList);
             }
-        } catch (FormattingException e) {
+        } catch (FormattingException _) {
             CopyToast.dispatch(CopyToast.Type.FORMATTING_EXCEPTION);
             return;
         }

@@ -214,7 +214,7 @@ public class Tooltip {
 
         try {
             this.lines.addAll(formatter.componentToText(component, formattingIndentation, coloredFormatting, CONTENT_INDENTATION));
-        } catch (FormattingException e) {
+        } catch (FormattingException _) {
             this.addFormattingException();
         }
 
@@ -242,7 +242,7 @@ public class Tooltip {
 
         try {
             this.lines.addAll(formatter.itemStackToText(itemStack, formattingIndentation, coloredFormatting, CONTENT_INDENTATION));
-        } catch (FormattingException e) {
+        } catch (FormattingException _) {
             this.addFormattingException();
         }
 

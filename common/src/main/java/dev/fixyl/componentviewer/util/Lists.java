@@ -21,7 +21,7 @@ public final class Lists {
     public static <T> boolean isMutable(List<T> list) {
         try {
             list.addLast(null);
-        } catch (UnsupportedOperationException | NullPointerException e) {
+        } catch (UnsupportedOperationException | NullPointerException _) {
             return false;
         }
 
