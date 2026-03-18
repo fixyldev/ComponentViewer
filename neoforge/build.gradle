@@ -28,15 +28,7 @@ sourceSets {
 neoForge {
     version = project.neoforge_version
 
-    if (
-        project.parchment_minecraft_version?.trim()
-        && project.parchment_mappings_version?.trim()
-    ) {
-        parchment {
-            minecraftVersion = project.parchment_minecraft_version
-            mappingsVersion = project.parchment_mappings_version
-        }
-    }
+    validateAccessTransformers = true
 
     runs {
         client {
