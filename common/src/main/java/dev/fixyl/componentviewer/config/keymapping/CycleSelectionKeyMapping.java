@@ -12,7 +12,6 @@ public class CycleSelectionKeyMapping extends AdvancedKeyMapping {
         super(translationKey, keyCode, category, conflictContext);
 
         this.cycleType = cycleType;
-
     }
 
     public CycleSelectionKeyMapping(String translationKey, int keyCode, Category category, CycleType cycleType) {
@@ -25,7 +24,6 @@ public class CycleSelectionKeyMapping extends AdvancedKeyMapping {
         super(translationKey, key, category, conflictContext);
 
         this.cycleType = cycleType;
-
     }
 
     public CycleSelectionKeyMapping(String translationKey, Key key, Category category, CycleType cycleType) {

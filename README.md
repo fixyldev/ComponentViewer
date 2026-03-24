@@ -1,6 +1,6 @@
 # Component Viewer
 
-[![Actively Developed](https://img.shields.io/badge/status-actively_developed-brightgreen?style=for-the-badge)](https://github.com/fixyldev/fixyldev/blob/main/STATUS.md#actively-developed)
+[![Actively Developed](https://img.shields.io/badge/status-actively_developed-brightgreen?style=for-the-badge)](https://github.com/fixyldev/fixyldev/blob/HEAD/STATUS.md#actively-developed)
 [![Modrinth](https://img.shields.io/modrinth/dt/P9vIqP8R?style=for-the-badge&logo=modrinth&labelColor=gray&color=00af5c&label)](https://modrinth.com/mod/component-viewer)
 [![Latest](https://img.shields.io/modrinth/game-versions/P9vIqP8R?style=for-the-badge&label=latest)](https://modrinth.com/mod/component-viewer/versions)
 
