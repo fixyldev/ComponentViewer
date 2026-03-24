@@ -1,6 +1,6 @@
 # Component Viewer
 
-[![Actively Developed](https://img.shields.io/badge/status-actively_developed-brightgreen?style=for-the-badge)](https://github.com/fixyldev/fixyldev/blob/main/STATUS.md#actively-developed)
+[![Actively Developed](https://img.shields.io/badge/status-actively_developed-brightgreen?style=for-the-badge)](https://github.com/fixyldev/fixyldev/blob/HEAD/STATUS.md#actively-developed)
 [![Modrinth](https://img.shields.io/modrinth/dt/P9vIqP8R?style=for-the-badge&logo=modrinth&labelColor=gray&color=00af5c&label)](https://modrinth.com/mod/component-viewer)
 [![Latest](https://img.shields.io/modrinth/game-versions/P9vIqP8R?style=for-the-badge&label=latest)](https://modrinth.com/mod/component-viewer/versions)
 
@@ -14,7 +14,7 @@ Component Viewer is a mod for Minecraft Java Edition that allows you to view and
 
 ## :rocket: Building
 
-To build this mod, you will need **JDK 21** installed and properly configured on your system.
+To build this mod, you will need **JDK 25** installed and properly configured on your system.
 
 1. **Clone the repository**
 

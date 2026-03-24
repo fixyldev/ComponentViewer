@@ -3,7 +3,7 @@ package dev.fixyl.componentviewer.control.notification;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -39,7 +39,7 @@ public class CopyToast implements Toast {
     private final int secondRowColor;
     private final int textLeftMargin;
 
-    private Toast.Visibility visibility;
+    private Toast.Visibility wantedVisibility;
 
     public CopyToast(CopyToast.Type type, @NullPermitted ItemStack itemStack) {
         this.toastType = type;
@@ -57,7 +57,7 @@ public class CopyToast implements Toast {
 
         this.textLeftMargin = (itemStack == null) ? TEXT_LEFT_MARGIN : TEXT_LEFT_MARGIN_WITH_ITEM;
 
-        this.visibility = Toast.Visibility.SHOW;
+        this.wantedVisibility = Toast.Visibility.SHOW;
     }
 
     public CopyToast(CopyToast.Type type) {
@@ -66,19 +66,19 @@ public class CopyToast implements Toast {
 
     @Override
     public Toast.Visibility getWantedVisibility() {
-        return this.visibility;
+        return this.wantedVisibility;
     }
 
     @Override
-    public void update(ToastManager toastManager, long visibilityTime) {
+    public void update(ToastManager toastManager, long fullyVisibleForMs) {
         double actualDuration = DURATION * toastManager.getNotificationDisplayTimeMultiplier();
 
-        this.visibility = (visibilityTime < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
+        this.wantedVisibility = (fullyVisibleForMs >= actualDuration) ? Toast.Visibility.HIDE : Toast.Visibility.SHOW;
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, Font font, long visibilityTime) {
-        guiGraphics.blitSprite(
+    public void extractRenderState(GuiGraphicsExtractor graphics, Font font, long fullyVisibleForMs) {
+        graphics.blitSprite(
             RenderPipelines.GUI_TEXTURED,
             BACKGROUND_SPRITE,
             0,
@@ -88,14 +88,14 @@ public class CopyToast implements Toast {
         );
 
         if (this.itemStack != null) {
-            guiGraphics.renderFakeItem(
+            graphics.fakeItem(
                 this.itemStack,
                 ITEM_LEFT_MARGIN,
                 ITEM_TOP_MARGIN
             );
         }
 
-        guiGraphics.drawString(
+        graphics.text(
             font,
             Component.translatable(this.translationKey),
             this.textLeftMargin,
@@ -104,7 +104,7 @@ public class CopyToast implements Toast {
             false
         );
 
-        guiGraphics.drawString(
+        graphics.text(
             font,
             Component.translatable(this.toastType.translationKey),
             this.textLeftMargin,

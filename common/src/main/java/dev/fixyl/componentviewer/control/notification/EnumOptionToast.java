@@ -5,7 +5,7 @@ import java.util.Objects;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -34,7 +34,7 @@ public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
 
     private long totalDuration;
     private boolean shouldResetTimer;
-    private Toast.Visibility visibility;
+    private Toast.Visibility wantedVisibility;
 
     public EnumOptionToast(EnumOption<E> option, @NullPermitted String translationKey) {
         this.option = option;
@@ -42,7 +42,7 @@ public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
 
         this.totalDuration = DURATION;
         this.shouldResetTimer = false;
-        this.visibility = Toast.Visibility.SHOW;
+        this.wantedVisibility = Toast.Visibility.SHOW;
     }
 
     public void resetTimer() {
@@ -51,24 +51,24 @@ public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
 
     @Override
     public Toast.Visibility getWantedVisibility() {
-        return this.visibility;
+        return this.wantedVisibility;
     }
 
     @Override
-    public void update(ToastManager toastManager, long visibilityTime) {
+    public void update(ToastManager toastManager, long fullyVisibleForMs) {
         if (this.shouldResetTimer) {
             this.shouldResetTimer = false;
-            this.totalDuration = visibilityTime + DURATION;
+            this.totalDuration = fullyVisibleForMs + DURATION;
         }
 
         double actualDuration = (this.totalDuration - DURATION) + DURATION * toastManager.getNotificationDisplayTimeMultiplier();
 
-        this.visibility = (visibilityTime < actualDuration) ? Toast.Visibility.SHOW : Toast.Visibility.HIDE;
+        this.wantedVisibility = (fullyVisibleForMs >= actualDuration) ? Toast.Visibility.HIDE : Toast.Visibility.SHOW;
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, Font font, long visibilityTime) {
-        guiGraphics.blitSprite(
+    public void extractRenderState(GuiGraphicsExtractor graphics, Font font, long fullyVisibleForMs) {
+        graphics.blitSprite(
             RenderPipelines.GUI_TEXTURED,
             BACKGROUND_SPRITE,
             0,
@@ -77,7 +77,7 @@ public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
             this.height()
         );
 
-        guiGraphics.drawString(
+        graphics.text(
             font,
             Component.translatable(this.translationKey),
             TEXT_LEFT_MARGIN,
@@ -86,7 +86,7 @@ public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
             false
         );
 
-        guiGraphics.drawString(
+        graphics.text(
             font,
             this.option.getValue().getCaption(),
             TEXT_LEFT_MARGIN,

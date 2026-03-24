@@ -102,7 +102,7 @@ public class EnumOption<E extends Enum<E> & EnumOption.OptionEnum> extends Advan
                 SerializedName serializedName = field.getAnnotation(SerializedName.class);
 
                 return (serializedName == null) ? enumConstantName : serializedName.value();
-            } catch (NoSuchFieldException e) {
+            } catch (NoSuchFieldException _) {
                 throw new EnumConstantNotPresentException(enumClass, enumConstantName);
             }
         }

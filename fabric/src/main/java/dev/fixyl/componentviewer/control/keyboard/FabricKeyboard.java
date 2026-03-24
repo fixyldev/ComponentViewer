@@ -1,6 +1,6 @@
 package dev.fixyl.componentviewer.control.keyboard;
 
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.KeyMapping.Category;
@@ -38,7 +38,7 @@ public class FabricKeyboard extends Keyboard {
         }
 
         for (KeyMapping keyMapping : keyMappings.getKeyMappings()) {
-            KeyBindingHelper.registerKeyBinding(keyMapping);
+            KeyMappingHelper.registerKeyMapping(keyMapping);
         }
     }
 }

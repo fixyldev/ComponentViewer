@@ -1,9 +1,9 @@
 {
     "required": true,
     "package": "dev.fixyl.componentviewer.mixin",
-    "compatibilityLevel": "JAVA_21",
+    "compatibilityLevel": "JAVA_25",
     "client": [
-        "GameRendererMixin",
+        "MinecraftMixin",
         "ScreenMixin",
         "CreativeModeInventoryScreenMixin",
         "RecipeButtonMixin",

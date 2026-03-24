@@ -41,45 +41,52 @@ final class PatchedItemStackComponents extends ItemStackComponents {
             .<DataComponentType<?>>map(Entry::getKey)
             .sorted(REGISTRY_ID_COMPARATOR)
             .sorted(Comparator.<DataComponentType<?>, Boolean>comparing(dataComponentType ->
-                PatchedItemStackComponents.wasRemovedWithPatch(dataComponentType, currentPatch)
+                PatchedItemStackComponents.wasRemovedWithPatch(currentPatch, dataComponentType)
             ))
             .toList();
     }
 
-    // Suppress SonarQube warning for not-handling Optionals the way
-    // you should (null check can be made useless).
-    // This doesn't work here because `DataComponentPatch.get`
-    // can return `null` nonetheless. We don't have control over this.
-    @SuppressWarnings("java:S2789")
     @Override
     public <T> @NullPermitted T getValue(DataComponentType<T> dataComponentType) {
-        Optional<? extends T> optionalValue = this.dataComponentPatch.get().get(dataComponentType);
+        DataComponentPatch patch = this.dataComponentPatch.get();
 
-        if (optionalValue == null) {
-            return null;
-        } else if (optionalValue.isEmpty()) {
-            return itemStack.getPrototype().get(dataComponentType);
+        if (PatchedItemStackComponents.wasRemovedWithPatch(patch, dataComponentType)) {
+            return this.itemStack.getPrototype().get(dataComponentType);
         }
 
-        return optionalValue.orElseThrow();
+        return PatchedItemStackComponents.getValueFromPatch(patch, dataComponentType);
     }
 
     @Override
     public <T> boolean wasRemoved(DataComponentType<T> dataComponentType) {
         return PatchedItemStackComponents.wasRemovedWithPatch(
-            dataComponentType,
-            this.dataComponentPatch.get()
+            this.dataComponentPatch.get(),
+            dataComponentType
         );
     }
 
+    // Suppress warning for unchecked type cast.
+    // We know that the map only contains matching types.
+    // It just doesn't expose this because it's heterogeneous,
+    // meaning each key-value-pair has a different type.
+    @SuppressWarnings("unchecked")
+    private static <T> @NullPermitted T getValueFromPatch(DataComponentPatch dataComponentPatch, DataComponentType<T> dataComponentType) {
+        Optional<T> value = (Optional<T>) dataComponentPatch.map.getOrDefault(
+            dataComponentType,
+            Optional.empty()
+        );
+
+        return value.orElse(null);
+    }
+
+    // Suppress SonarQube warning for checking that an
+    // Optional may be `null`.
+    // This check has to exist so we can test for a missing,
+    // or rather present, entry in the patch map.
     @SuppressWarnings("java:S2789")
-    private static <T> boolean wasRemovedWithPatch(DataComponentType<T> dataComponentType, DataComponentPatch dataComponentPatch) {
-        Optional<? extends T> optionalValue = dataComponentPatch.get(dataComponentType);
+    private static <T> boolean wasRemovedWithPatch(DataComponentPatch dataComponentPatch, DataComponentType<T> dataComponentType) {
+        Optional<?> value = dataComponentPatch.map.get(dataComponentType);
 
-        if (optionalValue == null) {
-            return false;
-        }
-
-        return optionalValue.isEmpty();
+        return value != null && value.isEmpty();
     }
 }
