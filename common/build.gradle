@@ -3,13 +3,6 @@ plugins {
     id "net.fabricmc.fabric-loom" version "${fabric_loom_version}"
 }
 
-repositories {
-    maven {
-        name = "ParchmentMC"
-        url = "https://maven.parchmentmc.org/"
-    }
-}
-
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
 
