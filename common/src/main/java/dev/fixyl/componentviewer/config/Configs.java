@@ -272,7 +272,7 @@ public final class Configs implements Options, KeyMappings {
             Minecraft minecraftClient = Minecraft.getInstance();
 
             if (minecraftClient != null) {
-                minecraftClient.setScreen(new MainConfigScreen(null, this));
+                minecraftClient.gui.setScreen(new MainConfigScreen(null, this));
             }
         }
     );
