@@ -1,9 +1,12 @@
 package dev.fixyl.componentviewer.config.option;
 
 import java.util.Objects;
-import java.util.function.Consumer;
 
 import net.minecraft.client.OptionInstance;
+import net.minecraft.client.OptionInstance.CaptionBasedToString;
+import net.minecraft.client.OptionInstance.IntRange;
+import net.minecraft.client.OptionInstance.TooltipSupplier;
+import net.minecraft.client.OptionInstance.ValueUpdateListener;
 import net.minecraft.network.chat.Component;
 
 public class IntegerOption extends AdvancedOption<Integer> {
@@ -41,8 +44,8 @@ public class IntegerOption extends AdvancedOption<Integer> {
     }
 
     @Override
-    protected OptionInstance<Integer> createOptionInstance(String translationkey, OptionInstance.TooltipSupplier<Integer> tooltipSupplier, OptionInstance.CaptionBasedToString<Integer> captionBasedToString, Integer defaultValue, Consumer<Integer> changeCallback) {
-        OptionInstance.IntRange intRange = new OptionInstance.IntRange(this.minValue, this.maxValue);
+    protected OptionInstance<Integer> createOptionInstance(String translationkey, TooltipSupplier<Integer> tooltipSupplier, CaptionBasedToString<Integer> captionBasedToString, Integer defaultValue, ValueUpdateListener<Integer> onValueChanged) {
+        IntRange intRange = new OptionInstance.IntRange(this.minValue, this.maxValue);
 
         return new OptionInstance<>(
             translationkey,
@@ -51,12 +54,12 @@ public class IntegerOption extends AdvancedOption<Integer> {
             intRange,
             intRange.codec(),
             defaultValue,
-            changeCallback
+            onValueChanged
         );
     }
 
     @Override
-    protected OptionInstance.CaptionBasedToString<Integer> getDefaultCaptionBasedToString() {
+    protected CaptionBasedToString<Integer> getDefaultCaptionBasedToString() {
         return (optionText, value) -> Component.empty();
     }
 

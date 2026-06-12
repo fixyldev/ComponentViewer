@@ -1,8 +1,9 @@
 package dev.fixyl.componentviewer.config.option;
 
-import java.util.function.Consumer;
-
 import net.minecraft.client.OptionInstance;
+import net.minecraft.client.OptionInstance.CaptionBasedToString;
+import net.minecraft.client.OptionInstance.TooltipSupplier;
+import net.minecraft.client.OptionInstance.ValueUpdateListener;
 
 public class BooleanOption extends AdvancedOption<Boolean> {
 
@@ -22,18 +23,18 @@ public class BooleanOption extends AdvancedOption<Boolean> {
     }
 
     @Override
-    protected OptionInstance<Boolean> createOptionInstance(String translationkey, OptionInstance.TooltipSupplier<Boolean> tooltipSupplier, OptionInstance.CaptionBasedToString<Boolean> captionBasedToString, Boolean defaultValue, Consumer<Boolean> changeCallback) {
+    protected OptionInstance<Boolean> createOptionInstance(String translationkey, TooltipSupplier<Boolean> tooltipSupplier, CaptionBasedToString<Boolean> captionBasedToString, Boolean defaultValue, ValueUpdateListener<Boolean> onValueChanged) {
         return OptionInstance.createBoolean(
             translationkey,
             tooltipSupplier,
             captionBasedToString,
             defaultValue,
-            changeCallback
+            onValueChanged
         );
     }
 
     @Override
-    protected OptionInstance.CaptionBasedToString<Boolean> getDefaultCaptionBasedToString() {
+    protected CaptionBasedToString<Boolean> getDefaultCaptionBasedToString() {
         return OptionInstance.BOOLEAN_TO_STRING;
     }
 
