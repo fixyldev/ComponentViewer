@@ -2,15 +2,15 @@ package dev.fixyl.componentviewer.formatting;
 
 import java.util.List;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.ItemStack;
 
 public interface Formatter {
 
-    static final Style NO_COLOR_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GRAY);
+    static final Style NO_COLOR_STYLE = Style.EMPTY.withColor(TextColor.DARK_GRAY);
 
     <T> String componentToString(TypedDataComponent<T> component, int indentation, String linePrefix);
 

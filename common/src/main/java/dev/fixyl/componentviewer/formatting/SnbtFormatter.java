@@ -8,7 +8,6 @@ import java.util.Optional;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DynamicOps;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.nbt.NbtOps;
@@ -17,6 +16,7 @@ import net.minecraft.nbt.TextComponentTagVisitor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 
 import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.util.ResultCache;
@@ -26,7 +26,7 @@ public class SnbtFormatter implements CodecBasedFormatter {
     private static final String LF = "\n";
 
     private static final String NO_CODEC_REPR = "{}";
-    private static final Style NO_CODEC_REPR_STYLE = Style.EMPTY.withColor(ChatFormatting.WHITE);
+    private static final Style NO_CODEC_REPR_STYLE = Style.EMPTY.withColor(TextColor.WHITE);
 
     private final ResultCache<String> stringResultCache;
     private final ResultCache<List<Component>> textResultCache;

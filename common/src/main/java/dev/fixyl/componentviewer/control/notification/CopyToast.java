@@ -1,6 +1,5 @@
 package dev.fixyl.componentviewer.control.notification;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -8,6 +7,7 @@ import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.ItemStack;
@@ -26,10 +26,10 @@ public class CopyToast implements Toast {
     private static final int TEXT_FIRST_ROW = 7;
     private static final int TEXT_SECOND_ROW = 18;
 
-    private static final int FIRST_ROW_COLOR_SUCCESS = ARGB.opaque(ChatFormatting.DARK_GREEN.getColor());
-    private static final int SECOND_ROW_COLOR_SUCCESS = ARGB.opaque(ChatFormatting.GOLD.getColor());
-    private static final int FIRST_ROW_COLOR_FAILURE = ARGB.opaque(ChatFormatting.RED.getColor());
-    private static final int SECOND_ROW_COLOR_FAILURE = ARGB.opaque(ChatFormatting.DARK_AQUA.getColor());
+    private static final int FIRST_ROW_COLOR_SUCCESS = ARGB.opaque(TextColor.DARK_GREEN.getValue());
+    private static final int SECOND_ROW_COLOR_SUCCESS = ARGB.opaque(TextColor.GOLD.getValue());
+    private static final int FIRST_ROW_COLOR_FAILURE = ARGB.opaque(TextColor.RED.getValue());
+    private static final int SECOND_ROW_COLOR_FAILURE = ARGB.opaque(TextColor.DARK_AQUA.getValue());
 
     private final CopyToast.Type toastType;
     private final @NullPermitted ItemStack itemStack;
