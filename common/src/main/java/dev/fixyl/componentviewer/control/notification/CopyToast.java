@@ -137,7 +137,7 @@ public class CopyToast implements Toast {
     public static CopyToast dispatch(CopyToast.Type type, @NullPermitted ItemStack itemStack) {
         CopyToast toast = new CopyToast(type, itemStack);
 
-        Minecraft.getInstance().getToastManager().addToast(toast);
+        Minecraft.getInstance().gui.toastManager().addToast(toast);
 
         return toast;
     }

@@ -99,7 +99,7 @@ public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
     public static <E extends Enum<E> & OptionEnum> EnumOptionToast<E> dispatch(EnumOption<E> option, @NullPermitted String translationKey) {
         EnumOptionToast<E> toast = new EnumOptionToast<>(option, translationKey);
 
-        Minecraft.getInstance().getToastManager().addToast(toast);
+        Minecraft.getInstance().gui.toastManager().addToast(toast);
 
         return toast;
     }
