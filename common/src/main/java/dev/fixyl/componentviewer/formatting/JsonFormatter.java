@@ -18,12 +18,12 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 
 import dev.fixyl.componentviewer.annotation.NullPermitted;
 import dev.fixyl.componentviewer.util.ResultCache;
@@ -34,12 +34,12 @@ public class JsonFormatter implements CodecBasedFormatter {
     private static final String NO_CODEC_REPR = "{}";
 
     private static final Map<JsonType, Style> JSON_STYLES = Map.ofEntries(
-        Map.entry(JsonType.SPECIAL, Style.EMPTY.withColor(ChatFormatting.WHITE)),
-        Map.entry(JsonType.KEY, Style.EMPTY.withColor(ChatFormatting.AQUA)),
-        Map.entry(JsonType.STRING, Style.EMPTY.withColor(ChatFormatting.GREEN)),
-        Map.entry(JsonType.NUMBER, Style.EMPTY.withColor(ChatFormatting.GOLD)),
-        Map.entry(JsonType.BOOLEAN, Style.EMPTY.withColor(ChatFormatting.GOLD)),
-        Map.entry(JsonType.NULL, Style.EMPTY.withColor(ChatFormatting.BLUE))
+        Map.entry(JsonType.SPECIAL, Style.EMPTY.withColor(TextColor.WHITE)),
+        Map.entry(JsonType.KEY, Style.EMPTY.withColor(TextColor.AQUA)),
+        Map.entry(JsonType.STRING, Style.EMPTY.withColor(TextColor.GREEN)),
+        Map.entry(JsonType.NUMBER, Style.EMPTY.withColor(TextColor.GOLD)),
+        Map.entry(JsonType.BOOLEAN, Style.EMPTY.withColor(TextColor.GOLD)),
+        Map.entry(JsonType.NULL, Style.EMPTY.withColor(TextColor.BLUE))
     );
 
     private final ResultCache<String> stringResultCache;

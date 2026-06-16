@@ -3,13 +3,15 @@ package dev.fixyl.componentviewer.config.option;
 import java.lang.reflect.Field;
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.function.Consumer;
 
 import com.google.gson.annotations.SerializedName;
 
 import com.mojang.serialization.Codec;
 
 import net.minecraft.client.OptionInstance;
+import net.minecraft.client.OptionInstance.CaptionBasedToString;
+import net.minecraft.client.OptionInstance.TooltipSupplier;
+import net.minecraft.client.OptionInstance.ValueUpdateListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 
@@ -43,19 +45,19 @@ public class EnumOption<E extends Enum<E> & EnumOption.OptionEnum> extends Advan
     }
 
     @Override
-    protected OptionInstance<E> createOptionInstance(String translationkey, OptionInstance.TooltipSupplier<E> tooltipSupplier, OptionInstance.CaptionBasedToString<E> captionBasedToString, E defaultValue, Consumer<E> changeCallback) {
+    protected OptionInstance<E> createOptionInstance(String translationkey, TooltipSupplier<E> tooltipSupplier, CaptionBasedToString<E> captionBasedToString, E defaultValue, ValueUpdateListener<E> onValueChanged) {
         return new OptionInstance<>(
             translationkey,
             tooltipSupplier,
             captionBasedToString,
             new OptionInstance.Enum<>(this.enumConstants, OptionEnum.getCodec(this.enumClass)),
             defaultValue,
-            changeCallback
+            onValueChanged
         );
     }
 
     @Override
-    protected OptionInstance.CaptionBasedToString<E> getDefaultCaptionBasedToString() {
+    protected CaptionBasedToString<E> getDefaultCaptionBasedToString() {
         return (enumOptionName, enumValue) -> enumValue.getCaption();
     }
 

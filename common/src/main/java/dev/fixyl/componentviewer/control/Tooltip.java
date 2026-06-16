@@ -3,13 +3,13 @@ package dev.fixyl.componentviewer.control;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
@@ -32,14 +32,14 @@ import dev.fixyl.componentviewer.formatting.FormattingException;
  */
 public class Tooltip {
 
-    private static final Style HEADER_STYLE = Style.EMPTY.withColor(ChatFormatting.GRAY);
+    private static final Style HEADER_STYLE = Style.EMPTY.withColor(TextColor.GRAY);
 
-    private static final Style COMPONENT_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GRAY);
-    private static final Style SELECTED_COMPONENT_STYLE = Style.EMPTY.withColor(ChatFormatting.DARK_GREEN);
+    private static final Style COMPONENT_STYLE = Style.EMPTY.withColor(TextColor.DARK_GRAY);
+    private static final Style SELECTED_COMPONENT_STYLE = Style.EMPTY.withColor(TextColor.DARK_GREEN);
     private static final Style REMOVED_COMPONENT_STYLE = Style.EMPTY.withStrikethrough(true);
     private static final Style NOT_REGISTERED_COMPONENT_STYLE = Style.EMPTY.withItalic(true);
 
-    private static final Style ERROR_STYLE = Style.EMPTY.withColor(ChatFormatting.RED);
+    private static final Style ERROR_STYLE = Style.EMPTY.withColor(TextColor.RED);
 
     private static final String CONTENT_INDENTATION = " ";
 

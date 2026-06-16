@@ -2,7 +2,6 @@ package dev.fixyl.componentviewer.control.notification;
 
 import java.util.Objects;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -10,6 +9,7 @@ import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastManager;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 
@@ -26,8 +26,8 @@ public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
     private static final int TEXT_FIRST_ROW = 7;
     private static final int TEXT_SECOND_ROW = 18;
 
-    private static final int FIRST_ROW_COLOR = ARGB.opaque(ChatFormatting.DARK_AQUA.getColor());
-    private static final int SECOND_ROW_COLOR = ARGB.opaque(ChatFormatting.WHITE.getColor());
+    private static final int FIRST_ROW_COLOR = ARGB.opaque(TextColor.DARK_AQUA.getValue());
+    private static final int SECOND_ROW_COLOR = ARGB.opaque(TextColor.WHITE.getValue());
 
     private final EnumOption<E> option;
     private final String translationKey;
@@ -99,7 +99,7 @@ public class EnumOptionToast<E extends Enum<E> & OptionEnum> implements Toast {
     public static <E extends Enum<E> & OptionEnum> EnumOptionToast<E> dispatch(EnumOption<E> option, @NullPermitted String translationKey) {
         EnumOptionToast<E> toast = new EnumOptionToast<>(option, translationKey);
 
-        Minecraft.getInstance().getToastManager().addToast(toast);
+        Minecraft.getInstance().gui.toastManager().addToast(toast);
 
         return toast;
     }

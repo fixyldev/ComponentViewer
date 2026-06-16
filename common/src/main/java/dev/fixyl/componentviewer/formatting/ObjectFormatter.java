@@ -10,11 +10,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.TypedDataComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.world.item.ItemStack;
 
 import dev.fixyl.componentviewer.util.ResultCache;
@@ -23,19 +23,19 @@ import dev.fixyl.componentviewer.util.Strings;
 public class ObjectFormatter implements Formatter {
 
     private static final Map<TokenType, Style> TOKEN_STYLES = Map.ofEntries(
-        Map.entry(TokenType.ANY, Style.EMPTY.withColor(ChatFormatting.AQUA)),
-        Map.entry(TokenType.CONTROL, Style.EMPTY.withColor(ChatFormatting.WHITE)),
-        Map.entry(TokenType.SPECIAL, Style.EMPTY.withColor(ChatFormatting.WHITE)),
-        Map.entry(TokenType.OPENING_BRACKET, Style.EMPTY.withColor(ChatFormatting.WHITE)),
-        Map.entry(TokenType.CLOSING_BRACKET, Style.EMPTY.withColor(ChatFormatting.WHITE)),
-        Map.entry(TokenType.COMMA, Style.EMPTY.withColor(ChatFormatting.WHITE)),
-        Map.entry(TokenType.QUOTE, Style.EMPTY.withColor(ChatFormatting.WHITE)),
-        Map.entry(TokenType.STRING, Style.EMPTY.withColor(ChatFormatting.GREEN)),
-        Map.entry(TokenType.INTEGER, Style.EMPTY.withColor(ChatFormatting.GOLD)),
-        Map.entry(TokenType.FLOAT, Style.EMPTY.withColor(ChatFormatting.GOLD)),
-        Map.entry(TokenType.HEX, Style.EMPTY.withColor(ChatFormatting.GOLD)),
-        Map.entry(TokenType.BOOLEAN, Style.EMPTY.withColor(ChatFormatting.GOLD)),
-        Map.entry(TokenType.NULL, Style.EMPTY.withColor(ChatFormatting.BLUE))
+        Map.entry(TokenType.ANY, Style.EMPTY.withColor(TextColor.AQUA)),
+        Map.entry(TokenType.CONTROL, Style.EMPTY.withColor(TextColor.WHITE)),
+        Map.entry(TokenType.SPECIAL, Style.EMPTY.withColor(TextColor.WHITE)),
+        Map.entry(TokenType.OPENING_BRACKET, Style.EMPTY.withColor(TextColor.WHITE)),
+        Map.entry(TokenType.CLOSING_BRACKET, Style.EMPTY.withColor(TextColor.WHITE)),
+        Map.entry(TokenType.COMMA, Style.EMPTY.withColor(TextColor.WHITE)),
+        Map.entry(TokenType.QUOTE, Style.EMPTY.withColor(TextColor.WHITE)),
+        Map.entry(TokenType.STRING, Style.EMPTY.withColor(TextColor.GREEN)),
+        Map.entry(TokenType.INTEGER, Style.EMPTY.withColor(TextColor.GOLD)),
+        Map.entry(TokenType.FLOAT, Style.EMPTY.withColor(TextColor.GOLD)),
+        Map.entry(TokenType.HEX, Style.EMPTY.withColor(TextColor.GOLD)),
+        Map.entry(TokenType.BOOLEAN, Style.EMPTY.withColor(TextColor.GOLD)),
+        Map.entry(TokenType.NULL, Style.EMPTY.withColor(TextColor.BLUE))
     );
 
     private static final Map<Character, Character> BRACKET_PAIR = Map.of(

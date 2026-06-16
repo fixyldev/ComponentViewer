@@ -63,7 +63,7 @@ public abstract class ConfigScreen extends OptionsSubScreen {
     protected final void addRedirect(@NullPermitted String translationKey, Supplier<Screen> screenSupplier) {
         this.queuedWidgets.add(Button.builder(
             Component.translatable(Objects.toString(translationKey)),
-            buttonWidget -> this.minecraft.setScreen(screenSupplier.get())
+            buttonWidget -> this.minecraft.gui.setScreen(screenSupplier.get())
         ).build());
     }
 

@@ -4,12 +4,14 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.OptionInstance;
+import net.minecraft.client.OptionInstance.CaptionBasedToString;
+import net.minecraft.client.OptionInstance.TooltipSupplier;
+import net.minecraft.client.OptionInstance.ValueUpdateListener;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
@@ -25,10 +27,10 @@ public abstract class AdvancedOption<T> {
     protected final String id;
     protected final T defaultValue;
     protected final String translationKey;
-    protected final OptionInstance.TooltipSupplier<T> tooltipSupplier;
+    protected final TooltipSupplier<T> tooltipSupplier;
     protected final @NullPermitted Function<T, String> translationKeyOverwrite;
     protected final @NullPermitted BooleanSupplier dependencyFulfillmentSupplier;
-    protected final Consumer<T> changeCallback;
+    protected final ValueUpdateListener<T> onValueChanged;
 
     protected AdvancedOption(AdvancedOptionBuilder<T, ?, ?> builder) {
         Objects.requireNonNull(builder.id, "Option id not specified");
@@ -47,7 +49,7 @@ public abstract class AdvancedOption<T> {
         );
         this.translationKeyOverwrite = builder.translationKeyOverwrite;
         this.dependencyFulfillmentSupplier = builder.dependencyFulfillmentSupplier;
-        this.changeCallback = Objects.requireNonNullElse(builder.changeCallback, value -> {});
+        this.onValueChanged = Objects.requireNonNullElse(builder.onValueChanged, value -> {});
     }
 
     protected final void postConstruct() {
@@ -56,7 +58,7 @@ public abstract class AdvancedOption<T> {
             this.tooltipSupplier,
             AdvancedOption.createCaptionBasedToString(this.translationKeyOverwrite, this::getDefaultCaptionBasedToString),
             this.defaultValue,
-            this.changeCallback
+            this.onValueChanged
         );
     }
 
@@ -103,13 +105,13 @@ public abstract class AdvancedOption<T> {
         return this.tooltipSupplier.apply(this.getValue());
     }
 
-    public AbstractWidget createWidget(int x, int y, int width, Consumer<T> changeCallback) {
+    public AbstractWidget createWidget(int x, int y, int width, ValueUpdateListener<T> onValueChanged) {
         return this.option.createButton(
             Minecraft.getInstance().options,
             x,
             y,
             width,
-            changeCallback
+            onValueChanged
         );
     }
 
@@ -121,11 +123,11 @@ public abstract class AdvancedOption<T> {
         return !this.isDependent() || this.dependencyFulfillmentSupplier.getAsBoolean();
     }
 
-    protected abstract OptionInstance<T> createOptionInstance(String translationkey, OptionInstance.TooltipSupplier<T> tooltipSupplier, OptionInstance.CaptionBasedToString<T> captionBasedToString, T defaultValue, Consumer<T> changeCallback);
+    protected abstract OptionInstance<T> createOptionInstance(String translationkey, TooltipSupplier<T> tooltipSupplier, CaptionBasedToString<T> captionBasedToString, T defaultValue, ValueUpdateListener<T> onValueChanged);
 
-    protected abstract OptionInstance.CaptionBasedToString<T> getDefaultCaptionBasedToString();
+    protected abstract CaptionBasedToString<T> getDefaultCaptionBasedToString();
 
-    private static <T> OptionInstance.CaptionBasedToString<T> createCaptionBasedToString(@NullPermitted Function<T, String> translationKeyOverwrite, Supplier<OptionInstance.CaptionBasedToString<T>> defaultSupplier) {
+    private static <T> CaptionBasedToString<T> createCaptionBasedToString(@NullPermitted Function<T, String> translationKeyOverwrite, Supplier<CaptionBasedToString<T>> defaultSupplier) {
         if (translationKeyOverwrite == null) {
             return defaultSupplier.get();
         }
@@ -149,7 +151,7 @@ public abstract class AdvancedOption<T> {
         protected @NullPermitted String descriptionTranslationKey;
         protected @NullPermitted Function<T, String> translationKeyOverwrite;
         protected @NullPermitted BooleanSupplier dependencyFulfillmentSupplier;
-        protected @NullPermitted Consumer<T> changeCallback;
+        protected @NullPermitted ValueUpdateListener<T> onValueChanged;
 
         protected AdvancedOptionBuilder(String id) {
             this.id = id;
@@ -180,8 +182,8 @@ public abstract class AdvancedOption<T> {
             return this.self();
         }
 
-        public B setChangeCallback(@NullPermitted Consumer<T> changeCallback) {
-            this.changeCallback = changeCallback;
+        public B setChangeCallback(@NullPermitted ValueUpdateListener<T> onValueChanged) {
+            this.onValueChanged = onValueChanged;
             return this.self();
         }
 

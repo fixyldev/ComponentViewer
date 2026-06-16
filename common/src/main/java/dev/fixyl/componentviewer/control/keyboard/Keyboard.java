@@ -185,7 +185,7 @@ public abstract class Keyboard {
         }
 
         // Possible if no screen is open
-        if (this.minecraftClient.screen == null) {
+        if (this.minecraftClient.gui.screen() == null) {
             return true;
         }
 
@@ -193,7 +193,7 @@ public abstract class Keyboard {
         // the current screen is not a config screen of this mod
         return (
             this.allowCyclingOptionsWhileInScreen.getBooleanValue()
-            && !(this.minecraftClient.screen instanceof ConfigScreen)
+            && !(this.minecraftClient.gui.screen() instanceof ConfigScreen)
         );
     }
 
