@@ -112,7 +112,7 @@ public final class ControlFlow {
 
         this.lastTimeItemStackHovered = this.renderTick;
 
-        this.isTooltipShown = this.shouldDisplayToolip();
+        this.isTooltipShown = this.shouldDisplayTooltip();
         if (this.isTooltipShown) {
             this.lastTimeTooltipShown = this.renderTick;
         } else {
@@ -193,7 +193,7 @@ public final class ControlFlow {
             && this.configs.tooltipComponentValues.getBooleanValue();
     }
 
-    private boolean shouldDisplayToolip() {
+    private boolean shouldDisplayTooltip() {
         TooltipDisplay tooltipDisplay = this.configs.tooltipDisplay.getValue();
         if (
             tooltipDisplay == TooltipDisplay.NEVER

@@ -24,7 +24,7 @@ import dev.fixyl.componentviewer.formatting.FormattingException;
  * The main purpose is to provide easy methods for altering a tooltip's content
  * without having raw access to the entire {@link List} instance.
  * <p>
- * So a {@link Toolip} doesn't represent a "real" tooltip. All operations, no matter
+ * So a {@link Tooltip} doesn't represent a "real" tooltip. All operations, no matter
  * how complex, operate on the {@link List} instance directly.
  * Therefore, any {@link List} implementation, not supporting operations like
  * {@code add}, {@code addAll}, {@code clear} and so on, will throw an
@@ -223,7 +223,7 @@ public class Tooltip {
 
     /**
      * Add an {@link ItemStack}'s data, formatted using the specified {@link Formatter},
-     * to the toolip.
+     * to the tooltip.
      * <p>
      * This is usually the same kind of data a player gets when using the {@code /data get} in-game
      * command. Although the exact behaviour depends on the {@link Formatter}'s implementation.
