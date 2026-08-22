@@ -21,14 +21,17 @@ dependencies {
 
     implementation("net.fabricmc:fabric-loader:${providers.gradleProperty("fabric_loader_version").get()}")
     implementation("net.fabricmc.fabric-api:fabric-api:${providers.gradleProperty("fabric_api_version").get()}")
+
+    val modmenu_version = providers.gradleProperty("modmenu_version").get()
+    if (providers.gradleProperty("modmenu_compile_only").orNull?.toBoolean() == true) {
+        compileOnly("com.terraformersmc:modmenu:${modmenu_version}")
+    } else {
+        implementation("com.terraformersmc:modmenu:${modmenu_version}")
+    }
 }
 
 sourceSets.main {
-    java {
-        srcDir("../common/src/main/java")
-        exclude("dev/fixyl/componentviewer/modmenu/**")
-    }
-
+    java.srcDir("../common/src/main/java")
     resources.srcDir("../common/src/main/resources")
 }
 
