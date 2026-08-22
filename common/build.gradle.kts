@@ -1,5 +1,4 @@
 plugins {
-    id("java-library")
     id("net.fabricmc.fabric-loom")
 }
 
@@ -12,5 +11,5 @@ dependencies {
 loom {
     runConfigs.clear()
 
-    accessWidenerPath = file("../fabric/src/main/resources/componentviewer-fabric.accesswidener")
+    accessWidenerPath = rootDir.resolve("fabric/src/main/resources/componentviewer-fabric.accesswidener")
 }

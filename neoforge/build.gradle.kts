@@ -1,26 +1,9 @@
 plugins {
-    id("java-library")
     id("net.neoforged.moddev")
 }
 
-base.archivesName = "${rootProject.name}-${project.name}"
-version = providers.gradleProperty("mod_version").get()
-group = providers.gradleProperty("mod_group").get()
-
 dependencies {
     implementation(project(path = ":common"))
-}
-
-sourceSets.main {
-    java.srcDir("../common/src/main/java")
-
-    resources {
-        srcDir("../common/src/main/resources")
-
-        srcDir("src/generated/resources")
-        exclude("**/*.bbmodel")
-        exclude("src/generated/**/.cache")
-    }
 }
 
 neoForge {
@@ -41,7 +24,7 @@ neoForge {
         }
 
         configureEach {
-            gameDirectory = file("../run")
+            gameDirectory = rootDir.resolve("run")
 
             systemProperty("neoforge.enabledGameTestNamespaces", rootProject.name)
             systemProperty("forge.logging.markers", "REGISTRIES")
@@ -66,22 +49,14 @@ val generateModMetadata = tasks.register<ProcessResources>("generateModMetadata"
     from("src/main/templates")
     into(layout.buildDirectory.dir("generated/sources/modMetadata"))
 }
-sourceSets.main { resources.srcDir(generateModMetadata) }
+
+sourceSets.main {
+    resources {
+        srcDir(generateModMetadata)
+        srcDir("src/generated/resources")
+        exclude("**/*.bbmodel")
+        exclude("src/generated/**/.cache")
+    }
+}
+
 neoForge.ideSyncTask(generateModMetadata)
-
-java {
-    withSourcesJar()
-
-    toolchain.languageVersion = JavaLanguageVersion.of(25)
-
-    sourceCompatibility = JavaVersion.VERSION_25
-    targetCompatibility = JavaVersion.VERSION_25
-}
-
-tasks.jar {
-    from("../LICENSE")
-}
-
-tasks.named<Jar>("sourcesJar") {
-    from("../LICENSE")
-}

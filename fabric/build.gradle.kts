@@ -1,11 +1,6 @@
 plugins {
-    id("java-library")
     id("net.fabricmc.fabric-loom")
 }
-
-base.archivesName = "${rootProject.name}-${project.name}"
-version = providers.gradleProperty("mod_version").get()
-group = providers.gradleProperty("mod_group").get()
 
 repositories {
     maven {
@@ -30,11 +25,6 @@ dependencies {
     }
 }
 
-sourceSets.main {
-    java.srcDir("../common/src/main/java")
-    resources.srcDir("../common/src/main/resources")
-}
-
 loom {
     runs.named("client") {
         displayName = "Fabric - Client"
@@ -42,7 +32,7 @@ loom {
     }
 
     runConfigs.configureEach {
-        runDirectory = file("../run")
+        runDirectory = rootDir.resolve("run")
     }
 
     accessWidenerPath = file("src/main/resources/componentviewer-fabric.accesswidener")
@@ -57,24 +47,6 @@ tasks.processResources {
     }
 }
 
-java {
-    withSourcesJar()
-
-    toolchain.languageVersion = JavaLanguageVersion.of(25)
-
-    sourceCompatibility = JavaVersion.VERSION_25
-    targetCompatibility = JavaVersion.VERSION_25
-}
-
-tasks.jar {
-    val rootProjectName = rootProject.name
-    val projectName = project.name
-    inputs.property("rootProjectName", rootProjectName)
-    inputs.property("projectName", projectName)
-
-    from("../LICENSE")
-}
-
 tasks.named<Jar>("sourcesJar") {
     val version = version
     inputs.property("version", version)
@@ -82,6 +54,4 @@ tasks.named<Jar>("sourcesJar") {
     filesMatching("fabric.mod.json") {
         expand("version" to version)
     }
-
-    from("../LICENSE")
 }
