@@ -10,10 +10,7 @@ dependencies {
 }
 
 loom {
-    runs {
-        remove client
-        remove server
-    }
+    runConfigs.clear()
 
     accessWidenerPath = file("../fabric/src/main/resources/componentviewer-fabric.accesswidener")
 }
