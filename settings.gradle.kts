@@ -20,4 +20,9 @@ plugins {
 
 rootProject.name = providers.gradleProperty("mod_id").get()
 
-include("common", "fabric", "neoforge")
+include("common", "fabric")
+
+if (!providers.gradleProperty("neoforge_version").orNull.isNullOrBlank()
+    && !providers.gradleProperty("moddev_version").orNull.isNullOrBlank()) {
+    include("neoforge")
+}
