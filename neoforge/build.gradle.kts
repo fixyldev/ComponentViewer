@@ -55,7 +55,9 @@ neoForge {
 }
 
 val generateModMetadata = tasks.register<ProcessResources>("generateModMetadata") {
-    description = "Expands templates with declared mod properties"
+    description = "Expands templates with declared mod properties."
+    group = "mod development/internal"
+
     val replaceProperties = mapOf(
         "version" to version,
     )
