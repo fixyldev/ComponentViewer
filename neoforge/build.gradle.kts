@@ -31,10 +31,12 @@ neoForge {
     runs {
         create("client") {
             client()
+            ideName = "NeoForge - Client"
         }
 
         create("server") {
             server()
+            disableIdeRun()
             programArgument("--nogui")
         }
 
