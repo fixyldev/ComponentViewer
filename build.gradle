@@ -1,8 +1,0 @@
-subprojects {
-    buildDir = "${rootProject.projectDir}/build/${project.name}"
-
-    tasks.withType(JavaCompile).configureEach {
-        it.options.release = 25
-        it.options.encoding = "UTF-8"
-    }
-}
