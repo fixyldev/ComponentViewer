@@ -10,18 +10,21 @@ repositories {
     }
 }
 
+val modmenuConfiguration =
+    if (providers.gradleProperty("modmenu_compile_only").orNull?.toBoolean() == true) {
+        "compileOnly"
+    } else {
+        "implementation"
+    }
+val modmenuVersion = providers.gradleProperty("modmenu_version").get()
+
 dependencies {
     minecraft("com.mojang:minecraft:${providers.gradleProperty("minecraft_version").get()}")
 
     implementation("net.fabricmc:fabric-loader:${providers.gradleProperty("fabric_loader_version").get()}")
     implementation("net.fabricmc.fabric-api:fabric-api:${providers.gradleProperty("fabric_api_version").get()}")
 
-    val modmenuVersion = providers.gradleProperty("modmenu_version").get()
-    if (providers.gradleProperty("modmenu_compile_only").orNull?.toBoolean() == true) {
-        compileOnly("com.terraformersmc:modmenu:${modmenuVersion}")
-    } else {
-        implementation("com.terraformersmc:modmenu:${modmenuVersion}")
-    }
+    add(modmenuConfiguration, "com.terraformersmc:modmenu:${modmenuVersion}")
 }
 
 loom {
