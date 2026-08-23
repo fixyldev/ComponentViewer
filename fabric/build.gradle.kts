@@ -25,13 +25,16 @@ dependencies {
 }
 
 loom {
-    runs.named("client") {
-        displayName = "Fabric - Client"
-        generateRunConfig = true
-    }
+    runConfigs {
+        named("client") {
+            client()
+            displayName = "Fabric - Client"
+            generateRunConfig = true
+        }
 
-    runConfigs.configureEach {
-        runDirectory = rootDir.resolve("run")
+        configureEach {
+            runDirectory = rootDir.resolve("run")
+        }
     }
 
     accessWidenerPath = file("src/main/resources/componentviewer-fabric.accesswidener")
