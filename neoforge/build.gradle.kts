@@ -1,9 +1,6 @@
 plugins {
+    id("loader-conventions")
     id("net.neoforged.moddev")
-}
-
-dependencies {
-    implementation(project(path = ":common"))
 }
 
 neoForge {

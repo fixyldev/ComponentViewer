@@ -1,4 +1,5 @@
 plugins {
+    id("common-conventions")
     id("net.fabricmc.fabric-loom")
 }
 

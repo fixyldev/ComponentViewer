@@ -1,4 +1,5 @@
 plugins {
+    id("loader-conventions")
     id("net.fabricmc.fabric-loom")
 }
 
@@ -10,8 +11,6 @@ repositories {
 }
 
 dependencies {
-    implementation(project(path = ":common"))
-
     minecraft("com.mojang:minecraft:${providers.gradleProperty("minecraft_version").get()}")
 
     implementation("net.fabricmc:fabric-loader:${providers.gradleProperty("fabric_loader_version").get()}")
