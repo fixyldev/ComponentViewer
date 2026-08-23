@@ -12,5 +12,5 @@ dependencies {
 loom {
     runConfigs.clear()
 
-    accessWidenerPath = rootDir.resolve("fabric/src/main/resources/componentviewer-fabric.accesswidener")
+    accessWidenerPath = project(":fabric").file("src/main/resources/componentviewer-fabric.accesswidener")
 }
