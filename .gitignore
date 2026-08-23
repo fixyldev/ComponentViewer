@@ -5,6 +5,7 @@ out/
 classes/
 
 # eclipse
+.eclipse/
 *.launch
 
 # idea
@@ -20,6 +21,9 @@ bin/
 .classpath
 .project
 
+# github
+modernize/
+
 # macos
 *.DS_Store
 
@@ -28,6 +32,9 @@ hs_err_*.log
 replay_*.log
 *.hprof
 *.jfr
+
+# kotlin
+.kotlin/
 
 # other
 run/
