@@ -43,20 +43,6 @@ loom {
     accessWidenerPath = file("src/main/resources/componentviewer-fabric.accesswidener")
 }
 
-tasks.processResources {
-    val version = version
-    inputs.property("version", version)
-
-    filesMatching("fabric.mod.json") {
-        expand("version" to version)
-    }
-}
-
-tasks.named<Jar>("sourcesJar") {
-    val version = version
-    inputs.property("version", version)
-
-    filesMatching("fabric.mod.json") {
-        expand("version" to version)
-    }
+expandTemplates {
+    expandProperty("version", "mod_version")
 }

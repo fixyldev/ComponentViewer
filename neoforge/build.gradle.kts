@@ -34,26 +34,6 @@ neoForge {
     }
 }
 
-val generateModMetadata = tasks.register<ProcessResources>("generateModMetadata") {
-    description = "Expands templates with declared mod properties."
-    group = "mod development/internal"
-
-    val replaceProperties = mapOf(
-        "version" to version,
-    )
-    inputs.properties(replaceProperties)
-    expand(replaceProperties)
-    from("src/main/templates")
-    into(layout.buildDirectory.dir("generated/sources/modMetadata"))
+expandTemplates {
+    expandProperty("version", "mod_version")
 }
-
-sourceSets.main {
-    resources {
-        srcDir(generateModMetadata)
-        srcDir("src/generated/resources")
-        exclude("**/*.bbmodel")
-        exclude("src/generated/**/.cache")
-    }
-}
-
-neoForge.ideSyncTask(generateModMetadata)
