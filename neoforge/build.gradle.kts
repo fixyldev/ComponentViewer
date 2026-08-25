@@ -1,10 +1,10 @@
 plugins {
     id("loader-conventions")
-    id("net.neoforged.moddev")
+    id("net.neoforged.moddev") version BuildConfig.MODDEV_VERSION
 }
 
 neoForge {
-    version = providers.gradleProperty("neoforge_version").get()
+    version = BuildConfig.NEOFORGE_VERSION
 
     validateAccessTransformers = true
 
@@ -23,17 +23,17 @@ neoForge {
         configureEach {
             gameDirectory = rootDir.resolve("run")
 
-            systemProperty("neoforge.enabledGameTestNamespaces", rootProject.name)
+            systemProperty("neoforge.enabledGameTestNamespaces", BuildConfig.MOD_ID)
             systemProperty("forge.logging.markers", "REGISTRIES")
             logLevel = org.slf4j.event.Level.DEBUG
         }
     }
 
-    mods.create(rootProject.name) {
+    mods.create(BuildConfig.MOD_ID) {
         sourceSet(sourceSets.main.get())
     }
 }
 
 expandTemplates {
-    expandProperty("version", "mod_version")
+    expand("version", BuildConfig.getVersionString())
 }

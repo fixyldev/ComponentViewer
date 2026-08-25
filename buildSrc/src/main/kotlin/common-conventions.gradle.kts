@@ -2,9 +2,9 @@ plugins {
     id("java-library")
 }
 
-base.archivesName = "${rootProject.name}-${project.name}"
-version = providers.gradleProperty("mod_version").get()
-group = providers.gradleProperty("mod_group").get()
+base.archivesName = "${BuildConfig.MOD_ID}-${project.name}"
+version = BuildConfig.getVersionString()
+group = BuildConfig.MOD_GROUP
 
 layout.buildDirectory = rootProject.layout.buildDirectory.dir(project.name)
 

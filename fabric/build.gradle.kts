@@ -1,6 +1,6 @@
 plugins {
     id("loader-conventions")
-    id("net.fabricmc.fabric-loom")
+    id("net.fabricmc.fabric-loom") version BuildConfig.FABRIC_LOOM_VERSION
 }
 
 repositories {
@@ -11,20 +11,17 @@ repositories {
 }
 
 val modmenuConfiguration =
-    if (providers.gradleProperty("modmenu_compile_only").orNull?.toBoolean() == true) {
-        "compileOnly"
-    } else {
-        "implementation"
-    }
-val modmenuVersion = providers.gradleProperty("modmenu_version").get()
+    if (providers.gradleProperty("dev.fixyl.componentviewer.compileOnlyModmenu")
+        .orNull.toBoolean()) { "compileOnly" } else { "implementation" }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${providers.gradleProperty("minecraft_version").get()}")
+    minecraft("com.mojang:minecraft:${BuildConfig.MINECRAFT_VERSION}")
 
-    implementation("net.fabricmc:fabric-loader:${providers.gradleProperty("fabric_loader_version").get()}")
-    implementation("net.fabricmc.fabric-api:fabric-api:${providers.gradleProperty("fabric_api_version").get()}")
+    implementation("net.fabricmc:fabric-loader:${BuildConfig.FABRIC_LOADER_VERSION}")
+    implementation("net.fabricmc.fabric-api:fabric-api:${BuildConfig.FABRIC_API_VERSION}")
 
-    add(modmenuConfiguration, "com.terraformersmc:modmenu:${modmenuVersion}")
+    add(modmenuConfiguration,
+        "com.terraformersmc:modmenu:${BuildConfig.MODMENU_VERSION}")
 }
 
 loom {
@@ -44,5 +41,5 @@ loom {
 }
 
 expandTemplates {
-    expandProperty("version", "mod_version")
+    expand("version", BuildConfig.getVersionString())
 }

@@ -7,22 +7,17 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
     }
-
-    plugins {
-        id("net.fabricmc.fabric-loom") version providers.gradleProperty("fabric_loom_version")
-        id("net.neoforged.moddev") version providers.gradleProperty("moddev_version")
-    }
 }
 
 plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-rootProject.name = providers.gradleProperty("mod_id").get()
+rootProject.name = "componentviewer"
 
 include("common", "fabric")
 
-if (!providers.gradleProperty("neoforge_version").orNull.isNullOrBlank()
-    && !providers.gradleProperty("moddev_version").orNull.isNullOrBlank()) {
+if (providers.gradleProperty("dev.fixyl.componentviewer.includeNeoforge")
+    .orNull.toBoolean()) {
     include("neoforge")
 }

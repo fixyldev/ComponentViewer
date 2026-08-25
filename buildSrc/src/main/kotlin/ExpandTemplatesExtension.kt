@@ -19,12 +19,4 @@ abstract class ExpandTemplatesExtension @Inject constructor(private val provider
         expansions.put(key, with)
     }
 
-    fun expandProperty(key: String, with: String) {
-        expansions.put(key, providers.gradleProperty(with))
-    }
-
-    fun expandProperty(key: String, with: Provider<String>) {
-        expansions.put(key, providers.gradleProperty(with))
-    }
-
 }
